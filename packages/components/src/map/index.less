@@ -1,0 +1,28 @@
+#map-container {
+  cursor: grab;
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.operation {
+  position: absolute;
+  right: 30px;
+  bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.3s;
+  transform: translateX(0px);
+}
+
+.map-detail {
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  height: calc(100% - 60px);
+}
+
+.operation-offset {
+  transform: translateX(-330px);
+}

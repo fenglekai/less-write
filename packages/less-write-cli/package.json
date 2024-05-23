@@ -1,0 +1,19 @@
+{
+  "name": "less-write-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "author": "",
+  "license": "MIT",
+  "bin": {
+    "less-write-cli": "./bin/index.js"
+  },
+  "dependencies": {
+    "copy-dir": "^1.3.0",
+    "inquirer": "^9.2.22",
+    "mustache": "^4.2.0",
+    "ora": "^8.0.1",
+    "yargs": "^17.7.2"
+  }
+}

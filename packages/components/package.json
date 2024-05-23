@@ -1,0 +1,31 @@
+{
+  "name": "less-write-ui",
+  "version": "1.0.0",
+  "description": "a component library",
+  "main": "index.ts",
+  "typings": "/lib/index.d.ts",
+  "files": [
+    "es",
+    "lib",
+    "src",
+    "index.ts"
+  ],
+  "scripts": {
+    "build": "vite build && pnpm build:less",
+    "build:less": "esno build/build-less"
+  },
+  "keywords": [
+    "less-write",
+    "ui",
+    "design",
+    "vue3",
+    "typescript"
+  ],
+  "author": "fenglekai",
+  "license": "MIT",
+  "dependencies": {
+    "@less-write/utils": "workspace:*",
+    "@vueuse/core": "^10.9.0",
+    "konva": "^9.3.9"
+  }
+}

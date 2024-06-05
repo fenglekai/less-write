@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.node.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"]
+  },
+  "include": [
+    "packages",
+    "typings/components.d.ts",
+
+    // playground
+    "examples/vue-app/main.ts",
+    "examples/vue-app/src/**/*",
+    "examples/vue-app/resolver.ts",
+    "examples/vue-app/vue-shim.d.ts"
+  ]
+}

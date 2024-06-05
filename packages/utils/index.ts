@@ -1,4 +1,2 @@
 
-export const main = () => {
-    return 'utils'
-}
+export * from './install'

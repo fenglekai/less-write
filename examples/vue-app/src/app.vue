@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { Button, Map } from "less-write-ui";
-import { useMap } from "less-write-ui/hook";
-
-const { WIDTH, zoomIn, zoomOut, resetZoom } = useMap;
+// import { LeMap, LeButton } from "less-write-ui";
+import { useMap } from "less-write-ui";
+const { width, zoomIn, zoomOut, resetZoom } = useMap();
 
 const tempData = [
   {
@@ -27,18 +26,19 @@ const tempData = [
 </script>
 <template>
   <div>
-    <Button @click="zoomIn(WIDTH / 2, 850 / 2)">放大</Button>
-    <Button @click="zoomOut(WIDTH / 2, 850 / 2)">缩小</Button>
-    <Button @click="resetZoom()">还原</Button>
-    <Map
+    <LeButton @click="zoomIn(width / 2, 850 / 2)">放大</LeButton>
+    <LeButton @click="zoomOut(width / 2, 850 / 2)">缩小</LeButton>
+    <LeButton @click="resetZoom()">还原</LeButton>
+    <LeMap
       :height="850"
       :size="{ width: 12300, height: 6150 / 1.1 }"
       :point-list="tempData"
-    ></Map>
+      style="margin-top: 20px;border: 1px solid #000"
+    ></LeMap>
   </div>
 </template>
 <style lang="less" scoped>
-.lw-button:not(:last-child) {
+.le-button:not(:last-child) {
   margin-right: 5px;
 }
 </style>

@@ -1,9 +1,8 @@
-<script lang="ts">
-import { onMounted, ref, onUnmounted } from "vue";
+<script lang="ts" setup>
+import { onMounted, ref, onUnmounted, defineOptions } from "vue";
 import { useDebounceFn, useResizeObserver } from "@vueuse/core";
 import type { Point } from "./map";
 import { destroy, init, resetZoom } from "./map";
-import './index.less'
 
 export interface MapProps {
   height: number;
@@ -20,10 +19,11 @@ export interface MapProps {
 interface MapEmits {
   (e: "updateDetail", data: any): void;
 }
-</script>
 
-<script lang="ts" setup>
-
+const COMPONENT_NAME = "LeMap";
+defineOptions({
+  name: COMPONENT_NAME,
+});
 
 const props = defineProps<MapProps>();
 
@@ -76,5 +76,3 @@ onUnmounted(() => {
     </section>
   </div>
 </template>
-
-<style lang="less" scoped></style>

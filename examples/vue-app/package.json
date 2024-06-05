@@ -1,9 +1,5 @@
 {
   "name": "vue-app",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "cli": "less-write-cli create"
@@ -13,6 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "less-write-cli": "workspace:*",
-    "less-write-ui": "workspace:*"
+    "less-write-ui": "workspace:*",
+    "@less-write/styles": "workspace:*"
   }
 }

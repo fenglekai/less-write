@@ -1,0 +1,6 @@
+{
+    "name": "@less-write/styles",
+    "version": "1.0.0",
+    "description": "Less style",
+    "main": "index.css"
+}

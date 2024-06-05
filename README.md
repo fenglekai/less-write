@@ -1,6 +1,11 @@
-# Less write
-
-A Vue.js 3 UI Library & CLI
+<div>
+    <h1 align="center">
+        Less Write
+    </h1>
+    <p align="center">
+        A Vue.js 3 UI Library & CLI
+    </p>
+</div>
 
 - Vue3 Composition API
 - Written in TypeScript

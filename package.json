@@ -5,7 +5,8 @@
   "scripts": {
     "cli": "less-write-cli c",
     "components:build": "pnpm run -C packages/components build",
-    "dev": "pnpm -C examples/vue-app dev"
+    "dev": "pnpm -C examples/vue-app dev",
+    "build": "pnpm -C internal/build start"
   },
   "keywords": [],
   "author": "",

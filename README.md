@@ -14,27 +14,33 @@
 
 ## Feather
 
-- pnpm管理monorepo环境
-- 集成cli脚手架
-- ui组件
-- 功能函数
-- vite测试环境
+- pnpm manages monorepo environment
+- Integrated cli
+- ui components
+- Hook function
+- vite test environment
 
 
 
 ## TODO
-- gulp工作流管理构建
-- 文档站点
+- gulp workflow management construction
+- Document site
 
 
 
 ## Getting Started
 
+NodeJS >= 18
+
+Git > v2.20
+
+
 ```
 pnpm install
 ```
 
+### Making changes to the component instead of website
+
 ```
-cd examples/vue-app
 pnpm dev
 ```

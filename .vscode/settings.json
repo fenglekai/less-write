@@ -1,6 +1,8 @@
 {
     "cSpell.words": [
+        "gulpfile",
         "konva",
         "unplugin"
-    ]
+    ],
+    "editor.tabSize": 2
 }

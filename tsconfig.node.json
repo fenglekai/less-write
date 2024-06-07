@@ -6,6 +6,6 @@
     "types": ["node"],
     "skipLibCheck": true
   },
-  "include": ["packages"],
+  "include": ["packages", "internal/**/*"],
   "exclude": ["node_modules", "dist", "**/*.md"]
 }

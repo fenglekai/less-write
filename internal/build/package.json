@@ -7,12 +7,16 @@
   "types": "dist/index.d.ts",
   "private": true,
   "scripts": {
-    "start": "gulp",
+    "start": "gulp --require @esbuild-kit/cjs-loader -f gulpfile.ts",
     "dev": "pnpm run stub",
     "stub": "unbuild --stub"
   },
   "dependencies": {
-    "gulp": "^5.0.0",
+    "gulp": "^5.0.0"
+  },
+  "devDependencies": {
+    "@esbuild-kit/cjs-loader": "^2.4.4",
+    "@types/gulp": "^4.0.17",
     "unbuild": "^2.0.0"
   }
 }

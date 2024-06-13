@@ -1,8 +1,8 @@
-import { ref, computed } from 'vue';
-import Konva from 'konva';
-import type { Rect, RectConfig } from 'konva/lib/shapes/Rect';
-import type { Image, ImageConfig } from 'konva/lib/shapes/Image';
-import type { ShapeConfig } from 'konva/lib/Shape';
+import { ref, computed } from "vue";
+import Konva from "konva";
+import type { Rect, RectConfig } from "konva/lib/shapes/Rect";
+import type { Image, ImageConfig } from "konva/lib/shapes/Image";
+import type { ShapeConfig } from "konva/lib/Shape";
 
 export interface Point extends ShapeConfig {
   useImage?: boolean;
@@ -42,7 +42,7 @@ const scaleCount = computed(() => {
   return (scale.value - 1) / SCALE_STEP;
 });
 // 计算小数位
-const DECIMAL_PLACE = 10 ** SCALE_STEP.toString().split('.')[1].length;
+const DECIMAL_PLACE = 10 ** SCALE_STEP.toString().split(".")[1].length;
 
 let stage: Konva.Stage;
 const layer = new Konva.Layer();
@@ -82,16 +82,16 @@ const group = new Konva.Group({
 // 放大时改变点位之间的间距
 function usePointPosition(type: string) {
   const wrapper = group
-    .getChildren((item) => item.attrs.name === 'drag-wrapper')
+    .getChildren((item) => item.attrs.name === "drag-wrapper")
     .pop();
   const children = group.getChildren(
-    (item) => item.attrs.name !== 'drag-wrapper'
+    (item) => item.attrs.name !== "drag-wrapper"
   );
 
   if (!wrapper) return;
   const wrapperScale = wrapper.scaleX();
   switch (type) {
-    case 'in':
+    case "in":
       wrapper.scale({
         x: wrapperScale * BASE_SCALE,
         y: wrapperScale * BASE_SCALE,
@@ -107,7 +107,7 @@ function usePointPosition(type: string) {
         });
       });
       break;
-    case 'out':
+    case "out":
       wrapper.scale({
         x: wrapperScale / BASE_SCALE,
         y: wrapperScale / BASE_SCALE,
@@ -123,7 +123,7 @@ function usePointPosition(type: string) {
         });
       });
       break;
-    case 'reset':
+    case "reset":
       wrapper.scale({
         x: 1,
         y: 1,
@@ -147,7 +147,7 @@ function usePointPosition(type: string) {
 // 根据鼠标位置偏移量
 function useGroupOffset(mouseX: number, mouseY: number, type: string) {
   const wrapper = group
-    .getChildren((item) => item.attrs.name === 'drag-wrapper')
+    .getChildren((item) => item.attrs.name === "drag-wrapper")
     .pop();
   const beforeX = group.x();
   const beforeY = group.y();
@@ -156,13 +156,13 @@ function useGroupOffset(mouseX: number, mouseY: number, type: string) {
   if (!wrapper) return;
 
   switch (type) {
-    case 'in':
+    case "in":
       offsetX = (mouseX + Math.abs(beforeX)) * SCALE_STEP;
       offsetY = (mouseY + Math.abs(beforeY)) * SCALE_STEP;
       group.move({ x: -offsetX, y: -offsetY });
       break;
 
-    case 'out':
+    case "out":
       offsetX = ((mouseX + Math.abs(beforeX)) * SCALE_STEP) / BASE_SCALE;
       offsetY = ((mouseY + Math.abs(beforeY)) * SCALE_STEP) / BASE_SCALE;
       group.move({ x: offsetX, y: offsetY });
@@ -179,8 +179,8 @@ export function zoomIn(mouseX: number, mouseY: number) {
     (scale.value * DECIMAL_PLACE + SCALE_STEP * DECIMAL_PLACE) / DECIMAL_PLACE
   );
   scale.value = newScale;
-  usePointPosition('in');
-  useGroupOffset(mouseX, mouseY, 'in');
+  usePointPosition("in");
+  useGroupOffset(mouseX, mouseY, "in");
   layer.batchDraw();
 }
 export function zoomOut(mouseX: number, mouseY: number) {
@@ -191,15 +191,15 @@ export function zoomOut(mouseX: number, mouseY: number) {
   );
 
   scale.value = newScale;
-  usePointPosition('out');
-  useGroupOffset(mouseX, mouseY, 'out');
+  usePointPosition("out");
+  useGroupOffset(mouseX, mouseY, "out");
 
   const { x, y } = group.position();
   group.setPosition(limitBrink(x, y));
   layer.batchDraw();
 }
 export function resetZoom() {
-  usePointPosition('reset');
+  usePointPosition("reset");
   scale.value = 1;
   group.position({ x: 0, y: 0 });
   layer.batchDraw();
@@ -227,8 +227,8 @@ function createRect(data: RectConfig) {
     y: 0,
     width: 10,
     height: 10,
-    fill: 'gray',
-    stroke: 'black',
+    fill: "gray",
+    stroke: "black",
     strokeWidth: 1,
     ...data,
   });
@@ -251,7 +251,7 @@ function initPoint(
 ) {
   const { x, y } = rectConfig;
   const { size } = props;
-  if (!size) throw Error('please initialize size');
+  if (!size) throw Error("please initialize size");
   const SQUARE = 10;
   const imgScale = WIDTH.value / size.width;
   const currentX = x ? x * imgScale - SQUARE / 2 : 0;
@@ -263,7 +263,7 @@ function initPoint(
     x: currentX,
     y: currentY,
   });
-  rect.on('click', () => {
+  rect.on("click", () => {
     if (callback) {
       callback(rectConfig.data);
     }
@@ -277,7 +277,7 @@ function initImage(
 ): Image | Rect {
   if (config.image) {
     const image = createImage({ ...config, image: config.image });
-    image.on('click', () => {
+    image.on("click", () => {
       if (callback) {
         callback(config.data);
       }
@@ -285,7 +285,7 @@ function initImage(
     return image;
   }
   const rect = createRect(config);
-  rect.on('click', () => {
+  rect.on("click", () => {
     if (callback) {
       callback(config.data);
     }
@@ -305,7 +305,7 @@ function initBackground(
       const imgScale = WIDTH.value / width;
       imgRenderHeight = height * imgScale;
       const res = new Konva.Image({
-        name: 'drag-wrapper',
+        name: "drag-wrapper",
         x: 0,
         y: 0,
         image: imageObj,
@@ -322,7 +322,7 @@ function initWrapper(size = { width: 1620, height: 762 }) {
   const imgScale = WIDTH.value / width;
   imgRenderHeight = height * imgScale;
   const wrapper = new Konva.Rect({
-    name: 'drag-wrapper',
+    name: "drag-wrapper",
     x: 0,
     y: 0,
     width: width * imgScale,
@@ -333,7 +333,7 @@ function initWrapper(size = { width: 1620, height: 762 }) {
 
 async function initGroup(params: GroupParams) {
   const { background, size, pointList, callback } = params;
-  group.on('wheel', (e) => zoom(e));
+  group.on("wheel", (e) => zoom(e));
 
   if (background) {
     const image = await initBackground(background, size);
@@ -361,7 +361,7 @@ export function init(params: GroupParams) {
   WIDTH.value = params.ctx.width;
   HEIGHT = params.ctx.height;
   stage = new Konva.Stage({
-    container: 'map-container',
+    container: "map-container",
     width: WIDTH.value,
     height: HEIGHT,
   });

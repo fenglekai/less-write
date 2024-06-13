@@ -7,5 +7,8 @@ export default series(
 
   parallel(
     runTask('buildModules'),
+    // runTask('buildFullBundle'),
   )
 );
+
+export * from './src'

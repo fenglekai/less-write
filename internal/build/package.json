@@ -7,16 +7,28 @@
   "types": "dist/index.d.ts",
   "private": true,
   "scripts": {
-    "start": "gulp --require @esbuild-kit/cjs-loader -f gulpfile.ts",
+    "start": "gulp --preload @esbuild-kit/cjs-loader -f gulpfile.ts",
     "dev": "pnpm run stub",
     "stub": "unbuild --stub"
   },
   "dependencies": {
-    "gulp": "^5.0.0"
+    "fast-glob": "^3.3.2",
+    "gulp": "^5.0.0",
+    "rollup": "^4.18.0"
   },
   "devDependencies": {
     "@esbuild-kit/cjs-loader": "^2.4.4",
+    "@pnpm/types": "^10.1.0",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.7",
     "@types/gulp": "^4.0.17",
-    "unbuild": "^2.0.0"
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "esbuild": "^0.21.5",
+    "rollup-plugin-esbuild": "^6.1.1",
+    "unbuild": "^2.0.0",
+    "unplugin-vue-macros": "^2.9.4",
+    "vue": "^3.4.27"
   }
 }

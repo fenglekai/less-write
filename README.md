@@ -14,16 +14,17 @@
 
 ## Feather
 
-- pnpm manages monorepo environment
+- Pnpm manages monorepo environment
 - Integrated cli
-- ui components
+- UI components
 - Hook function
-- vite test environment
+- Vite test environment
 
 
 
 ## TODO
-- gulp workflow management construction
+- Gulp workflow management construction
+- Rollup module bundler
 - Document site
 
 

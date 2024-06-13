@@ -13,7 +13,7 @@ const targetEs = resolve(__dirname, "../es");
 
 const srcDir = resolve(__dirname, "../src");
 
-const buildLess = async () => {
+export const buildLess = async () => {
   //直接将less文件复制到打包后目录
   await cpy(`${sourceDir}/**/*.less`, targetLib);
   await cpy(`${sourceDir}/**/*.less`, targetEs);
@@ -41,4 +41,3 @@ const buildLess = async () => {
     await fs.writeFile(resolve(targetEs, cssPath), code.css);
   }
 };
-buildLess();

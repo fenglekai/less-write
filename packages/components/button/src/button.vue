@@ -9,4 +9,3 @@ defineOptions({
     <slot></slot>
   </button>
 </template>
-<style lang="less" scoped></style>

@@ -1,11 +1,8 @@
 import { rollup } from "rollup";
-import vue from "@vitejs/plugin-vue";
-import vueJsx from "@vitejs/plugin-vue-jsx";
-import VueMacros from "unplugin-vue-macros/rollup";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import esbuild from "rollup-plugin-esbuild";
 import glob from "fast-glob";
+import vuePlugin from "rollup-plugin-vue";
 import {
   excludeFiles,
   generateExternal,
@@ -13,8 +10,7 @@ import {
   pkgRoot,
   writeBundles,
 } from "../utils";
-
-import type { OutputOptions } from "rollup";
+import type { OutputOptions, Plugin } from "rollup";
 import { target } from "../constants";
 import { buildConfigEntries } from "../build-info";
 
@@ -26,38 +22,13 @@ export const buildModules = async () => {
       onlyFiles: true,
     })
   );
-  console.log("input: ", input);
-
   const bundle = await rollup({
     input,
     plugins: [
-      // ElementPlusAlias(),
-      // VueMacros({
-      //   setupComponent: false,
-      //   setupSFC: false,
-      //   plugins: {
-      //     vue: vue({
-      //       isProduction: true,
-      //     }),
-      //     vueJsx: vueJsx(),
-      //   },
-      // }),
-      {
-        name: "vue-macros",
-        ...VueMacros({
-          setupComponent: false,
-          setupSFC: false,
-          plugins: {
-            vue: vue({
-              isProduction: true,
-            }),
-            vueJsx: vueJsx(),
-          },
-        }),
-      },
-      nodeResolve({
-        extensions: [".mjs", ".js", ".json", ".ts"],
-      }),
+      vuePlugin({
+        include: /\.vue$/,
+        target: "browser",
+      }) as Plugin,
       commonjs(),
       esbuild({
         sourceMap: true,

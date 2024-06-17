@@ -2,13 +2,10 @@ import path from "path";
 import { parallel } from "gulp";
 import { rollup } from "rollup";
 import type { Plugin } from "rollup";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import commonjs from "@rollup/plugin-commonjs";
 import esbuild, { minify as minifyPlugin } from "rollup-plugin-esbuild";
-import VueMacros from "unplugin-vue-macros/rollup";
-import vue from "@vitejs/plugin-vue";
-import vueJsx from "@vitejs/plugin-vue-jsx";
+import vuePlugin from "rollup-plugin-vue";
 import {
   formatBundleFilename,
   generateExternal,
@@ -22,22 +19,10 @@ import { banner, NODE_ENV, PKG_CAMELCASE_NAME, target } from "../constants";
 async function buildFullEntry(minify: boolean) {
   const plugins: Plugin[] = [
     // ElementPlusAlias(),
-    {
-      name: "vue-macros",
-      ...VueMacros({
-        setupComponent: false,
-        setupSFC: false,
-        plugins: {
-          vue: vue({
-            isProduction: true,
-          }),
-          vueJsx: vueJsx(),
-        },
-      }),
-    },
-    nodeResolve({
-      extensions: [".mjs", ".js", ".json", ".ts"],
-    }),
+    vuePlugin({
+      include: /\.vue$/,
+      target: "browser",
+    }) as Plugin,
     commonjs(),
     esbuild({
       exclude: [],

@@ -5,13 +5,13 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"]
   },
   "include": [
-    "packages",
+    "packages/**/*",
     "typings/components.d.ts",
 
     // playground
-    "examples/vue-app/main.ts",
-    "examples/vue-app/src/**/*",
-    "examples/vue-app/resolver.ts",
-    "examples/vue-app/vue-shim.d.ts"
+    "play/vue-app/main.ts",
+    "play/vue-app/src/**/*",
+    "play/vue-app/resolver.ts",
+    "play/vue-app/vue-shim.d.ts"
   ]
 }

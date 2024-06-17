@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "pnpm run -r --parallel stub",
     "cli": "less-write-cli c",
-    "dev": "pnpm -C examples/vue-app dev",
+    "dev": "pnpm -C play/vue-app dev",
     "build": "pnpm -C internal/build start",
     "clean": "pnpm run clean:dist && pnpm run -r --parallel clean",
     "clean:dist": "rimraf dist"

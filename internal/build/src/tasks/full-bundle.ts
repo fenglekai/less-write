@@ -5,7 +5,9 @@ import type { Plugin } from "rollup";
 import replace from "@rollup/plugin-replace";
 import commonjs from "@rollup/plugin-commonjs";
 import esbuild, { minify as minifyPlugin } from "rollup-plugin-esbuild";
-import vuePlugin from "rollup-plugin-vue";
+import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+import VueMacros from 'unplugin-vue-macros/rollup'
 import {
   formatBundleFilename,
   generateExternal,
@@ -15,14 +17,24 @@ import {
   writeBundles,
 } from "../utils";
 import { banner, NODE_ENV, PKG_CAMELCASE_NAME, target } from "../constants";
+import { LessWriteAlias } from "../plugins/alias";
 
 async function buildFullEntry(minify: boolean) {
   const plugins: Plugin[] = [
-    // ElementPlusAlias(),
-    vuePlugin({
-      include: /\.vue$/,
-      target: "browser",
-    }) as Plugin,
+    LessWriteAlias(),
+    {
+      name: 'unplugin-vue-macros',
+      ...VueMacros({
+        setupComponent: false,
+        setupSFC: false,
+        plugins: {
+          vue: vue({
+            isProduction: true,
+          }),
+          vueJsx: vueJsx(),
+        },
+      }),
+    },
     commonjs(),
     esbuild({
       exclude: [],

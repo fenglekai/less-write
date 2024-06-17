@@ -1,8 +1,12 @@
 import { rollup } from "rollup";
 import commonjs from "@rollup/plugin-commonjs";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import esbuild from "rollup-plugin-esbuild";
 import glob from "fast-glob";
-import vuePlugin from "rollup-plugin-vue";
+import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+import VueMacros from 'unplugin-vue-macros/rollup'
+import type { OutputOptions } from "rollup";
 import {
   excludeFiles,
   generateExternal,
@@ -10,9 +14,9 @@ import {
   pkgRoot,
   writeBundles,
 } from "../utils";
-import type { OutputOptions, Plugin } from "rollup";
 import { target } from "../constants";
 import { buildConfigEntries } from "../build-info";
+import { LessWriteAlias } from "../plugins/alias";
 
 export const buildModules = async () => {
   const input = excludeFiles(
@@ -25,10 +29,20 @@ export const buildModules = async () => {
   const bundle = await rollup({
     input,
     plugins: [
-      vuePlugin({
-        include: /\.vue$/,
-        target: "browser",
-      }) as Plugin,
+      LessWriteAlias(),
+      VueMacros({
+        setupComponent: false,
+        setupSFC: false,
+        plugins: {
+          vue: vue({
+            isProduction: true,
+          }),
+          vueJsx: vueJsx(),
+        },
+      }),
+      nodeResolve({
+        extensions: ['.mjs', '.js', '.json', '.ts']
+      }),
       commonjs(),
       esbuild({
         sourceMap: true,

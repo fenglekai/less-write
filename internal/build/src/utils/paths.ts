@@ -7,7 +7,7 @@ export const buildRoot = resolve(projRoot, "internal", "build");
 
 /** `/dist` */
 export const buildOutput = resolve(projRoot, "dist");
-/** `/dist/less-write` */
-export const leOutput = resolve(buildOutput, "less-write");
+/** `/dist/less-write-ui` */
+export const leOutput = resolve(buildOutput, "less-write-ui");
 
 export const lePackage = resolve(leRoot, "package.json");

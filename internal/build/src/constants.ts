@@ -1,4 +1,5 @@
 
+export const PKG_PREFIX = '@less-write'
 export const PKG_NAME = 'less-write'
 export const PKG_BRAND_NAME = 'Less Write'
 export const PKG_CAMELCASE_NAME = 'LessWrite'

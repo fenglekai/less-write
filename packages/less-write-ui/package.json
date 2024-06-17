@@ -1,14 +1,7 @@
 {
   "name": "less-write-ui",
   "version": "1.0.0",
-  "description": "a component library",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
-  "files": [
-    "es",
-    "lib",
-    "index.ts"
-  ],
+  "description": "A component library",
   "scripts": {
     "build": "vite build && pnpm build:less",
     "build:less": "esno build/build-less"
@@ -20,6 +13,52 @@
     "vue3",
     "typescript"
   ],
+  "main": "lib/index.js",
+  "module": "es/index.mjs",
+  "types": "es/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./es/index.d.ts",
+      "import": "./es/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./global": {
+      "types": "./global.d.ts"
+    },
+    "./es": {
+      "types": "./es/index.d.ts",
+      "import": "./es/index.mjs"
+    },
+    "./lib": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js"
+    },
+    "./es/*.mjs": {
+      "types": "./es/*.d.ts",
+      "import": "./es/*.mjs"
+    },
+    "./es/*": {
+      "types": [
+        "./es/*.d.ts",
+        "./es/*/index.d.ts"
+      ],
+      "import": "./es/*.mjs"
+    },
+    "./lib/*.js": {
+      "types": "./lib/*.d.ts",
+      "require": "./lib/*.js"
+    },
+    "./lib/*": {
+      "types": [
+        "./lib/*.d.ts",
+        "./lib/*/index.d.ts"
+      ],
+      "require": "./lib/*.js"
+    },
+    "./*": "./*"
+  },
+  "unpkg": "dist/index.full.js",
+  "jsdelivr": "dist/index.full.js",
   "author": "fenglekai",
   "license": "MIT",
   "dependencies": {

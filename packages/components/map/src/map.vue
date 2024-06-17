@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { onMounted, ref, onUnmounted, defineOptions } from "vue";
+import { onMounted, ref, onUnmounted } from "vue";
 import { useDebounceFn, useResizeObserver } from "@vueuse/core";
-import type { Point } from "./map";
-import { destroy, init, resetZoom } from "./map";
+import { type Point, useMap } from "@less-write/hooks";
 
 export interface MapProps {
   height: number;
@@ -32,6 +31,8 @@ const emits = defineEmits<MapEmits>();
 const mapRef = ref<HTMLElement>();
 const detailData = ref<any>(null);
 
+const { resetZoom, init, destroy } = useMap();
+
 onMounted(async () => {
   // 自适应外部宽度变化
   useResizeObserver(
@@ -41,6 +42,7 @@ onMounted(async () => {
       destroy();
       init({
         ctx: {
+          el: "map-container",
           width: entries[0].contentRect.width,
           height: props.height,
         },

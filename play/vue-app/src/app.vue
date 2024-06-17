@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// import { LeMap, LeButton } from "less-write-ui";
 import { useMap } from "less-write-ui";
 const { width, zoomIn, zoomOut, resetZoom } = useMap();
 

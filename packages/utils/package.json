@@ -1,5 +1,7 @@
 {
   "name": "@less-write/utils",
   "main": "index.ts",
-  "license": "MIT"
+  "module": "index.ts",
+  "unpkg": "index.js",
+  "jsdelivr": "index.js"
 }

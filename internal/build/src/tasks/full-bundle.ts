@@ -3,11 +3,12 @@ import { parallel } from "gulp";
 import { rollup } from "rollup";
 import type { Plugin } from "rollup";
 import replace from "@rollup/plugin-replace";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import esbuild, { minify as minifyPlugin } from "rollup-plugin-esbuild";
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
-import VueMacros from 'unplugin-vue-macros/rollup'
+import vue from "@vitejs/plugin-vue";
+import vueJsx from "@vitejs/plugin-vue-jsx";
+import VueMacros from "unplugin-vue-macros/rollup";
 import {
   formatBundleFilename,
   generateExternal,
@@ -20,21 +21,21 @@ import { banner, NODE_ENV, PKG_CAMELCASE_NAME, target } from "../constants";
 import { LessWriteAlias } from "../plugins/alias";
 
 async function buildFullEntry(minify: boolean) {
-  const plugins: Plugin[] = [
+  const plugins = [
     LessWriteAlias(),
-    {
-      name: 'unplugin-vue-macros',
-      ...VueMacros({
-        setupComponent: false,
-        setupSFC: false,
-        plugins: {
-          vue: vue({
-            isProduction: true,
-          }),
-          vueJsx: vueJsx(),
-        },
-      }),
-    },
+    VueMacros({
+      setupComponent: false,
+      setupSFC: false,
+      plugins: {
+        vue: vue({
+          isProduction: true,
+        }),
+        vueJsx: vueJsx(),
+      },
+    }),
+    nodeResolve({
+      extensions: [".mjs", ".js", ".json", ".ts"],
+    }),
     commonjs(),
     esbuild({
       exclude: [],
@@ -81,6 +82,7 @@ async function buildFullEntry(minify: boolean) {
       name: PKG_CAMELCASE_NAME,
       globals: {
         vue: "Vue",
+        canvas: "Canvas",
       },
       sourcemap: minify,
       banner,

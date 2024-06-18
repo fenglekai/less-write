@@ -11,6 +11,9 @@
     "dev": "pnpm run stub",
     "stub": "unbuild --stub"
   },
+  "peerDependencies": {
+    "vue": "^3.4.27"
+  },
   "dependencies": {
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",

@@ -1,9 +1,12 @@
 {
-    "name": "@less-write/hooks",
-    "version": "1.0.0",
-    "description": "use hooks",
-    "main": "index.ts",
-    "module": "index.ts",
-    "unpkg": "index.js",
-    "jsdelivr": "index.js"
+  "name": "@less-write/hooks",
+  "version": "1.0.0",
+  "description": "use hooks",
+  "main": "index.ts",
+  "module": "index.ts",
+  "unpkg": "index.js",
+  "jsdelivr": "index.js",
+  "peerDependencies": {
+    "vue": "^3.4.27"
+  }
 }

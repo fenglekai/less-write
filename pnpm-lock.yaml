@@ -32,10 +32,10 @@ importers:
         version: 3.0.6
       '@types/node':
         specifier: ^20.12.12
-        version: 20.14.2
+        version: 20.14.4
       '@vitejs/plugin-vue':
         specifier: ^5.0.4
-        version: 5.0.5(vite@5.3.1(@types/node@20.14.2)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))
+        version: 5.0.5(vite@5.3.1(@types/node@20.14.4)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))
       cpy:
         specifier: ^11.0.1
         version: 11.0.1
@@ -59,10 +59,10 @@ importers:
         version: 0.27.0(@babel/parser@7.24.7)(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
       vite:
         specifier: ^5.2.11
-        version: 5.3.1(@types/node@20.14.2)(less@4.2.0)
+        version: 5.3.1(@types/node@20.14.4)(less@4.2.0)
       vite-plugin-dts:
         specifier: ^3.9.1
-        version: 3.9.1(@types/node@20.14.2)(rollup@4.18.0)(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.2)(less@4.2.0))
+        version: 3.9.1(@types/node@20.14.4)(rollup@4.18.0)(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.4)(less@4.2.0))
       vue:
         specifier: ^3.4.27
         version: 3.4.29(typescript@5.4.5)
@@ -80,10 +80,10 @@ importers:
         version: 5.0.7(rollup@4.18.0)
       '@vitejs/plugin-vue':
         specifier: ^5.0.4
-        version: 5.0.5(vite@5.3.1(@types/node@20.14.2)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))
+        version: 5.0.5(vite@5.3.1(@types/node@20.14.4)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))
       '@vitejs/plugin-vue-jsx':
         specifier: ^4.0.0
-        version: 4.0.0(vite@5.3.1(@types/node@20.14.2)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))
+        version: 4.0.0(vite@5.3.1(@types/node@20.14.4)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))
       esbuild:
         specifier: ^0.21.5
         version: 0.21.5
@@ -101,14 +101,17 @@ importers:
         version: 6.1.1(esbuild@0.21.5)(rollup@4.18.0)
       unplugin-vue-macros:
         specifier: ^2.9.5
-        version: 2.9.5(@vueuse/core@10.11.0(vue@3.4.29(typescript@5.4.5)))(esbuild@0.21.5)(rollup@4.18.0)(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.2)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))
+        version: 2.9.5(@vueuse/core@10.11.0(vue@3.4.29(typescript@5.4.5)))(esbuild@0.21.5)(rollup@4.18.0)(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.4)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))
+      vue:
+        specifier: ^3.4.27
+        version: 3.4.29(typescript@5.4.5)
     devDependencies:
       '@esbuild-kit/cjs-loader':
         specifier: ^2.4.4
         version: 2.4.4
       '@pnpm/types':
         specifier: ^10.1.0
-        version: 10.1.0
+        version: 10.1.1
       '@types/gulp':
         specifier: ^4.0.17
         version: 4.0.17
@@ -116,9 +119,17 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0(typescript@5.4.5)(vue-tsc@1.8.27(typescript@5.4.5))
 
-  packages/components: {}
+  packages/components:
+    dependencies:
+      vue:
+        specifier: ^3.4.27
+        version: 3.4.29(typescript@5.4.5)
 
-  packages/hooks: {}
+  packages/hooks:
+    dependencies:
+      vue:
+        specifier: ^3.4.27
+        version: 3.4.29(typescript@5.4.5)
 
   packages/less-write-cli:
     dependencies:
@@ -146,6 +157,9 @@ importers:
       konva:
         specifier: ^9.3.9
         version: 9.3.11
+      vue:
+        specifier: ^3.4.27
+        version: 3.4.29(typescript@5.4.5)
 
   packages/styles: {}
 
@@ -156,12 +170,12 @@ importers:
       '@less-write/styles':
         specifier: workspace:*
         version: link:../../packages/styles
-      less-write:
-        specifier: workspace:*
-        version: link:../../packages/less-write-ui
       less-write-cli:
         specifier: workspace:*
         version: link:../../packages/less-write-cli
+      less-write-ui:
+        specifier: workspace:*
+        version: link:../../packages/less-write-ui
 
 packages:
 
@@ -936,8 +950,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@pnpm/types@10.1.0':
-    resolution: {integrity: sha512-cM2UhtQJs06zWm3wsXoVVi4b1P8rA7xioZCct/Q4sR5GAUq0VUReZMd9TkPEVdNlAiitctTAi9EM8D5hrO937A==}
+  '@pnpm/types@10.1.1':
+    resolution: {integrity: sha512-xF8/Trk+ucZa2rUwEk1WgMtlfWUQN5bu6bGHCho+suN2pYrTy+vN+HgZ2SO1oa+6WoyuN5yllMMADOEXaHTOmA==}
     engines: {node: '>=18.12'}
 
   '@polka/url@1.0.0-next.25':
@@ -1134,8 +1148,8 @@ packages:
   '@types/less@3.0.6':
     resolution: {integrity: sha512-PecSzorDGdabF57OBeQO/xFbAkYWo88g4Xvnsx7LRwqLC17I7OoKtA3bQB9uXkY6UkMWCOsA8HSVpaoitscdXw==}
 
-  '@types/node@20.14.2':
-    resolution: {integrity: sha512-xyu6WAMVwv6AKFLB+e/7ySZVr/0zLCzOa7rSpq6jNwpqOrUbcACDWC+53d4n2QHOnDou0fbIsg8wZu/sxrnI4Q==}
+  '@types/node@20.14.4':
+    resolution: {integrity: sha512-1ChboN+57suCT2t/f8lwtPY/k3qTpuD/qnqQuYoBg6OQOcPyaw7PiZVdGpaZYAvhDDtqrt0oAaM8+oSu1xsUGw==}
 
   '@types/picomatch@2.3.3':
     resolution: {integrity: sha512-Yll76ZHikRFCyz/pffKGjrCwe/le2CDwOP5F210KQo27kpRE46U2rDnzikNlVn6/ezH3Mhn46bJMTfeVTtcYMg==}
@@ -1765,8 +1779,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  electron-to-chromium@1.4.803:
-    resolution: {integrity: sha512-61H9mLzGOCLLVsnLiRzCbc63uldP0AniRYPV3hbGVtONA1pI7qSGILdbofR7A8TMbOypDocEAjH/e+9k1QIe3g==}
+  electron-to-chromium@1.4.804:
+    resolution: {integrity: sha512-gXMMs2m7aUTdZpORQAvMCyH0JHywSpZxjblSc/C81aDr34jh0hmpplTFcM4AYrYALVmiVT/r63oA3tEG1BPVRw==}
 
   emoji-regex@10.3.0:
     resolution: {integrity: sha512-QpLs9D9v9kArv4lfDEgg1X/gN5XLnf/A6l9cs8SPZLRZR3ZkY9+kwIQTxm+fsSej5UMYGE8fdoaZVIBlqG0XTw==}
@@ -3011,8 +3025,8 @@ packages:
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
-  tsx@4.15.5:
-    resolution: {integrity: sha512-iKi8jQ2VBmZ2kU/FkGkL2OSHBHsazsUzsdC/W/RwhKIEsIoZ1alCclZHP5jGfNHEaEWUJFM1GquzCf+4db3b0w==}
+  tsx@4.15.6:
+    resolution: {integrity: sha512-is0VQQlfNZRHEuSSTKA6m4xw74IU4AizmuB6lAYLRt9XtuyeQnyJYexhNZOPCB59SqC4JzmSzPnHGBXxf3k0hA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -3826,23 +3840,23 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
 
-  '@microsoft/api-extractor-model@7.28.13(@types/node@20.14.2)':
+  '@microsoft/api-extractor-model@7.28.13(@types/node@20.14.4)':
     dependencies:
       '@microsoft/tsdoc': 0.14.2
       '@microsoft/tsdoc-config': 0.16.2
-      '@rushstack/node-core-library': 4.0.2(@types/node@20.14.2)
+      '@rushstack/node-core-library': 4.0.2(@types/node@20.14.4)
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.43.0(@types/node@20.14.2)':
+  '@microsoft/api-extractor@7.43.0(@types/node@20.14.4)':
     dependencies:
-      '@microsoft/api-extractor-model': 7.28.13(@types/node@20.14.2)
+      '@microsoft/api-extractor-model': 7.28.13(@types/node@20.14.4)
       '@microsoft/tsdoc': 0.14.2
       '@microsoft/tsdoc-config': 0.16.2
-      '@rushstack/node-core-library': 4.0.2(@types/node@20.14.2)
+      '@rushstack/node-core-library': 4.0.2(@types/node@20.14.4)
       '@rushstack/rig-package': 0.5.2
-      '@rushstack/terminal': 0.10.0(@types/node@20.14.2)
-      '@rushstack/ts-command-line': 4.19.1(@types/node@20.14.2)
+      '@rushstack/terminal': 0.10.0(@types/node@20.14.4)
+      '@rushstack/ts-command-line': 4.19.1(@types/node@20.14.4)
       lodash: 4.17.21
       minimatch: 3.0.8
       resolve: 1.22.8
@@ -3876,7 +3890,7 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@pnpm/types@10.1.0': {}
+  '@pnpm/types@10.1.1': {}
 
   '@polka/url@1.0.0-next.25': {}
 
@@ -4014,7 +4028,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.18.0':
     optional: true
 
-  '@rushstack/node-core-library@4.0.2(@types/node@20.14.2)':
+  '@rushstack/node-core-library@4.0.2(@types/node@20.14.4)':
     dependencies:
       fs-extra: 7.0.1
       import-lazy: 4.0.0
@@ -4023,23 +4037,23 @@ snapshots:
       semver: 7.5.4
       z-schema: 5.0.5
     optionalDependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.4
 
   '@rushstack/rig-package@0.5.2':
     dependencies:
       resolve: 1.22.8
       strip-json-comments: 3.1.1
 
-  '@rushstack/terminal@0.10.0(@types/node@20.14.2)':
+  '@rushstack/terminal@0.10.0(@types/node@20.14.4)':
     dependencies:
-      '@rushstack/node-core-library': 4.0.2(@types/node@20.14.2)
+      '@rushstack/node-core-library': 4.0.2(@types/node@20.14.4)
       supports-color: 8.1.1
     optionalDependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.4
 
-  '@rushstack/ts-command-line@4.19.1(@types/node@20.14.2)':
+  '@rushstack/ts-command-line@4.19.1(@types/node@20.14.4)':
     dependencies:
-      '@rushstack/terminal': 0.10.0(@types/node@20.14.2)
+      '@rushstack/terminal': 0.10.0(@types/node@20.14.4)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -4058,20 +4072,20 @@ snapshots:
 
   '@types/glob-stream@8.0.2':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.4
       '@types/picomatch': 2.3.3
       '@types/streamx': 2.9.5
 
   '@types/gulp@4.0.17':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.4
       '@types/undertaker': 1.2.11
       '@types/vinyl-fs': 3.0.5
       chokidar: 3.6.0
 
   '@types/less@3.0.6': {}
 
-  '@types/node@20.14.2':
+  '@types/node@20.14.4':
     dependencies:
       undici-types: 5.26.5
 
@@ -4081,42 +4095,42 @@ snapshots:
 
   '@types/streamx@2.9.5':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.4
 
   '@types/undertaker-registry@1.0.4': {}
 
   '@types/undertaker@1.2.11':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.4
       '@types/undertaker-registry': 1.0.4
       async-done: 1.3.2
 
   '@types/vinyl-fs@3.0.5':
     dependencies:
       '@types/glob-stream': 8.0.2
-      '@types/node': 20.14.2
+      '@types/node': 20.14.4
       '@types/vinyl': 2.0.12
 
   '@types/vinyl@2.0.12':
     dependencies:
       '@types/expect': 1.20.4
-      '@types/node': 20.14.2
+      '@types/node': 20.14.4
 
   '@types/web-bluetooth@0.0.20': {}
 
-  '@vitejs/plugin-vue-jsx@4.0.0(vite@5.3.1(@types/node@20.14.2)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))':
+  '@vitejs/plugin-vue-jsx@4.0.0(vite@5.3.1(@types/node@20.14.4)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))':
     dependencies:
       '@babel/core': 7.24.7
       '@babel/plugin-transform-typescript': 7.24.7(@babel/core@7.24.7)
       '@vue/babel-plugin-jsx': 1.2.2(@babel/core@7.24.7)
-      vite: 5.3.1(@types/node@20.14.2)(less@4.2.0)
+      vite: 5.3.1(@types/node@20.14.4)(less@4.2.0)
       vue: 3.4.29(typescript@5.4.5)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-vue@5.0.5(vite@5.3.1(@types/node@20.14.2)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))':
+  '@vitejs/plugin-vue@5.0.5(vite@5.3.1(@types/node@20.14.4)(less@4.2.0))(vue@3.4.29(typescript@5.4.5))':
     dependencies:
-      vite: 5.3.1(@types/node@20.14.2)(less@4.2.0)
+      vite: 5.3.1(@types/node@20.14.4)(less@4.2.0)
       vue: 3.4.29(typescript@5.4.5)
 
   '@volar/language-core@1.11.1':
@@ -4241,12 +4255,12 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@vue-macros/devtools@0.2.0(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.2)(less@4.2.0))':
+  '@vue-macros/devtools@0.2.0(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.4)(less@4.2.0))':
     dependencies:
       sirv: 2.0.4
       vue: 3.4.29(typescript@5.4.5)
     optionalDependencies:
-      vite: 5.3.1(@types/node@20.14.2)(less@4.2.0)
+      vite: 5.3.1(@types/node@20.14.4)(less@4.2.0)
     transitivePeerDependencies:
       - typescript
 
@@ -4607,7 +4621,7 @@ snapshots:
   browserslist@4.23.1:
     dependencies:
       caniuse-lite: 1.0.30001636
-      electron-to-chromium: 1.4.803
+      electron-to-chromium: 1.4.804
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.1)
 
@@ -4898,7 +4912,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  electron-to-chromium@1.4.803: {}
+  electron-to-chromium@1.4.804: {}
 
   emoji-regex@10.3.0: {}
 
@@ -5036,7 +5050,7 @@ snapshots:
 
   esno@4.7.0:
     dependencies:
-      tsx: 4.15.5
+      tsx: 4.15.6
 
   estree-walker@2.0.2: {}
 
@@ -6189,7 +6203,7 @@ snapshots:
 
   tslib@2.6.3: {}
 
-  tsx@4.15.5:
+  tsx@4.15.6:
     dependencies:
       esbuild: 0.21.5
       get-tsconfig: 4.7.5
@@ -6256,14 +6270,14 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unplugin-combine@1.0.0(esbuild@0.21.5)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.2)(less@4.2.0)):
+  unplugin-combine@1.0.0(esbuild@0.21.5)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.4)(less@4.2.0)):
     dependencies:
       '@antfu/utils': 0.7.8
       unplugin: 1.10.1
     optionalDependencies:
       esbuild: 0.21.5
       rollup: 4.18.0
-      vite: 5.3.1(@types/node@20.14.2)(less@4.2.0)
+      vite: 5.3.1(@types/node@20.14.4)(less@4.2.0)
 
   unplugin-vue-components@0.27.0(@babel/parser@7.24.7)(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5)):
     dependencies:
@@ -6293,7 +6307,7 @@ snapshots:
       - rollup
       - vue
 
-  unplugin-vue-macros@2.9.5(@vueuse/core@10.11.0(vue@3.4.29(typescript@5.4.5)))(esbuild@0.21.5)(rollup@4.18.0)(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.2)(less@4.2.0))(vue@3.4.29(typescript@5.4.5)):
+  unplugin-vue-macros@2.9.5(@vueuse/core@10.11.0(vue@3.4.29(typescript@5.4.5)))(esbuild@0.21.5)(rollup@4.18.0)(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.4)(less@4.2.0))(vue@3.4.29(typescript@5.4.5)):
     dependencies:
       '@vue-macros/better-define': 1.7.7(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
       '@vue-macros/boolean-prop': 0.4.0(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
@@ -6306,7 +6320,7 @@ snapshots:
       '@vue-macros/define-props-refs': 1.2.5(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
       '@vue-macros/define-render': 1.5.5(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
       '@vue-macros/define-slots': 1.1.5(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
-      '@vue-macros/devtools': 0.2.0(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.2)(less@4.2.0))
+      '@vue-macros/devtools': 0.2.0(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.4)(less@4.2.0))
       '@vue-macros/export-expose': 0.1.5(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
       '@vue-macros/export-props': 0.4.5(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
       '@vue-macros/export-render': 0.2.5(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
@@ -6321,7 +6335,7 @@ snapshots:
       '@vue-macros/short-emits': 1.5.5(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
       '@vue-macros/short-vmodel': 1.4.5(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
       unplugin: 1.10.1
-      unplugin-combine: 1.0.0(esbuild@0.21.5)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.2)(less@4.2.0))
+      unplugin-combine: 1.0.0(esbuild@0.21.5)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.4)(less@4.2.0))
       unplugin-vue-define-options: 1.4.5(rollup@4.18.0)(vue@3.4.29(typescript@5.4.5))
       vue: 3.4.29(typescript@5.4.5)
     transitivePeerDependencies:
@@ -6408,9 +6422,9 @@ snapshots:
       replace-ext: 2.0.0
       teex: 1.0.1
 
-  vite-plugin-dts@3.9.1(@types/node@20.14.2)(rollup@4.18.0)(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.2)(less@4.2.0)):
+  vite-plugin-dts@3.9.1(@types/node@20.14.4)(rollup@4.18.0)(typescript@5.4.5)(vite@5.3.1(@types/node@20.14.4)(less@4.2.0)):
     dependencies:
-      '@microsoft/api-extractor': 7.43.0(@types/node@20.14.2)
+      '@microsoft/api-extractor': 7.43.0(@types/node@20.14.4)
       '@rollup/pluginutils': 5.1.0(rollup@4.18.0)
       '@vue/language-core': 1.8.27(typescript@5.4.5)
       debug: 4.3.5
@@ -6419,19 +6433,19 @@ snapshots:
       typescript: 5.4.5
       vue-tsc: 1.8.27(typescript@5.4.5)
     optionalDependencies:
-      vite: 5.3.1(@types/node@20.14.2)(less@4.2.0)
+      vite: 5.3.1(@types/node@20.14.4)(less@4.2.0)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite@5.3.1(@types/node@20.14.2)(less@4.2.0):
+  vite@5.3.1(@types/node@20.14.4)(less@4.2.0):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.38
       rollup: 4.18.0
     optionalDependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.4
       fsevents: 2.3.3
       less: 4.2.0
 

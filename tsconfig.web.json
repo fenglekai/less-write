@@ -1,8 +1,11 @@
 {
-  "extends": "./tsconfig.node.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "allowJs": true,
-    "lib": ["ESNext", "DOM", "DOM.Iterable"]
+    "composite": true,
+    "jsx": "preserve",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["unplugin-vue-macros/macros-global"],
+    "skipLibCheck": true
   },
   "include": [
     "packages/**/*",
@@ -13,5 +16,6 @@
     "play/vue-app/src/**/*",
     "play/vue-app/resolver.ts",
     "play/vue-app/vue-shim.d.ts"
-  ]
+  ],
+  "exclude": ["node_modules", "**/dist", "**/gulpfile.ts"]
 }

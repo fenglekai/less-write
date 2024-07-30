@@ -7,5 +7,5 @@
     "skipLibCheck": true
   },
   "include": ["packages/**/*", "internal/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.md"]
+  "exclude": ["node_modules", "**/dist", "**/*.md"]
 }

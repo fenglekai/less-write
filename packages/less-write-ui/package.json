@@ -63,10 +63,9 @@
   "license": "MIT",
   "peerDependencies": {
     "vue": "^3.4.27",
-    "canvas": "^2.11.2"
+    "konva": "^9.3.9"
   },
   "dependencies": {
-    "@vueuse/core": "^10.9.0",
-    "konva": "^9.3.9"
+    "@vueuse/core": "^10.9.0"
   }
 }

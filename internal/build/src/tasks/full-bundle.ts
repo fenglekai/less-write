@@ -1,7 +1,6 @@
 import path from "path";
 import { parallel } from "gulp";
 import { rollup } from "rollup";
-import type { Plugin } from "rollup";
 import replace from "@rollup/plugin-replace";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
@@ -82,9 +81,9 @@ async function buildFullEntry(minify: boolean) {
       name: PKG_CAMELCASE_NAME,
       globals: {
         vue: "Vue",
-        canvas: "Canvas",
+        konva: "Konva",
       },
-      sourcemap: minify,
+      // sourcemap: minify,
       banner,
     },
     {
@@ -94,7 +93,7 @@ async function buildFullEntry(minify: boolean) {
         "dist",
         formatBundleFilename("index.full", minify, "mjs")
       ),
-      sourcemap: minify,
+      // sourcemap: minify,
       banner,
     },
   ]);

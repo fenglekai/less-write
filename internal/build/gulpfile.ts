@@ -6,7 +6,7 @@ export default series(
   withTaskName("createOutput", () => mkdir(leOutput, { recursive: true })),
 
   parallel(
-    // runTask('buildModules'),
+    runTask('buildModules'),
     runTask('buildFullBundle'),
   )
 );

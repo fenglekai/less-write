@@ -15,7 +15,7 @@ export interface MapProps {
   showDetail?: boolean;
 }
 
-interface MapEmits {
+export interface MapEmits {
   (e: "updateDetail", data: any): void;
 }
 

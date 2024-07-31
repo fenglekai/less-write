@@ -25,6 +25,7 @@
     "gulp": "^5.0.0",
     "rollup": "^4.18.0",
     "rollup-plugin-esbuild": "^6.1.1",
+    "ts-morph": "^23.0.0",
     "unplugin-vue-macros": "^2.9.5"
   },
   "devDependencies": {

@@ -10,7 +10,7 @@ export interface Point extends ShapeConfig {
   data: any;
 }
 
-interface GroupParams {
+export interface MapGroup {
   ctx: {
     el: string;
     width: number;
@@ -250,7 +250,7 @@ export function useMap() {
 
   function initPoint(
     rectConfig: Point,
-    props: GroupParams,
+    props: MapGroup,
     callback?: (data: any) => void
   ) {
     const { x, y } = rectConfig;
@@ -335,7 +335,7 @@ export function useMap() {
     return wrapper;
   }
 
-  async function initGroup(params: GroupParams) {
+  async function initGroup(params: MapGroup) {
     const { background, size, pointList, callback } = params;
     group.on("wheel", (e) => zoom(e));
 
@@ -361,7 +361,7 @@ export function useMap() {
     }
   }
 
-  function init(params: GroupParams) {
+  function init(params: MapGroup) {
     WIDTH.value = params.ctx.width;
     HEIGHT = params.ctx.height;
     stage = new Konva.Stage({

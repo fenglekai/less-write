@@ -1,9 +1,11 @@
 {
     "cSpell.words": [
         "consola",
+        "cssnano",
         "gulpfile",
         "konva",
-        "unplugin"
+        "unplugin",
+        "Vinly"
     ],
     "editor.tabSize": 2
 }

@@ -14,11 +14,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@less-write/build": "workspace:*",
     "@less-write/components": "workspace:*",
     "@less-write/hooks": "workspace:*",
     "@less-write/styles": "workspace:*",
     "@less-write/utils": "workspace:*",
-    "@less-write/build": "workspace:*",
     "less-write-cli": "workspace:*"
   },
   "devDependencies": {
@@ -26,6 +26,7 @@
     "@types/less": "^3.0.6",
     "@types/node": "^20.12.12",
     "@vitejs/plugin-vue": "^5.0.4",
+    "consola": "^3.2.3",
     "cpy": "^11.0.1",
     "esno": "^4.7.0",
     "fast-glob": "^3.3.2",

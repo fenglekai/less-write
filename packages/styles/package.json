@@ -2,5 +2,15 @@
     "name": "@less-write/styles",
     "version": "1.0.0",
     "description": "Less style",
-    "main": "index.css"
+    "main": "index.css",
+    "scripts": {
+        "build": "gulp --preload @esbuild-kit/cjs-loader -f gulpfile.ts",
+        "clean": "rimraf dist"
+    },
+    "devDependencies": {
+        "@types/gulp-less": "^0.0.36",
+        "cssnano": "^7.0.4",
+        "gulp-less": "^5.0.0",
+        "postcss": "^8.4.40"
+    }
 }

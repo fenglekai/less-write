@@ -31,7 +31,9 @@
   "devDependencies": {
     "@esbuild-kit/cjs-loader": "^2.4.4",
     "@pnpm/types": "^10.1.0",
+    "@types/fs-extra": "^11.0.4",
     "@types/gulp": "^4.0.17",
+    "fs-extra": "^11.2.0",
     "unbuild": "^2.0.0"
   }
 }

@@ -47,6 +47,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Generate Changelog
         id: generate_changelog
         run: echo "changelog=$(npx conventional-changelog-cli -p angular)" >> $GITHUB_OUTPUT

@@ -36,6 +36,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
+          git config user.name "github-action"
+          git config user.email "github-action@action.com"
           git add CHANGELOG.md
           git commit -m "docs(CHANGELOG): update changelog [skip ci]"
           git push origin HEAD:main

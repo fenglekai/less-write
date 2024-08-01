@@ -1,5 +1,5 @@
 import path from "path";
-import { parallel } from "gulp";
+import gulp from "gulp";
 import { rollup } from "rollup";
 import replace from "@rollup/plugin-replace";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
@@ -99,7 +99,7 @@ async function buildFullEntry(minify: boolean) {
   ]);
 }
 
-export const buildFullBundle = parallel(
+export const buildFullBundle = gulp.parallel(
   withTaskName("buildFullMinified", () => buildFullEntry(true)),
   withTaskName("buildFull", () => buildFullEntry(false))
 );

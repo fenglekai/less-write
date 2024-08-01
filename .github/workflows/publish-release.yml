@@ -1,0 +1,56 @@
+name: Publish changelog to release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate Changelog
+        run: npx conventional-changelog-cli -p angular -i CHANGELOG.md -s
+
+      - name: Commit and push changelog
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          git add CHANGELOG.md
+          git commit -m "docs(CHANGELOG): update changelog [skip ci]"
+          git push origin HEAD:main
+
+  release:
+    needs: changelog
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate Changelog
+        id: generate_changelog
+        run: echo "changelog=$(npx conventional-changelog-cli -p angular)" >> $GITHUB_OUTPUT
+
+      - name: Release to Github
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ github.token }}
+          body: ${{ steps.generate_changelog.outputs.changelog }}

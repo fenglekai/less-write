@@ -1,6 +1,5 @@
 {
   "name": "@less-write/build",
-  "version": "1.0.0",
   "description": "Build Toolchain for Less Write",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -30,6 +29,7 @@
   },
   "devDependencies": {
     "@esbuild-kit/cjs-loader": "^2.4.4",
+    "@pnpm/find-workspace-packages": "^6.0.9",
     "@pnpm/types": "^10.1.0",
     "@types/fs-extra": "^11.0.4",
     "@types/gulp": "^4.0.17",

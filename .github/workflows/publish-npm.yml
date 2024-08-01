@@ -1,0 +1,57 @@
+name: Publish to NPM registry
+
+on:
+  release:
+    types: [created]
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.com/
+          cache: pnpm
+
+      - name: Get version
+        run: echo "TAG_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+
+      - name: Get git head
+        run: echo "GIT_HEAD=${GITHUB_SHA}" >> $GITHUB_ENV
+
+      - name: Gen npmrc
+        run: echo "//registry.npmjs.com/:_authToken=${{ secrets.NPM_PUBLISH_TOKEN }}" >> ./.npmrc
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            ./node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - name: Build&publish
+        run: sh ./scripts/publish.sh
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          TAG_VERSION: ${{ env.TAG_VERSION }}
+          GIT_HEAD: ${{ env.GIT_HEAD }}
+          REGISTRY: https://registry.npmjs.com/
+          FORCE_COLOR: 2
+          GITHUB_TOKEN: ${{ github.token }}
+          NODE_OPTIONS: --max-old-space-size=4096

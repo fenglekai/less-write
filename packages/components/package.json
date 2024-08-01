@@ -1,6 +1,5 @@
 {
   "name": "@less-write/components",
-  "version": "1.0.0",
   "description": "component core",
   "main": "index.ts",
   "module": "index.ts",

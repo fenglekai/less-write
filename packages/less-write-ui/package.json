@@ -2,15 +2,11 @@
   "name": "less-write-ui",
   "version": "1.0.0",
   "description": "A component library",
-  "scripts": {
-    "build": "vite build && pnpm build:less",
-    "build:less": "esno build/build-less"
-  },
   "keywords": [
     "less-write",
+    "component library",
     "ui",
-    "design",
-    "vue3",
+    "vue",
     "typescript"
   ],
   "main": "lib/index.js",
@@ -59,6 +55,18 @@
   },
   "unpkg": "dist/index.full.js",
   "jsdelivr": "dist/index.full.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fenglekai/less-write.git"
+  },
+  "style": "dist/index.css",
+  "sideEffects": [
+    "dist/*",
+    "styles/**/*.css",
+    "styles/src/**/*.scss",
+    "es/components/*/style/*",
+    "lib/components/*/style/*"
+  ],
   "author": "fenglekai",
   "license": "MIT",
   "peerDependencies": {

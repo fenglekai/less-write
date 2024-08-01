@@ -1,6 +1,5 @@
 {
   "name": "@less-write/hooks",
-  "version": "1.0.0",
   "description": "use hooks",
   "main": "index.ts",
   "module": "index.ts",

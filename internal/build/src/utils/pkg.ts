@@ -1,8 +1,10 @@
+import { findWorkspacePackages } from "@pnpm/find-workspace-packages";
 import type { ProjectManifest } from "@pnpm/types";
 import { PKG_NAME, PKG_PREFIX } from "../constants";
 import { buildConfig } from "../build-info";
-
 import type { Module } from "../build-info";
+import { projRoot } from "./paths";
+import consola from "consola";
 
 export const getPackageManifest = (pkgPath: string) => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -45,3 +47,10 @@ export const pathRewriter = (module: Module) => {
     return id;
   };
 };
+
+export const getWorkspacePackages = () => findWorkspacePackages(projRoot);
+
+export function errorAndExit(err: Error): never {
+  consola.error(err);
+  process.exit(1);
+}

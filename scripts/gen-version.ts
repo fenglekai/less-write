@@ -1,7 +1,7 @@
 import { writeFile } from 'fs/promises'
 import path from 'path'
 import consola from 'consola'
-import { leRoot } from '@less-write/build'
+import { leRoot } from '../internal/build/src/utils/index'
 import pkg from '../packages/less-write-ui/package.json' // need to be checked
 
 function getVersion() {

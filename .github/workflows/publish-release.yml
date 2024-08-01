@@ -60,16 +60,15 @@ jobs:
           node-version: 20
 
       - name: Generate Changelog
-        id: generate_changelog
-        run: echo "changelog=$(npx conventional-changelog-cli -p angular -r 2)" >> $GITHUB_OUTPUT
+        run: npx conventional-changelog-cli -p angular -i CHANGELOG.txt -s -r 2
 
       - name: Release to Github
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ github.token }}
-          body: ${{ steps.generate_changelog.outputs.changelog }}
+          body_path: CHANGELOG.txt
 
-  call-workflow-in-local-repo:
+  publish-npm:
     needs:
       - changelog
       - release

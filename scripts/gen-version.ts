@@ -1,7 +1,6 @@
 import { writeFile } from 'fs/promises'
 import path from 'path'
 import consola from 'consola'
-import { leRoot } from '../internal/build/src/utils/index'
 import pkg from '../packages/less-write-ui/package.json' // need to be checked
 
 function getVersion() {
@@ -14,6 +13,8 @@ function getVersion() {
 }
 
 const version = getVersion()
+const projRoot = path.resolve(__dirname, "..");
+const leRoot = path.resolve(projRoot, "packages", "less-write-ui");
 
 async function main() {
   consola.info(`Version: ${version}`)

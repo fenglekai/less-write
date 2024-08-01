@@ -15,7 +15,7 @@
     "gen:version": "tsx scripts/gen-version.ts",
     "update:version": "tsx scripts/update-version.ts",
     "stub": "pnpm run -r --parallel stub",
-    "postinstall": "pnpm stub && pnpm gen:version"
+    "postinstall": "pnpm gen:version && pnpm stub"
   },
   "dependencies": {
     "@less-write/build": "workspace:*",

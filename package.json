@@ -1,7 +1,11 @@
 {
   "name": "less-write",
   "version": "1.0.0",
+  "packageManager": "9.3.0",
   "description": "package manager",
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
   "scripts": {
     "cli": "less-write-cli c",
     "dev": "pnpm -C play/vue-app dev",
@@ -13,9 +17,6 @@
     "stub": "pnpm run -r --parallel stub",
     "postinstall": "pnpm stub && pnpm gen:version"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "@less-write/build": "workspace:*",
     "@less-write/components": "workspace:*",

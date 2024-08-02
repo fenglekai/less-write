@@ -71,6 +71,6 @@ jobs:
 
       - name: Release to NPM
         run: |
-          gh workflow run publish-npm.yml
+          gh workflow run publish-npm.yml --ref ${{ github.ref }}
         env:
           GH_TOKEN: ${{ github.token }}

@@ -6,6 +6,10 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
+  "workspaces": [
+    "packages/*",
+    "play"
+  ],
   "scripts": {
     "cli": "less-write-cli c",
     "dev": "pnpm -C play/vue-app dev",

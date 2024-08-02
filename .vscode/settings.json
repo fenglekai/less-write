@@ -4,6 +4,8 @@
         "cssnano",
         "gulpfile",
         "konva",
+        "noreply",
+        "softprops",
         "unplugin",
         "Vinly",
         "vueuse"

@@ -32,9 +32,14 @@ jobs:
           node-version: 20
 
       - name: Generate Changelog
-        run: npx conventional-changelog-cli -p angular -i CHANGELOG.md -s -r 2
+        run: |
+          echo "TAG_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+          sed -i "s/\"version\": \".*\"/\"version\": \"${{ env.TAG_VERSION }}\"/g" package.json
+          npx conventional-changelog-cli -p angular -i CHANGELOG.md -s
+          npx conventional-changelog-cli -p angular -i CHANGELOG.txt -s
 
       - name: Commit and push changelog
+        if: "${{ github.event_name }}" != "workflow_dispatch"
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -44,24 +49,23 @@ jobs:
           git commit -m "docs(CHANGELOG): update changelog [skip ci]"
           git push origin HEAD:main
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: changelog
+          path: |
+            CHANGELOG.txt
+
   release:
     needs: changelog
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Download changelog file
+        uses: actions/download-artifact@v4
         with:
-          ref: ${{ github.ref }}
-          fetch-depth: 0
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Generate Changelog
-        run: npx conventional-changelog-cli -p angular -i CHANGELOG.txt -s -r 2
+          name: changelog
+          path: .
 
       - name: Release to Github
         uses: softprops/action-gh-release@v2
@@ -70,6 +74,7 @@ jobs:
           body_path: CHANGELOG.txt
 
       - name: Release to NPM
+        if: "${{ github.event_name }}" != "workflow_dispatch"
         run: |
           gh workflow run publish-npm.yml --ref ${{ github.ref }}
         env:

@@ -37,8 +37,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          git config user.name "github-action"
-          git config user.email "github-action@action.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add CHANGELOG.md
           git commit -m "docs(CHANGELOG): update changelog [skip ci]"
           git push origin HEAD:main
@@ -68,9 +68,7 @@ jobs:
           token: ${{ github.token }}
           body_path: CHANGELOG.txt
 
-  publish-npm:
-    needs:
-      - changelog
-      - release
-
-    uses: ./.github/workflows/publish-npm.yml
+      - name: Release # ref: https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+        if: steps.add_files.outputs.have_commits == 'True'
+        run: |
+          gh workflow run publish-npm

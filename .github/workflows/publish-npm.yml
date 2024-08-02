@@ -1,7 +1,6 @@
 name: Publish to NPM registry
 
 on:
-  workflow_call:
   workflow_dispatch:
 
 permissions:

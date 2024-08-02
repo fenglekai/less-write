@@ -70,6 +70,6 @@ jobs:
 
       - name: Release to NPM
         run: |
-          gh workflow run publish-npm
+          gh workflow run publish-npm.yml
         env:
           GH_TOKEN: ${{ github.token }}

@@ -1,5 +1,5 @@
 import path from "path";
-import gulp from "gulp";
+import gulp, { type TaskFunction } from "gulp";
 import { rollup } from "rollup";
 import replace from "@rollup/plugin-replace";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
@@ -83,7 +83,7 @@ async function buildFullEntry(minify: boolean) {
         vue: "Vue",
         konva: "Konva",
       },
-      // sourcemap: minify,
+      sourcemap: minify,
       banner,
     },
     {
@@ -93,13 +93,13 @@ async function buildFullEntry(minify: boolean) {
         "dist",
         formatBundleFilename("index.full", minify, "mjs")
       ),
-      // sourcemap: minify,
+      sourcemap: minify,
       banner,
     },
   ]);
 }
 
-export const buildFullBundle = gulp.parallel(
+export const buildFullBundle: TaskFunction = gulp.parallel(
   withTaskName("buildFullMinified", () => buildFullEntry(true)),
   withTaskName("buildFull", () => buildFullEntry(false))
 );

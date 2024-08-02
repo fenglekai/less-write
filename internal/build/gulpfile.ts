@@ -59,6 +59,6 @@ export default series(
   ),
 
   parallel(copyTypesDefinitions, copyFiles)
-);
+) as TaskFunction;
 
 export * from "./src";

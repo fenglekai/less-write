@@ -68,6 +68,8 @@ jobs:
           token: ${{ github.token }}
           body_path: CHANGELOG.txt
 
-      - name: Release to NPM # ref: https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+      - name: Release to NPM
         run: |
           gh workflow run publish-npm
+        env:
+          GH_TOKEN: ${{ github.token }}

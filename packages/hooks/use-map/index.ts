@@ -3,11 +3,12 @@ import Konva from "konva";
 import type { Rect, RectConfig } from "konva/lib/shapes/Rect";
 import type { Image, ImageConfig } from "konva/lib/shapes/Image";
 import type { ShapeConfig } from "konva/lib/Shape";
+import { loadImage } from "@less-write/utils";
 
 export interface Point extends ShapeConfig {
-  useImage?: boolean;
-  image?: HTMLImageElement;
-  data: any;
+  length: number;
+  image?: HTMLImageElement | string;
+  data?: any;
 }
 
 export interface MapGroup {
@@ -238,87 +239,75 @@ export function useMap() {
     });
   }
 
-  function createImage(imageConfig: ImageConfig) {
+  function createImage(data: ImageConfig) {
     return new Konva.Image({
       x: 0,
       y: 0,
       width: 30,
       height: 30,
-      ...imageConfig,
+      ...data,
     });
   }
 
-  function initPoint(
-    rectConfig: Point,
+  async function initPoint(
+    config: Point,
     props: MapGroup,
     callback?: (data: any) => void
   ) {
-    const { x, y } = rectConfig;
+    let point;
+    const { x, y, length } = config;
     const { size } = props;
     if (!size) throw Error("please initialize size");
-    const SQUARE = 10;
-    const imgScale = WIDTH.value / size.width;
-    const currentX = x ? x * imgScale - SQUARE / 2 : 0;
-    const currentY = y ? y * imgScale - SQUARE / 2 : 0;
-    const rect = createRect({
-      width: SQUARE,
-      height: SQUARE,
-      ...rectConfig,
-      x: currentX,
-      y: currentY,
-    });
-    rect.on("click", () => {
-      if (callback) {
-        callback(rectConfig.data);
-      }
-    });
-    return rect;
-  }
-
-  function initImage(
-    config: Point & { image?: HTMLImageElement },
-    callback?: (data: any) => void
-  ): Image | Rect {
+    const renderScale = WIDTH.value / size.width;
+    const currentX = x ? x * renderScale - length / 2 : 0;
+    const currentY = y ? y * renderScale - length / 2 : 0;
     if (config.image) {
-      const image = createImage({ ...config, image: config.image });
-      image.on("click", () => {
-        if (callback) {
-          callback(config.data);
-        }
+      let imageEl = config.image;
+      if (typeof imageEl === "string") {
+        imageEl = await loadImage(imageEl);
+      }
+      point = createImage({
+        ...config,
+        image: imageEl,
+        x: currentX,
+        y: currentY,
       });
-      return image;
+    } else {
+
+      point = createRect({
+        width: length,
+        height: length,
+        ...config,
+        x: currentX,
+        y: currentY,
+      });
     }
-    const rect = createRect(config);
-    rect.on("click", () => {
+
+    point.on("click", () => {
       if (callback) {
         callback(config.data);
       }
     });
-    return rect;
+    return point;
   }
 
-  function initBackground(
+  async function initBackground(
     bgImg: string,
     size = { width: 1620, height: 762 }
   ): Promise<Konva.Image> {
-    return new Promise((resolve) => {
-      const imageObj = new window.Image();
-      imageObj.src = bgImg;
-      imageObj.onload = () => {
-        const { width, height } = size;
-        const imgScale = WIDTH.value / width;
-        imgRenderHeight = height * imgScale;
-        const res = new Konva.Image({
-          name: "drag-wrapper",
-          x: 0,
-          y: 0,
-          image: imageObj,
-          width: width * imgScale,
-          height: height * imgScale,
-        });
-        resolve(res);
-      };
+    const imageObj = await loadImage(bgImg);
+    const { width, height } = size;
+    const imgScale = WIDTH.value / width;
+    imgRenderHeight = height * imgScale;
+    const res = new Konva.Image({
+      name: "drag-wrapper",
+      x: 0,
+      y: 0,
+      image: imageObj,
+      width: width * imgScale,
+      height: height * imgScale,
     });
+    return res;
   }
 
   function initWrapper(size = { width: 1620, height: 762 }) {
@@ -346,17 +335,11 @@ export function useMap() {
       const wrapper = initWrapper(size);
       group.add(wrapper);
     }
-
     if (pointList) {
       for (let i = 0; i < pointList.length; i++) {
         const data = pointList[i];
-        if (data.useImage && data.image) {
-          const image = initImage(data, callback);
-          group.add(image);
-        } else {
-          const point = initPoint(data, params, callback);
-          group.add(point);
-        }
+        const point = await initPoint(data, params, callback);
+        group.add(point);
       }
     }
   }

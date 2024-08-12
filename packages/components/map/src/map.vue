@@ -1,23 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, ref, onUnmounted } from "vue";
 import { useDebounceFn, useResizeObserver } from "@vueuse/core";
-import { type Point, useMap } from "@less-write/hooks";
-
-export interface MapProps {
-  height: number;
-  background?: string;
-  size?: {
-    width: number;
-    height: number;
-  };
-  loading?: boolean;
-  pointList?: Point[];
-  showDetail?: boolean;
-}
-
-export interface MapEmits {
-  (e: "updateDetail", data: any): void;
-}
+import { useMap } from "@less-write/hooks";
+import type { MapProps, MapEmits } from "./map";
 
 const COMPONENT_NAME = "LeMap";
 defineOptions({
@@ -28,15 +13,15 @@ const props = defineProps<MapProps>();
 
 const emits = defineEmits<MapEmits>();
 
-const mapRef = ref<HTMLElement>();
+const renderRef = ref<HTMLElement>();
 const detailData = ref<any>(null);
 
-const { resetZoom, init, destroy } = useMap();
+const { init, destroy, zoomIn, zoomOut, resetZoom, width } = useMap();
 
 onMounted(async () => {
   // 自适应外部宽度变化
   useResizeObserver(
-    mapRef.value,
+    renderRef.value,
     useDebounceFn((entries) => {
       resetZoom();
       destroy();
@@ -61,11 +46,18 @@ onMounted(async () => {
 onUnmounted(() => {
   destroy();
 });
+
+defineExpose({
+  width,
+  zoomIn,
+  zoomOut,
+  resetZoom,
+});
 </script>
 
 <template>
   <div class="map-wrapper">
-    <div v-show="!loading" id="map-container" ref="mapRef"></div>
+    <div v-show="!loading" id="map-container" ref="renderRef"></div>
 
     <section v-if="!loading">
       <div :class="['operation', showDetail ? 'operation-offset' : null]">

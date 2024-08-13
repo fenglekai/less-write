@@ -6,7 +6,6 @@ import type { ShapeConfig } from "konva/lib/Shape";
 import { loadImage } from "@less-write/utils";
 
 export interface Point extends ShapeConfig {
-  length: number;
   image?: HTMLImageElement | string;
   data?: any;
 }
@@ -42,7 +41,10 @@ export function useMap() {
   const BASE_SCALE = 1 + SCALE_STEP;
   // 放大统计
   const scaleCount = computed(() => {
-    return (scale.value - 1) / SCALE_STEP;
+    return (
+      (scale.value * DECIMAL_PLACE - 1 * DECIMAL_PLACE) /
+      (SCALE_STEP * DECIMAL_PLACE)
+    );
   });
   // 计算小数位
   const DECIMAL_PLACE = 10 ** SCALE_STEP.toString().split(".")[1].length;
@@ -106,9 +108,10 @@ export function useMap() {
             x: scale.value,
             y: scale.value,
           });
+          const centerScale = (item.width() / 2) * SCALE_STEP;
           item.setPosition({
-            x: item.x() * BASE_SCALE,
-            y: item.y() * BASE_SCALE,
+            x: item.x() * BASE_SCALE + centerScale,
+            y: item.y() * BASE_SCALE + centerScale,
           });
         });
         break;
@@ -122,9 +125,10 @@ export function useMap() {
             x: scale.value,
             y: scale.value,
           });
+          const centerScale = (item.width() * SCALE_STEP) / 2;
           item.setPosition({
-            x: item.x() / BASE_SCALE,
-            y: item.y() / BASE_SCALE,
+            x: (item.x() - centerScale) / BASE_SCALE,
+            y: (item.y() - centerScale) / BASE_SCALE,
           });
         });
         break;
@@ -138,9 +142,16 @@ export function useMap() {
             x: 1,
             y: 1,
           });
+          const centerScale = (item.width() * SCALE_STEP) / 2;
+          let setX = item.x();
+          let setY = item.y();
+          for (let i = 0; i < scaleCount.value; i++) {
+            setX = (setX - centerScale) / BASE_SCALE;
+            setY = (setY - centerScale) / BASE_SCALE;
+          }
           item.setPosition({
-            x: item.x() / BASE_SCALE ** scaleCount.value,
-            y: item.y() / BASE_SCALE ** scaleCount.value,
+            x: setX,
+            y: setY,
           });
         });
         break;
@@ -232,8 +243,8 @@ export function useMap() {
       y: 0,
       width: 10,
       height: 10,
-      fill: "gray",
-      stroke: "black",
+      fill: "#00bf72",
+      stroke: "#a8eb12",
       strokeWidth: 1,
       ...data,
     });
@@ -243,8 +254,8 @@ export function useMap() {
     return new Konva.Image({
       x: 0,
       y: 0,
-      width: 30,
-      height: 30,
+      width: 10,
+      height: 10,
       ...data,
     });
   }
@@ -255,12 +266,24 @@ export function useMap() {
     callback?: (data: any) => void
   ) {
     let point;
-    const { x, y, length } = config;
+    let currentX = 0;
+    let currentY = 0;
+    const { x, y, width, height } = config;
     const { size } = props;
     if (!size) throw Error("please initialize size");
     const renderScale = WIDTH.value / size.width;
-    const currentX = x ? x * renderScale - length / 2 : 0;
-    const currentY = y ? y * renderScale - length / 2 : 0;
+    if (x) {
+      currentX = x * renderScale - 10 / 2;
+    }
+    if (x && width) {
+      currentX = x * renderScale - width / 2;
+    }
+    if (y) {
+      currentY = y * renderScale - 10 / 2;
+    }
+    if (y && height) {
+      currentY = y * renderScale - height / 2;
+    }
     if (config.image) {
       let imageEl = config.image;
       if (typeof imageEl === "string") {
@@ -273,10 +296,7 @@ export function useMap() {
         y: currentY,
       });
     } else {
-
       point = createRect({
-        width: length,
-        height: length,
         ...config,
         x: currentX,
         y: currentY,

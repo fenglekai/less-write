@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref, onUnmounted } from "vue";
+import { onMounted, ref, onUnmounted, nextTick, watch } from "vue";
 import { useDebounceFn, useResizeObserver } from "@vueuse/core";
 import { useMap } from "@less-write/hooks";
 import type { MapProps, MapEmits } from "./map";
@@ -16,29 +16,46 @@ const emits = defineEmits<MapEmits>();
 const renderRef = ref<HTMLElement>();
 const detailData = ref<any>(null);
 
+const clientWidth = ref(0);
+
 const { init, destroy, zoomIn, zoomOut, resetZoom, width } = useMap();
 
+function autoRefresh(width: number) {
+  resetZoom();
+  destroy();
+  init({
+    ctx: {
+      el: "map-container",
+      width,
+      height: props.height,
+    },
+    background: props.background,
+    size: props.size,
+    pointList: props.pointList,
+    callback: (data) => {
+      emits("updateDetail", data);
+      detailData.value = data;
+    },
+  });
+}
+
+watch(
+  () => [props.size, props.height, props.pointList, props.background],
+  () => {
+    autoRefresh(clientWidth.value);
+  }
+);
+
 onMounted(async () => {
+  await nextTick();
   // 自适应外部宽度变化
   useResizeObserver(
     renderRef.value,
-    useDebounceFn((entries) => {
-      resetZoom();
-      destroy();
-      init({
-        ctx: {
-          el: "map-container",
-          width: entries[0].contentRect.width,
-          height: props.height,
-        },
-        background: props.background,
-        size: props.size,
-        pointList: props.pointList,
-        callback: (data) => {
-          emits("updateDetail", data);
-          detailData.value = data;
-        },
-      });
+    useDebounceFn(async (entries) => {
+      // TODO 初始化会渲染两次
+      // console.log('resize');
+      clientWidth.value = entries[0].contentRect.width;
+      autoRefresh(clientWidth.value);
     }, 200)
   );
 });

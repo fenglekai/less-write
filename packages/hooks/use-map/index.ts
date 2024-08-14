@@ -96,19 +96,23 @@ export function useMap() {
     );
 
     if (!wrapper) return;
-    const wrapperScale = wrapper.scaleX();
+    const scaleDiff = BASE_SCALE - 0.1;
     switch (type) {
       case "in":
         wrapper.scale({
-          x: wrapperScale * BASE_SCALE,
-          y: wrapperScale * BASE_SCALE,
+          x: wrapper.scaleX() * BASE_SCALE,
+          y: wrapper.scaleY() * BASE_SCALE,
         });
         children.forEach((item) => {
           item.scale({
-            x: scale.value,
-            y: scale.value,
+            x: item.scaleX() * scaleDiff,
+            y: item.scaleY() * scaleDiff,
           });
-          const centerScale = (item.width() / 2) * SCALE_STEP;
+
+          const centerScale =
+            (item.width() * item.scaleX() -
+              (item.width() * item.scaleX()) / scaleDiff) /
+            2;
           item.setPosition({
             x: item.x() * BASE_SCALE + centerScale,
             y: item.y() * BASE_SCALE + centerScale,
@@ -117,18 +121,22 @@ export function useMap() {
         break;
       case "out":
         wrapper.scale({
-          x: wrapperScale / BASE_SCALE,
-          y: wrapperScale / BASE_SCALE,
+          x: wrapper.scaleX() / BASE_SCALE,
+          y: wrapper.scaleY() / BASE_SCALE,
         });
         children.forEach((item) => {
           item.scale({
-            x: scale.value,
-            y: scale.value,
+            x: item.scaleX() / scaleDiff,
+            y: item.scaleY() / scaleDiff,
           });
-          const centerScale = (item.width() * SCALE_STEP) / 2;
+
+          const centerScale =
+            (item.width() * item.scaleX() -
+              item.width() * item.scaleX() * scaleDiff) /
+            2;
           item.setPosition({
-            x: (item.x() - centerScale) / BASE_SCALE,
-            y: (item.y() - centerScale) / BASE_SCALE,
+            x: (item.x() + centerScale) / BASE_SCALE,
+            y: (item.y() + centerScale) / BASE_SCALE,
           });
         });
         break;
@@ -142,12 +150,16 @@ export function useMap() {
             x: 1,
             y: 1,
           });
-          const centerScale = (item.width() * SCALE_STEP) / 2;
+
           let setX = item.x();
           let setY = item.y();
-          for (let i = 0; i < scaleCount.value; i++) {
-            setX = (setX - centerScale) / BASE_SCALE;
-            setY = (setY - centerScale) / BASE_SCALE;
+          for (let i = scaleCount.value; i > 0; i--) {
+            const centerScale =
+              (item.width() * scaleDiff ** (i - 1) -
+                item.width() * scaleDiff ** i) /
+              2;
+            setX = (setX + centerScale) / BASE_SCALE;
+            setY = (setY + centerScale) / BASE_SCALE;
           }
           item.setPosition({
             x: setX,

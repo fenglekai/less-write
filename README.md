@@ -18,15 +18,15 @@
 - 集成 cli 用于生成代码
 - UI 组件
 - Hook 函数
-- Vite 测试环境
+- Vite 开发环境
 - Gulp 工作流管理构建
 - Rollup 打包组件模块
 - Github Action 控制 CI/CD
 
 
 ## TODO
-- Document site
-
+- Vitest测试用例
+- 文档站点
 
 
 ## 快速开始

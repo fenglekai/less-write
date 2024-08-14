@@ -39,7 +39,7 @@ jobs:
           npx conventional-changelog-cli -p angular -i CHANGELOG.txt -s
 
       - name: Commit and push changelog
-        if: ${{ github.event_name != workflow_dispatch }}
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -61,6 +61,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
       - name: Download changelog file
         uses: actions/download-artifact@v4
         with:
@@ -74,7 +79,7 @@ jobs:
           body_path: CHANGELOG.txt
 
       - name: Release to NPM
-        if: ${{ github.event_name != workflow_dispatch }}
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         run: |
           gh workflow run publish-npm.yml --ref ${{ github.ref }}
         env:

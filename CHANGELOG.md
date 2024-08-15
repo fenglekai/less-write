@@ -1,3 +1,16 @@
+# [](https://github.com/fenglekai/less-write/compare/v1.0.3...v) (2024-08-15)
+
+
+
+## [1.0.3](https://github.com/fenglekai/less-write/compare/v1.0.2...v1.0.3) (2024-08-15)
+
+
+### Bug Fixes
+
+* 🐛 PKG_NAME错误导致替换路径报错问题 ([c85ded0](https://github.com/fenglekai/less-write/commit/c85ded04ecc66d43f284f25108448f84c744e60f))
+
+
+
 # [](https://github.com/fenglekai/less-write/compare/v1.0.2...v) (2024-08-15)
 
 

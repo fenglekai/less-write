@@ -155,6 +155,8 @@ importers:
         specifier: ^3.4.27
         version: 3.4.37(typescript@5.5.4)
 
+  packages/constants: {}
+
   packages/hooks:
     dependencies:
       vue:

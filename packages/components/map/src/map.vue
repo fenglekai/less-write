@@ -2,16 +2,15 @@
 import { onMounted, ref, onUnmounted, nextTick, watch } from "vue";
 import { useDebounceFn, useResizeObserver } from "@vueuse/core";
 import { useMap } from "@less-write/hooks";
-import type { MapProps, MapEmits } from "./map";
+import { mapProps, mapEmits } from "./map";
 
 const COMPONENT_NAME = "LeMap";
 defineOptions({
   name: COMPONENT_NAME,
 });
 
-const props = defineProps<MapProps>();
-
-const emits = defineEmits<MapEmits>();
+const props = defineProps(mapProps);
+const emits = defineEmits(mapEmits);
 
 const renderRef = ref<HTMLElement>();
 const detailData = ref<any>(null);

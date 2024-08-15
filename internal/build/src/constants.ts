@@ -10,5 +10,3 @@ export const target = "esnext";
 export const banner = `/*! ${PKG_BRAND_NAME} v${version} */\n`;
 
 export const NODE_ENV = JSON.stringify("production");
-
-export const INSTALLED_KEY = Symbol("INSTALLED_KEY");

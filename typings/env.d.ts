@@ -1,5 +1,5 @@
 import type { vShow } from 'vue'
-import type { INSTALLED_KEY } from '@less-write/build'
+import type { INSTALLED_KEY } from '@less-write/constants'
 
 declare global {
   const process: {

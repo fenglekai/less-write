@@ -2,11 +2,11 @@ import type { vShow } from 'vue'
 import type { INSTALLED_KEY } from '@less-write/build'
 
 declare global {
-  // const process: {
-  //   env: {
-  //     NODE_ENV: string
-  //   }
-  // }
+  const process: {
+    env: {
+      NODE_ENV: string
+    }
+  }
 
   namespace JSX {
     interface IntrinsicAttributes {

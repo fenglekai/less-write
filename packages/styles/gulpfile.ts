@@ -63,13 +63,13 @@ export function copyLessStyleSource() {
   );
 }
 
-export function copyThemeChalkBundle() {
+export function copyLessStyleBundle() {
   return src(`${distFolder}/**`).pipe(dest(distBundle));
 }
 
 export const build: TaskFunction = parallel(
   copyLessStyleSource,
-  series(buildLessStyle, copyThemeChalkBundle)
+  series(buildLessStyle, copyLessStyleBundle)
 );
 
 export default build;

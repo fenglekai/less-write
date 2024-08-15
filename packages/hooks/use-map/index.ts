@@ -1,7 +1,7 @@
 import { ref, computed, unref } from "vue";
 import Konva from "konva";
-import type { Rect, RectConfig } from "konva/lib/shapes/Rect";
-import type { Image, ImageConfig } from "konva/lib/shapes/Image";
+import type { RectConfig } from "konva/lib/shapes/Rect";
+import type { ImageConfig } from "konva/lib/shapes/Image";
 import type { ShapeConfig } from "konva/lib/Shape";
 import { loadImage } from "@less-write/utils";
 

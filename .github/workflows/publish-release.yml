@@ -35,8 +35,8 @@ jobs:
         run: |
           echo "TAG_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
           sed -i "s/\"version\": \".*\"/\"version\": \"${{ env.TAG_VERSION }}\"/g" package.json
-          npx conventional-changelog-cli -p angular -i CHANGELOG.md -s
-          npx conventional-changelog-cli -p angular -i CHANGELOG.txt -s
+          npx conventional-changelog-cli -p angular -r 2 -i CHANGELOG.md -s
+          npx conventional-changelog-cli -p angular -r 2 -i CHANGELOG.txt -s
 
       - name: Commit and push changelog
         if: ${{ github.event_name != 'workflow_dispatch' }}

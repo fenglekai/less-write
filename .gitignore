@@ -3,3 +3,6 @@ dist
 
 # Bundle
 packages/less-write-ui/version.ts
+
+# temp
+play/**/src/less-write-ui

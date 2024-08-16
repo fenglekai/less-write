@@ -2,14 +2,13 @@
   "name": "vue-app",
   "scripts": {
     "dev": "vite",
-    "cli": "less-write-cli create"
+    "cli": "less-write-cli"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "less-write-cli": "workspace:*",
-    "less-write-ui": "workspace:*",
-    "@less-write/styles": "workspace:*"
+    "less-write-ui": "workspace:*"
   }
 }

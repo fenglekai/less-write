@@ -1,5 +1,12 @@
-import base from "./base";
+import base from "./base.js";
+import lessWriteUI from "./less-write-ui.js";
 
-export {
+export * from './base.js';
+export * from './less-write-ui.js';
+
+export default {
   base,
+  lessWriteUI,
 };
+
+

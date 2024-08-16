@@ -1,33 +1,52 @@
 import inquirer from "inquirer";
-import { base } from "../inquirers/index.js";
+import { base, lessWriteUI } from "../inquirers/index.js";
 
 export function inquirerPrompt(argv) {
-  const { name } = argv;
-  return new Promise((resolve, reject) => {
-    inquirer
-      .prompt([
-        {
-          type: "input",
-          name: "type",
-          message: "基础模板类型",
-          choices: ["基础模板", "axios拦截器"],
-          filter: function (value) {
-            return {
-              基础模板: "base",
-              axios拦截器: "axios-interceptor",
-            }[value];
+  // const { name } = argv;
+  return new Promise(async (resolve, reject) => {
+    const answers = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'isTypescript',
+        message: '是否使用Typescript',
+        default: false
+      },
+      {
+        type: "list",
+        name: "type",
+        message: "选择基础类型",
+        choices: [
+          {
+            name: "less-write-ui",
           },
+          // {
+          //   name: "axios拦截器",
+          // },
+        ],
+        filter: function (value) {
+          return {
+            "less-write-ui": "less-write-ui",
+            axios拦截器: "axios-interceptor",
+          }[value];
         },
-      ])
-      .then((answers) => {
-        const { type } = answers;
-        if (type === "base") {
-          base();
-        }
-      })
-      .catch((error) => {
-        reject(error);
-      });
+      },
+    ]);
+    const { type } = answers;
+    let choiceAnswer;
+    try {
+      // if (type === "base") {
+      //   choiceAnswer = await base();
+      // }
+      if (type === "less-write-ui") {
+        choiceAnswer = await lessWriteUI(type);
+      }
+      if (type === "axios-interceptor") {
+        // choiceAnswer = await lessWriteUI();
+      }
+    } catch (error) {
+      reject(error);
+    }
+    resolve({ ...answers, ...choiceAnswer });
   });
 }
 

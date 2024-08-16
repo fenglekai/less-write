@@ -1,4 +1,6 @@
-export default function base(name) {
+import inquirer from "inquirer";
+
+export function base(name) {
   return new Promise((resolve, reject) => {
     inquirer
       .prompt([
@@ -86,3 +88,5 @@ export default function base(name) {
       });
   });
 }
+
+export default base

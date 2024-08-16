@@ -11,7 +11,6 @@
     "play"
   ],
   "scripts": {
-    "cli": "less-write-cli c",
     "dev": "pnpm -C play/vue-app dev",
     "build": "pnpm -C internal/build start",
     "clean": "pnpm run clean:dist && pnpm run -r --parallel clean",

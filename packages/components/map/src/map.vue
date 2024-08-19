@@ -17,25 +17,32 @@ const detailData = ref<any>(null);
 
 const clientWidth = ref(0);
 
+const loading = ref(true);
+
 const { init, destroy, zoomIn, zoomOut, resetZoom, width } = useMap();
 
 function autoRefresh(width: number) {
   resetZoom();
   destroy();
-  init({
-    ctx: {
-      el: "map-container",
-      width,
-      height: props.height,
+  init(
+    {
+      ctx: {
+        el: "map-container",
+        width,
+        height: props.height,
+      },
+      background: props.background,
+      size: props.size,
+      pointList: props.pointList,
+      callback: (data) => {
+        emits("updateDetail", data);
+        detailData.value = data;
+      },
     },
-    background: props.background,
-    size: props.size,
-    pointList: props.pointList,
-    callback: (data) => {
-      emits("updateDetail", data);
-      detailData.value = data;
-    },
-  });
+    () => {
+      loading.value = false;
+    }
+  );
 }
 
 watch(
@@ -73,6 +80,14 @@ defineExpose({
 
 <template>
   <div class="map-wrapper">
+    <div
+      v-show="loading"
+      :style="{ height: `${props.height}px` }"
+      class="loading-wrapper"
+    >
+      <div class="loading"></div>
+    </div>
+
     <div v-show="!loading" id="map-container" ref="renderRef"></div>
 
     <section v-if="!loading">

@@ -173,7 +173,11 @@ export function useMap() {
     }
   }
   // 根据鼠标位置偏移量
-  function useGroupOffset(mouseX: number, mouseY: number, type: string) {
+  function useGroupPosition(
+    type: string,
+    mouseX: number = 0,
+    mouseY: number = 0
+  ) {
     const wrapper = group
       .getChildren((item) => item.attrs.name === "drag-wrapper")
       .pop();
@@ -196,6 +200,9 @@ export function useMap() {
         group.move({ x: offsetX, y: offsetY });
         break;
 
+      case "reset":
+        group.position({ x: 0, y: 0 });
+
       default:
         break;
     }
@@ -208,7 +215,7 @@ export function useMap() {
     );
     scale.value = newScale;
     usePointPosition("in");
-    useGroupOffset(mouseX, mouseY, "in");
+    useGroupPosition("in", mouseX, mouseY);
     layer.batchDraw();
   }
   function zoomOut(mouseX: number, mouseY: number) {
@@ -220,7 +227,7 @@ export function useMap() {
 
     scale.value = newScale;
     usePointPosition("out");
-    useGroupOffset(mouseX, mouseY, "out");
+    useGroupPosition("out", mouseX, mouseY);
 
     const { x, y } = group.position();
     group.setPosition(limitBrink(x, y));
@@ -228,8 +235,8 @@ export function useMap() {
   }
   function resetZoom() {
     usePointPosition("reset");
+    useGroupPosition("reset");
     scale.value = 1;
-    group.position({ x: 0, y: 0 });
     layer.batchDraw();
   }
 
@@ -376,7 +383,7 @@ export function useMap() {
     }
   }
 
-  function init(params: MapGroup) {
+  function init(params: MapGroup, initCallback?: () => void) {
     WIDTH.value = params.ctx.width;
     HEIGHT = params.ctx.height;
     stage = new Konva.Stage({
@@ -389,6 +396,10 @@ export function useMap() {
       layer.add(group);
       layer.draw();
       stage.add(layer);
+    }).finally(() => {
+      if (initCallback) {
+        initCallback()
+      }
     });
   }
 
@@ -397,6 +408,7 @@ export function useMap() {
   }
   return {
     width: computed(() => unref(WIDTH)),
+    scale: computed(() => unref(scale)),
     init,
     destroy,
     zoomIn,

@@ -1,3 +1,7 @@
+.map-wrapper {
+  position: relative;
+}
+
 #map-container {
   width: 100%;
   cursor: grab;
@@ -8,13 +12,96 @@
 
 .operation {
   position: absolute;
-  right: 30px;
-  bottom: 30px;
+  right: 15px;
+  bottom: 15px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   transition: transform 0.3s;
   transform: translateX(0px);
+}
+
+.operation-wrapper {
+  position: relative;
+  padding-left: 12px;
+  overflow: hidden;
+
+  & .button {
+    padding: 5px 6px;
+    background-color: transparent;
+    border-radius: 4px;
+    transition: 0.3s;
+    line-height: 0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  & .button:hover {
+    background-color: #f5f7fa;
+  }
+  & .button:active {
+    background-color: #f0f2f5;
+  }
+
+  &:hover {
+    & .tooltip-button {
+      visibility: visible;
+      left: 0px;
+      opacity: 1;
+    }
+  }
+
+  & > .tooltip-button {
+    padding: 10px 2px;
+    backdrop-filter: blur(24px);
+    background-color: rgba(255, 255, 255, 0.8);
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+      drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    visibility: hidden;
+    opacity: 0;
+
+    & > svg {
+      width: 12px;
+      height: 12px;
+      transition: 0.3s;
+    }
+
+    & > .arrow-right {
+      transform: rotate(180deg);
+    }
+  }
+
+  & > .collapse {
+    visibility: visible;
+    opacity: 1;
+    left: 0px;
+  }
+}
+
+.operation-default {
+  padding: 6px;
+  color: #303133;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(24px);
+  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+    drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+  display: flex;
+  flex-direction: column;
+  will-change: width;
+  width: 32px;
+  transition: 0.3s;
+  overflow: hidden;
+
+  & svg {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .map-detail {

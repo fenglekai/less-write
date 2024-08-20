@@ -5,10 +5,10 @@ import { MapInstance } from "less-write-ui";
 const mapRef = ref<MapInstance>();
 
 const handleZoomIn = () => {
-  mapRef.value?.zoomIn(mapRef.value?.width / 2, 850 / 2);
+  mapRef.value?.zoomIn();
 };
 const handleZoomOut = () => {
-  mapRef.value?.zoomOut(mapRef.value?.width / 2, 850 / 2);
+  mapRef.value?.zoomOut();
 };
 const handleResetZoom = () => {
   mapRef.value?.resetZoom();

@@ -205,7 +205,10 @@ export function useMap() {
         break;
     }
   }
-  function zoomIn(mouseX: number, mouseY: number) {
+  function zoomIn(
+    mouseX: number = WIDTH.value / 2,
+    mouseY: number = HEIGHT.value / 2
+  ) {
     if (scale.value === MAX_SCALE) return;
     const newScale = Math.min(
       MAX_SCALE,
@@ -216,7 +219,10 @@ export function useMap() {
     useGroupPosition("in", mouseX, mouseY);
     layer.batchDraw();
   }
-  function zoomOut(mouseX: number, mouseY: number) {
+  function zoomOut(
+    mouseX: number = WIDTH.value / 2,
+    mouseY: number = HEIGHT.value / 2
+  ) {
     if (scale.value === MIN_SCALE) return;
     const newScale = Math.max(
       MIN_SCALE,
@@ -282,7 +288,7 @@ export function useMap() {
       y: 0,
       ...defaultConfig,
       ...data,
-    })
+    });
     return image;
   }
 

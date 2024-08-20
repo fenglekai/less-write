@@ -50,6 +50,13 @@ export function useMap() {
 
   let stage: Konva.Stage;
   const layer = new Konva.Layer();
+  const group = new Konva.Group({
+    draggable: true,
+    dragBoundFunc(pos) {
+      const { x, y } = pos;
+      return limitBrink(x, y);
+    },
+  });
 
   // 限制边缘
   function limitBrink(limitX: number, limitY: number) {
@@ -76,14 +83,6 @@ export function useMap() {
 
     return { x: limitX, y: limitY };
   }
-
-  const group = new Konva.Group({
-    draggable: true,
-    dragBoundFunc(pos) {
-      const { x, y } = pos;
-      return limitBrink(x, y);
-    },
-  });
 
   // 放大时改变点位之间的间距
   function usePointPosition(type: string) {
@@ -256,26 +255,35 @@ export function useMap() {
   }
 
   function createRect(data: RectConfig) {
-    return new Konva.Rect({
-      x: 0,
-      y: 0,
+    const defaultConfig = {
       width: 10,
       height: 10,
-      fill: "#00bf72",
-      stroke: "#a8eb12",
-      strokeWidth: 1,
+      fill: "white",
+      cornerRadius: 1,
+    };
+
+    const rect = new Konva.Rect({
+      x: 0,
+      y: 0,
+      ...defaultConfig,
       ...data,
     });
+    return rect;
   }
 
   function createImage(data: ImageConfig) {
-    return new Konva.Image({
-      x: 0,
-      y: 0,
+    const defaultConfig = {
       width: 10,
       height: 10,
+      cornerRadius: 1,
+    };
+    const image = new Konva.Image({
+      x: 0,
+      y: 0,
+      ...defaultConfig,
       ...data,
-    });
+    })
+    return image;
   }
 
   async function initPoint(
@@ -392,8 +400,9 @@ export function useMap() {
     initGroup(params)
       .then(() => {
         layer.add(group);
-        layer.draw();
         stage.add(layer);
+        layer.draw();
+        stage.draw();
       })
       .finally(() => {
         if (initCallback) {

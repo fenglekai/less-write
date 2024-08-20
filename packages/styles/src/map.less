@@ -21,10 +21,17 @@
   transform: translateX(0px);
 }
 
+.common() {
+  border: 1px solid #dcdfe6;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(24px);
+  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+    drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+}
+
 .operation-wrapper {
   position: relative;
   padding-left: 12px;
-  overflow: hidden;
 
   & .button {
     padding: 5px 6px;
@@ -52,11 +59,8 @@
   }
 
   & > .tooltip-button {
+    .common();
     padding: 10px 2px;
-    backdrop-filter: blur(24px);
-    background-color: rgba(255, 255, 255, 0.8);
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-      drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     position: absolute;
     left: 10px;
     top: 50%;
@@ -83,14 +87,10 @@
 }
 
 .operation-default {
+  .common();
   padding: 6px;
   color: #303133;
-  border: 1px solid #dcdfe6;
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(24px);
-  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-    drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
   display: flex;
   flex-direction: column;
   will-change: width;

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { onMounted, ref, onUnmounted, watch } from "vue";
-import { useDebounceFn, useResizeObserver } from "@vueuse/core";
+import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
+import { useDebounceFn } from "@vueuse/core";
 import { useMap } from "@less-write/hooks";
 import { mapProps, mapEmits } from "./map";
 
@@ -14,19 +14,19 @@ const emits = defineEmits(mapEmits);
 
 const renderRef = ref<HTMLElement>();
 const detailData = ref<any>(null);
-const clientWidth = ref(0);
-const loading = ref(true);
+const loading = ref(false);
 
 const { init, destroy, zoomIn, zoomOut, resetZoom, width } = useMap();
 
-function autoRefresh(width: number) {
+const autoRefresh = useDebounceFn(() => {
+  if (!renderRef.value) return;
   resetZoom();
   destroy();
   init(
     {
       ctx: {
         el: "map-container",
-        width,
+        width: renderRef.value.clientWidth,
       },
       background: props.background,
       size: props.size,
@@ -40,26 +40,22 @@ function autoRefresh(width: number) {
       loading.value = false;
     }
   );
-}
+}, 200);
 
 watch(
   () => [props.size, props.height, props.pointList, props.background],
   () => {
-    autoRefresh(clientWidth.value);
+    autoRefresh();
   }
 );
 
-onMounted(() => {
-  // 自适应外部宽度变化
-  useResizeObserver(
-    renderRef.value,
-    useDebounceFn((entries) => {
-      // TODO 窗口变化触发两次resize
-      // console.log('resize');
-      clientWidth.value = entries[0].contentRect.width;
-      autoRefresh(clientWidth.value);
-    }, 500)
-  );
+onMounted(async () => {
+  await nextTick();
+  loading.value = true;
+  autoRefresh();
+  window.onresize = () => {
+    autoRefresh();
+  };
 });
 
 onUnmounted(() => {
@@ -76,14 +72,11 @@ defineExpose({
 
 <template>
   <div class="map-wrapper">
-    <div
-      v-show="loading"
-      class="loading-wrapper"
-    >
+    <div v-show="loading" class="loading-wrapper">
       <div class="loading"></div>
     </div>
 
-    <div v-show="!loading" id="map-container" ref="renderRef"></div>
+    <div id="map-container" ref="renderRef"></div>
 
     <section v-if="!loading">
       <div :class="['operation', showDetail ? 'operation-offset' : null]">

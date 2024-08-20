@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref, onUnmounted, nextTick, watch } from "vue";
+import { onMounted, ref, onUnmounted, watch } from "vue";
 import { useDebounceFn, useResizeObserver } from "@vueuse/core";
 import { useMap } from "@less-write/hooks";
 import { mapProps, mapEmits } from "./map";
@@ -14,9 +14,7 @@ const emits = defineEmits(mapEmits);
 
 const renderRef = ref<HTMLElement>();
 const detailData = ref<any>(null);
-
 const clientWidth = ref(0);
-
 const loading = ref(true);
 
 const { init, destroy, zoomIn, zoomOut, resetZoom, width } = useMap();
@@ -29,7 +27,6 @@ function autoRefresh(width: number) {
       ctx: {
         el: "map-container",
         width,
-        height: props.height,
       },
       background: props.background,
       size: props.size,
@@ -52,17 +49,16 @@ watch(
   }
 );
 
-onMounted(async () => {
-  await nextTick();
+onMounted(() => {
   // 自适应外部宽度变化
   useResizeObserver(
     renderRef.value,
-    useDebounceFn(async (entries) => {
-      // TODO 初始化会渲染两次
+    useDebounceFn((entries) => {
+      // TODO 窗口变化触发两次resize
       // console.log('resize');
       clientWidth.value = entries[0].contentRect.width;
       autoRefresh(clientWidth.value);
-    }, 200)
+    }, 500)
   );
 });
 
@@ -82,7 +78,6 @@ defineExpose({
   <div class="map-wrapper">
     <div
       v-show="loading"
-      :style="{ height: `${props.height}px` }"
       class="loading-wrapper"
     >
       <div class="loading"></div>

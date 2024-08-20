@@ -14,21 +14,20 @@ export interface MapGroup {
   ctx: {
     el: string;
     width: number;
-    height: number;
   };
-  background?: string;
-  size?: {
+  size: {
     width: number;
     height: number;
   };
+  background?: string;
   pointList?: Point[];
   callback?: (data: any) => void;
 }
 
 export function useMap() {
   const WIDTH = ref(0);
-  let HEIGHT = 520;
-  let imgRenderHeight = 0;
+  const HEIGHT = ref(0);
+  const imgRenderHeight = ref(0);
 
   const scale = ref(1);
   // 最大缩放比例
@@ -64,7 +63,7 @@ export function useMap() {
 
     // // 计算底图与底图高度差距
     const bottomLimit =
-      HEIGHT - imgRenderHeight * BASE_SCALE ** scaleCount.value;
+      HEIGHT.value - imgRenderHeight.value * BASE_SCALE ** scaleCount.value;
     if (limitY < bottomLimit) {
       // 当底图实际宽度小于地图宽度设为0
       limitY = bottomLimit > 0 ? 0 : bottomLimit;
@@ -289,7 +288,6 @@ export function useMap() {
     let currentY = 0;
     const { x, y, width, height } = config;
     const { size } = props;
-    if (!size) throw Error("please initialize size");
     const renderScale = WIDTH.value / size.width;
     if (x) {
       currentX = x * renderScale - 10 / 2;
@@ -332,12 +330,11 @@ export function useMap() {
 
   async function initBackground(
     bgImg: string,
-    size = { width: 1620, height: 762 }
+    size: { width: number; height: number }
   ): Promise<Konva.Image> {
     const imageObj = await loadImage(bgImg);
     const { width, height } = size;
     const imgScale = WIDTH.value / width;
-    imgRenderHeight = height * imgScale;
     const res = new Konva.Image({
       name: "drag-wrapper",
       x: 0,
@@ -349,10 +346,9 @@ export function useMap() {
     return res;
   }
 
-  function initWrapper(size = { width: 1620, height: 762 }) {
+  function initWrapper(size: { width: any; height: any }) {
     const { width, height } = size;
     const imgScale = WIDTH.value / width;
-    imgRenderHeight = height * imgScale;
     const wrapper = new Konva.Rect({
       name: "drag-wrapper",
       x: 0,
@@ -385,22 +381,25 @@ export function useMap() {
 
   function init(params: MapGroup, initCallback?: () => void) {
     WIDTH.value = params.ctx.width;
-    HEIGHT = params.ctx.height;
+    HEIGHT.value = imgRenderHeight.value =
+      params.size.height * (WIDTH.value / params.size.width);
     stage = new Konva.Stage({
       container: params.ctx.el,
       width: WIDTH.value,
-      height: HEIGHT,
+      height: HEIGHT.value,
     });
 
-    initGroup(params).then(() => {
-      layer.add(group);
-      layer.draw();
-      stage.add(layer);
-    }).finally(() => {
-      if (initCallback) {
-        initCallback()
-      }
-    });
+    initGroup(params)
+      .then(() => {
+        layer.add(group);
+        layer.draw();
+        stage.add(layer);
+      })
+      .finally(() => {
+        if (initCallback) {
+          initCallback();
+        }
+      });
   }
 
   function destroy() {

@@ -162,7 +162,6 @@ const tempData = ref([
     <LeButton @click="handleResetZoom">还原</LeButton>
     <LeMap
       ref="mapRef"
-      :height="850"
       :size="{ width: 12300, height: 6150 }"
       :point-list="tempData"
       background="https://raw.githubusercontent.com/fenglekai/image-bed/master/wallhaven-85128j.png"

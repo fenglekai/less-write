@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 import { useMap } from "@less-write/hooks";
 import { mapProps, mapEmits } from "./map";
@@ -51,7 +51,6 @@ watch(
 );
 
 onMounted(async () => {
-  await nextTick();
   loading.value = true;
   autoRefresh();
   window.onresize = () => {

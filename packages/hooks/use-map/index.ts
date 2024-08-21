@@ -1,4 +1,4 @@
-import { ref, computed, unref } from "vue";
+import { ref, computed, unref, nextTick } from "vue";
 import Konva from "konva";
 import type { RectConfig } from "konva/lib/shapes/Rect";
 import type { ImageConfig } from "konva/lib/shapes/Image";
@@ -23,6 +23,8 @@ export interface MapGroup {
   pointList?: Point[];
   callback?: (data: any) => void;
 }
+
+type ZoomType = "in" | "out" | "reset";
 
 export function useMap() {
   const WIDTH = ref(0);
@@ -85,7 +87,7 @@ export function useMap() {
   }
 
   // 放大时改变点位之间的间距
-  function usePointPosition(type: string) {
+  function usePointPosition(type: ZoomType) {
     const wrapper = group
       .getChildren((item) => item.attrs.name === "drag-wrapper")
       .pop();
@@ -172,7 +174,7 @@ export function useMap() {
   }
   // 根据鼠标位置偏移量
   function useGroupPosition(
-    type: string,
+    type: ZoomType,
     mouseX: number = 0,
     mouseY: number = 0
   ) {
@@ -393,7 +395,8 @@ export function useMap() {
     }
   }
 
-  function init(params: MapGroup, initCallback?: () => void) {
+  async function init(params: MapGroup, initCallback?: () => void) {
+    await nextTick();
     WIDTH.value = params.ctx.width;
     HEIGHT.value = imgRenderHeight.value =
       params.size.height * (WIDTH.value / params.size.width);
@@ -403,21 +406,21 @@ export function useMap() {
       height: HEIGHT.value,
     });
 
-    initGroup(params)
-      .then(() => {
-        layer.add(group);
-        stage.add(layer);
-        layer.draw();
-        stage.draw();
-      })
-      .finally(() => {
-        if (initCallback) {
-          initCallback();
-        }
-      });
+    await initGroup(params);
+    layer.add(group);
+    stage.add(layer);
+    group.draw();
+    layer.draw();
+    stage.draw();
+    if (initCallback) {
+      initCallback();
+    }
   }
 
   function destroy() {
+    group.removeEventListener("wheel");
+    group.destroy();
+    layer.destroy();
     stage?.destroy();
   }
   return {

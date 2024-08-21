@@ -8,8 +8,8 @@
     "skipLibCheck": true
   },
   "include": [
-    "packages",
+    "packages/**/*",
     "typings/env.d.ts",
   ],
-  "exclude": ["node_modules", "**/dist", "**/gulpfile.ts"]
+  "exclude": ["node_modules", "**/dist", "**/gulpfile.ts", "packages/less-write-cli"]
 }

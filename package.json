@@ -17,6 +17,7 @@
     "clean:dist": "rimraf dist",
     "gen:version": "tsx scripts/gen-version.ts",
     "update:version": "tsx scripts/update-version.ts",
+    "type-check:web": "vue-tsc -p tsconfig.web.json --composite false --noEmit",
     "stub": "pnpm run -r --parallel stub",
     "postinstall": "pnpm gen:version && pnpm stub"
   },
@@ -49,7 +50,8 @@
     "unplugin-vue-macros": "^2.9.5",
     "vite": "^5.2.11",
     "vite-plugin-dts": "^3.9.1",
-    "vue": "^3.4.27"
+    "vue": "^3.4.27",
+    "vue-tsc": "^2.0.29"
   },
   "engines": {
     "node": ">= 18"

@@ -1,6 +1,6 @@
 import { ExtractPropTypes } from "vue";
 import type Map from "./map.vue";
-import { type Point } from "@less-write/hooks";
+import type { BezierConfig, PointConfig } from "@less-write/hooks";
 import { definePropType } from "@less-write/utils";
 
 export const mapProps = {
@@ -19,8 +19,12 @@ export const mapProps = {
       height: 0,
     },
   },
-  pointList: {
-    type: definePropType<Point[]>(Array),
+  pathData: {
+    type: definePropType<BezierConfig[]>(Array),
+    default: [],
+  },
+  pointData: {
+    type: definePropType<PointConfig[]>(Array),
     default: [],
   },
   operation: {

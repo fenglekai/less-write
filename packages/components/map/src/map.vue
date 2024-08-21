@@ -31,7 +31,8 @@ const autoRefresh = useDebounceFn(() => {
       },
       background: props.background,
       size: props.size,
-      pointList: props.pointList,
+      pathData: props.pathData,
+      pointData: props.pointData,
       callback: (data) => {
         emits("updateDetail", data);
         drawerData.value = data;
@@ -44,7 +45,7 @@ const autoRefresh = useDebounceFn(() => {
 }, 200);
 
 watch(
-  () => [props.size, props.pointList, props.background],
+  () => [props.size, props.pathData, props.pointData, props.background],
   () => {
     autoRefresh();
   }

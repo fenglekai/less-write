@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { MapInstance } from "less-write-ui";
+import type { BezierConfig, MapInstance, PointConfig } from "less-write-ui";
 
 const mapRef = ref<MapInstance>();
 
@@ -14,105 +14,40 @@ const handleResetZoom = () => {
   mapRef.value?.resetZoom();
 };
 
-const tempData = ref([
+const tempData = ref<PointConfig[]>([
   {
     x: 1000,
     y: 1000,
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "agv",
-    },
-  },
-  {
-    x: 1000,
-    y: 1100,
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "agv",
-    },
+    fill: "black",
   },
   {
     x: 1000,
     y: 1200,
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "agv",
-    },
+    fill: "black",
   },
-  {
-    x: 1000,
-    y: 1300,
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "agv",
-    },
-  },
+
   {
     x: 1000,
     y: 1400,
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "agv",
-    },
+    fill: "black",
   },
-  {
-    x: 1000,
-    y: 1500,
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "agv",
-    },
-  },
+
   {
     x: 1000,
     y: 1600,
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "agv",
-    },
+    fill: "black",
   },
-  {
-    x: 1000,
-    y: 1700,
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "agv",
-    },
-  },
+
   {
     x: 1000,
     y: 1800,
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "agv",
-    },
+    fill: "black",
   },
-  {
-    x: 1000,
-    y: 1900,
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "agv",
-    },
-  },
+
   {
     x: 10000,
     y: 1000,
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "device",
-    },
+    fill: "black",
   },
   {
     x: 1000,
@@ -121,11 +56,6 @@ const tempData = ref([
     height: 30,
     image:
       "https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg",
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "device",
-    },
   },
   {
     x: 1000,
@@ -134,11 +64,6 @@ const tempData = ref([
     height: 50,
     image:
       "https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg",
-    data: {
-      cooX: 100,
-      cooY: 10,
-      type: "device",
-    },
   },
   {
     x: 1000,
@@ -147,11 +72,286 @@ const tempData = ref([
     height: 70,
     image:
       "https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg",
+  },
+]);
+
+const pathData = ref<BezierConfig[]>([
+  {
+    start: {
+      x: 5000,
+      y: 2000,
+    },
+    controlStart: {
+      x: 4000,
+      y: 2000,
+    },
+    controlEnd: {
+      x: 4000,
+      y: 3000,
+    },
+    end: {
+      x: 4000,
+      y: 3000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 5000,
+      y: 2000,
+    },
+    controlStart: {
+      x: 6000,
+      y: 2000,
+    },
+    controlEnd: {
+      x: 6000,
+      y: 3000,
+    },
+    end: {
+      x: 6000,
+      y: 3000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 6000,
+      y: 3000,
+    },
+    end: {
+      x: 7000,
+      y: 3000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 5000,
+      y: 2000,
+    },
+    end: {
+      x: 9000,
+      y: 3000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 4000,
+      y: 3000,
+    },
+    end: {
+      x: 4000,
+      y: 5000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 4000,
+      y: 3000,
+    },
+    end: {
+      x: 6000,
+      y: 3000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 4000,
+      y: 3000,
+    },
+    end: {
+      x: 6000,
+      y: 3000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 4000,
+      y: 5000,
+    },
+    end: {
+      x: 7000,
+      y: 5000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 8000,
+      y: 4000,
+    },
+    controlStart: {
+      x: 8000,
+      y: 3000,
+    },
+    controlEnd: {
+      x: 7000,
+      y: 3000,
+    },
+    end: {
+      x: 7000,
+      y: 3000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 8000,
+      y: 4000,
+    },
+    controlStart: {
+      x: 8000,
+      y: 5000,
+    },
+    controlEnd: {
+      x: 7000,
+      y: 5000,
+    },
+    end: {
+      x: 7000,
+      y: 5000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 8000,
+      y: 4000,
+    },
+    controlStart: {
+      x: 8000,
+      y: 3000,
+    },
+    controlEnd: {
+      x: 9000,
+      y: 3000,
+    },
+    end: {
+      x: 9000,
+      y: 3000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 8000,
+      y: 4000,
+    },
+    controlStart: {
+      x: 8000,
+      y: 5000,
+    },
+    controlEnd: {
+      x: 9000,
+      y: 5000,
+    },
+    end: {
+      x: 9000,
+      y: 5000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 9000,
+      y: 3000,
+    },
+    end: {
+      x: 9000,
+      y: 5000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 7000,
+      y: 3000,
+    },
+    end: {
+      x: 7000,
+      y: 5000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 7000,
+      y: 3000,
+    },
+    end: {
+      x: 9000,
+      y: 3000,
+    },
+    stroke: "black",
+  },
+  {
+    start: {
+      x: 7000,
+      y: 5000,
+    },
+    end: {
+      x: 9000,
+      y: 5000,
+    },
+    stroke: "black",
+  },
+]);
+
+const pointData = ref<PointConfig[]>([
+  {
+    x: 5000,
+    y: 2000,
+    fill: "black",
     data: {
       cooX: 100,
       cooY: 10,
-      type: "device",
+      type: "agv",
     },
+  },
+  {
+    x: 4000,
+    y: 3000,
+    fill: "black",
+  },
+  {
+    x: 4000,
+    y: 5000,
+    fill: "black",
+  },
+  {
+    x: 6000,
+    y: 3000,
+    fill: "black",
+  },
+  {
+    x: 7000,
+    y: 3000,
+    fill: "black",
+  },
+  {
+    x: 9000,
+    y: 3000,
+    fill: "black",
+  },
+  {
+    x: 9000,
+    y: 5000,
+    fill: "black",
+  },
+  {
+    x: 7000,
+    y: 5000,
+    fill: "black",
+  },
+  {
+    x: 8000,
+    y: 4000,
+    fill: "black",
   },
 ]);
 </script>
@@ -163,10 +363,18 @@ const tempData = ref([
     <LeMap
       ref="mapRef"
       :size="{ width: 12300, height: 6150 }"
-      :point-list="tempData"
-      background="https://raw.githubusercontent.com/fenglekai/image-bed/master/wallhaven-85128j.png"
+      :path-data="pathData"
+      :point-data="[...tempData, ...pointData]"
       style="margin-top: 20px; border: 1px solid #000"
     ></LeMap>
+    <!-- <LeMap
+      ref="mapRef"
+      :size="{ width: 12300, height: 6150 }"
+      :path-data="pathData"
+      :point-data="[...tempData, ...pointData]"
+      background="https://raw.githubusercontent.com/fenglekai/image-bed/master/wallhaven-85128j.png"
+      style="margin-top: 20px; border: 1px solid #000"
+    ></LeMap> -->
   </div>
 </template>
 <style lang="less" scoped>

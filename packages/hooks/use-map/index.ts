@@ -2,10 +2,30 @@ import { ref, computed, unref, nextTick } from "vue";
 import Konva from "konva";
 import type { RectConfig } from "konva/lib/shapes/Rect";
 import type { ImageConfig } from "konva/lib/shapes/Image";
-import type { ShapeConfig } from "konva/lib/Shape";
+import type { Shape, ShapeConfig } from "konva/lib/Shape";
+import type { Context } from "konva/lib/Context";
 import { loadImage } from "@less-write/utils";
 
-export interface Point extends ShapeConfig {
+export interface BezierConfig extends ShapeConfig {
+  start: {
+    x: number;
+    y: number;
+  };
+  controlStart?: {
+    x: number;
+    y: number;
+  };
+  controlEnd?: {
+    x: number;
+    y: number;
+  };
+  end: {
+    x: number;
+    y: number;
+  };
+}
+
+export interface PointConfig extends ShapeConfig {
   image?: HTMLImageElement | string;
   data?: any;
 }
@@ -20,17 +40,90 @@ export interface MapGroup {
     height: number;
   };
   background?: string;
-  pointList?: Point[];
+  pathData?: BezierConfig[];
+  pointData?: PointConfig[];
   callback?: (data: any) => void;
 }
 
 type ZoomType = "in" | "out" | "reset";
 
-export function useMap() {
-  const WIDTH = ref(0);
-  const HEIGHT = ref(0);
-  const imgRenderHeight = ref(0);
+const DRAG_WRAPPER = "drag-wrapper";
+const PATH_NAME = "path";
+const POINT_NAME = "point";
 
+function createRect(data: RectConfig) {
+  const defaultConfig = {
+    width: 10,
+    height: 10,
+    fill: "white",
+    cornerRadius: 1,
+  };
+
+  const rect = new Konva.Rect({
+    x: 0,
+    y: 0,
+    ...defaultConfig,
+    ...data,
+  });
+  return rect;
+}
+
+function createImage(data: ImageConfig) {
+  const defaultConfig = {
+    width: 10,
+    height: 10,
+    cornerRadius: 1,
+  };
+  const image = new Konva.Image({
+    x: 0,
+    y: 0,
+    ...defaultConfig,
+    ...data,
+  });
+  return image;
+}
+
+function useBezierScene(
+  ctx: Context,
+  shape: Shape<ShapeConfig>,
+  bezier: BezierConfig
+) {
+  const { controlStart, controlEnd } = bezier;
+  ctx.beginPath();
+  ctx.moveTo(bezier.start.x, bezier.start.y);
+  if (controlStart && controlEnd) {
+    ctx.bezierCurveTo(
+      controlStart.x,
+      controlStart.y,
+      controlEnd.x,
+      controlEnd.y,
+      bezier.end.x,
+      bezier.end.y
+    );
+  } else {
+    ctx.lineTo(bezier.end.x, bezier.end.y);
+  }
+  ctx.fillStrokeShape(shape);
+}
+
+function createBezierPath(bezier: BezierConfig) {
+  const bezierLine = new Konva.Shape({
+    name: PATH_NAME,
+    stroke: "white",
+    strokeWidth: 2,
+    sceneFunc: (ctx, shape) => useBezierScene(ctx, shape, bezier),
+    ...bezier,
+  });
+  return bezierLine;
+}
+
+export function useMap() {
+  // 容器宽度
+  const clientWidth = ref(0);
+  // 容器高度
+  const clientHeight = ref(0);
+
+  // 显示倍率
   const scale = ref(1);
   // 最大缩放比例
   const MAX_SCALE = 9;
@@ -40,6 +133,10 @@ export function useMap() {
   const SCALE_STEP = 0.2;
   // 基础缩放倍率
   const BASE_SCALE = 1 + SCALE_STEP;
+  // 点与点间距差异化放大
+  const SCALE_DIFF = BASE_SCALE - 0.1;
+  // 计算小数位
+  const DECIMAL_PLACE = 10 ** SCALE_STEP.toString().split(".")[1].length;
   // 放大统计
   const scaleCount = computed(() => {
     return (
@@ -47,8 +144,6 @@ export function useMap() {
       (SCALE_STEP * DECIMAL_PLACE)
     );
   });
-  // 计算小数位
-  const DECIMAL_PLACE = 10 ** SCALE_STEP.toString().split(".")[1].length;
 
   let stage: Konva.Stage;
   const layer = new Konva.Layer();
@@ -72,13 +167,13 @@ export function useMap() {
 
     // // 计算底图与底图高度差距
     const bottomLimit =
-      HEIGHT.value - imgRenderHeight.value * BASE_SCALE ** scaleCount.value;
+      clientHeight.value - clientHeight.value * BASE_SCALE ** scaleCount.value;
     if (limitY < bottomLimit) {
       // 当底图实际宽度小于地图宽度设为0
       limitY = bottomLimit > 0 ? 0 : bottomLimit;
     }
     const rightLimit =
-      WIDTH.value - WIDTH.value * BASE_SCALE ** scaleCount.value;
+      clientWidth.value - clientWidth.value * BASE_SCALE ** scaleCount.value;
     if (limitX < rightLimit) {
       limitX = rightLimit > 0 ? 0 : rightLimit;
     }
@@ -86,17 +181,131 @@ export function useMap() {
     return { x: limitX, y: limitY };
   }
 
+  function usePathPosition(type: ZoomType) {
+    const children = group.getChildren((item) => item.attrs.name === PATH_NAME);
+    switch (type) {
+      case "in":
+        children.forEach((path) => {
+          const { attrs } = path;
+          let position: BezierConfig = {
+            start: {
+              x: attrs.start.x * BASE_SCALE,
+              y: attrs.start.y * BASE_SCALE,
+            },
+            end: {
+              x: attrs.end.x * BASE_SCALE,
+              y: attrs.end.y * BASE_SCALE,
+            },
+          };
+          if (attrs.controlStart && attrs.controlEnd) {
+            position = {
+              ...position,
+              controlStart: {
+                x: attrs.controlStart.x * BASE_SCALE,
+                y: attrs.controlStart.y * BASE_SCALE,
+              },
+              controlEnd: {
+                x: attrs.controlEnd.x * BASE_SCALE,
+                y: attrs.controlEnd.y * BASE_SCALE,
+              },
+            };
+          }
+          path.setAttrs({
+            ...path.attrs,
+            ...position,
+            sceneFunc: (ctx: Context, shape: Shape<ShapeConfig>) =>
+              useBezierScene(ctx, shape, position),
+          });
+        });
+        break;
+
+      case "out":
+        children.forEach((path) => {
+          const { attrs } = path;
+          let position: BezierConfig = {
+            start: {
+              x: attrs.start.x / BASE_SCALE,
+              y: attrs.start.y / BASE_SCALE,
+            },
+            end: {
+              x: attrs.end.x / BASE_SCALE,
+              y: attrs.end.y / BASE_SCALE,
+            },
+          };
+          if (attrs.controlStart && attrs.controlEnd) {
+            position = {
+              ...position,
+              controlStart: {
+                x: attrs.controlStart.x / BASE_SCALE,
+                y: attrs.controlStart.y / BASE_SCALE,
+              },
+              controlEnd: {
+                x: attrs.controlEnd.x / BASE_SCALE,
+                y: attrs.controlEnd.y / BASE_SCALE,
+              },
+            };
+          }
+          path.setAttrs({
+            ...path.attrs,
+            ...position,
+            sceneFunc: (ctx: Context, shape: Shape<ShapeConfig>) =>
+              useBezierScene(ctx, shape, position),
+          });
+        });
+        break;
+
+      case "reset":
+        children.forEach((path) => {
+          const { attrs } = path;
+          let position: BezierConfig = {
+            start: {
+              x: attrs.start.x / BASE_SCALE ** scaleCount.value,
+              y: attrs.start.y / BASE_SCALE ** scaleCount.value,
+            },
+            end: {
+              x: attrs.end.x / BASE_SCALE ** scaleCount.value,
+              y: attrs.end.y / BASE_SCALE ** scaleCount.value,
+            },
+          };
+          if (attrs.controlStart && attrs.controlEnd) {
+            position = {
+              ...position,
+              controlStart: {
+                x: attrs.controlStart.x / BASE_SCALE ** scaleCount.value,
+                y: attrs.controlStart.y / BASE_SCALE ** scaleCount.value,
+              },
+              controlEnd: {
+                x: attrs.controlEnd.x / BASE_SCALE ** scaleCount.value,
+                y: attrs.controlEnd.y / BASE_SCALE ** scaleCount.value,
+              },
+            };
+          }
+          path.setAttrs({
+            ...path.attrs,
+            ...position,
+            sceneFunc: (ctx: Context, shape: Shape<ShapeConfig>) =>
+              useBezierScene(ctx, shape, position),
+          });
+        });
+        break;
+
+      default:
+        break;
+    }
+  }
+
   // 放大时改变点位之间的间距
   function usePointPosition(type: ZoomType) {
-    const wrapper = group
-      .getChildren((item) => item.attrs.name === "drag-wrapper")
-      .pop();
+    const wrapper = group.findOne(
+      (item: any) => item.attrs.name === DRAG_WRAPPER
+    );
+
     const children = group.getChildren(
-      (item) => item.attrs.name !== "drag-wrapper"
+      (item) => item.attrs.name === POINT_NAME
     );
 
     if (!wrapper) return;
-    const scaleDiff = BASE_SCALE - 0.1;
+
     switch (type) {
       case "in":
         wrapper.scale({
@@ -105,13 +314,13 @@ export function useMap() {
         });
         children.forEach((item) => {
           item.scale({
-            x: item.scaleX() * scaleDiff,
-            y: item.scaleY() * scaleDiff,
+            x: item.scaleX() * SCALE_DIFF,
+            y: item.scaleY() * SCALE_DIFF,
           });
 
           const centerScale =
             (item.width() * item.scaleX() -
-              (item.width() * item.scaleX()) / scaleDiff) /
+              (item.width() * item.scaleX()) / SCALE_DIFF) /
             2;
           item.setPosition({
             x: item.x() * BASE_SCALE + centerScale,
@@ -126,13 +335,13 @@ export function useMap() {
         });
         children.forEach((item) => {
           item.scale({
-            x: item.scaleX() / scaleDiff,
-            y: item.scaleY() / scaleDiff,
+            x: item.scaleX() / SCALE_DIFF,
+            y: item.scaleY() / SCALE_DIFF,
           });
 
           const centerScale =
             (item.width() * item.scaleX() -
-              item.width() * item.scaleX() * scaleDiff) /
+              item.width() * item.scaleX() * SCALE_DIFF) /
             2;
           item.setPosition({
             x: (item.x() + centerScale) / BASE_SCALE,
@@ -155,8 +364,8 @@ export function useMap() {
           let setY = item.y();
           for (let i = scaleCount.value; i > 0; i--) {
             const centerScale =
-              (item.width() * scaleDiff ** (i - 1) -
-                item.width() * scaleDiff ** i) /
+              (item.width() * SCALE_DIFF ** (i - 1) -
+                item.width() * SCALE_DIFF ** i) /
               2;
             setX = (setX + centerScale) / BASE_SCALE;
             setY = (setY + centerScale) / BASE_SCALE;
@@ -179,7 +388,7 @@ export function useMap() {
     mouseY: number = 0
   ) {
     const wrapper = group
-      .getChildren((item) => item.attrs.name === "drag-wrapper")
+      .getChildren((item) => item.attrs.name === DRAG_WRAPPER)
       .pop();
     const beforeX = group.x();
     const beforeY = group.y();
@@ -208,8 +417,8 @@ export function useMap() {
     }
   }
   function zoomIn(
-    mouseX: number = WIDTH.value / 2,
-    mouseY: number = HEIGHT.value / 2
+    mouseX: number = clientWidth.value / 2,
+    mouseY: number = clientHeight.value / 2
   ) {
     if (scale.value === MAX_SCALE) return;
     const newScale = Math.min(
@@ -217,13 +426,14 @@ export function useMap() {
       (scale.value * DECIMAL_PLACE + SCALE_STEP * DECIMAL_PLACE) / DECIMAL_PLACE
     );
     scale.value = newScale;
+    usePathPosition("in");
     usePointPosition("in");
     useGroupPosition("in", mouseX, mouseY);
     layer.batchDraw();
   }
   function zoomOut(
-    mouseX: number = WIDTH.value / 2,
-    mouseY: number = HEIGHT.value / 2
+    mouseX: number = clientWidth.value / 2,
+    mouseY: number = clientHeight.value / 2
   ) {
     if (scale.value === MIN_SCALE) return;
     const newScale = Math.max(
@@ -232,6 +442,7 @@ export function useMap() {
     );
 
     scale.value = newScale;
+    usePathPosition("out");
     usePointPosition("out");
     useGroupPosition("out", mouseX, mouseY);
 
@@ -240,6 +451,7 @@ export function useMap() {
     layer.batchDraw();
   }
   function resetZoom() {
+    usePathPosition("reset");
     usePointPosition("reset");
     useGroupPosition("reset");
     scale.value = 1;
@@ -262,40 +474,40 @@ export function useMap() {
     }
   }
 
-  function createRect(data: RectConfig) {
-    const defaultConfig = {
-      width: 10,
-      height: 10,
-      fill: "white",
-      cornerRadius: 1,
+  function initPath(config: BezierConfig, props: MapGroup) {
+    const { start, controlStart, controlEnd, end } = config;
+    const renderScale = clientWidth.value / props.size.width;
+    let realConfig = {
+      ...config,
+      start: {
+        x: start.x * renderScale,
+        y: start.y * renderScale,
+      },
+      end: {
+        x: end.x * renderScale,
+        y: end.y * renderScale,
+      },
     };
+    if (controlStart && controlEnd) {
+      realConfig = {
+        ...realConfig,
+        controlStart: {
+          x: controlStart.x * renderScale,
+          y: controlStart.y * renderScale,
+        },
+        controlEnd: {
+          x: controlEnd.x * renderScale,
+          y: controlEnd.y * renderScale,
+        },
+      };
+    }
 
-    const rect = new Konva.Rect({
-      x: 0,
-      y: 0,
-      ...defaultConfig,
-      ...data,
-    });
-    return rect;
-  }
-
-  function createImage(data: ImageConfig) {
-    const defaultConfig = {
-      width: 10,
-      height: 10,
-      cornerRadius: 1,
-    };
-    const image = new Konva.Image({
-      x: 0,
-      y: 0,
-      ...defaultConfig,
-      ...data,
-    });
-    return image;
+    const bezierPath = createBezierPath(realConfig);
+    return bezierPath;
   }
 
   async function initPoint(
-    config: Point,
+    config: PointConfig,
     props: MapGroup,
     callback?: (data: any) => void
   ) {
@@ -303,8 +515,7 @@ export function useMap() {
     let currentX = 0;
     let currentY = 0;
     const { x, y, width, height } = config;
-    const { size } = props;
-    const renderScale = WIDTH.value / size.width;
+    const renderScale = clientWidth.value / props.size.width;
     if (x) {
       currentX = x * renderScale - 10 / 2;
     }
@@ -323,6 +534,7 @@ export function useMap() {
         imageEl = await loadImage(imageEl);
       }
       point = createImage({
+        name: POINT_NAME,
         ...config,
         image: imageEl,
         x: currentX,
@@ -330,6 +542,7 @@ export function useMap() {
       });
     } else {
       point = createRect({
+        name: POINT_NAME,
         ...config,
         x: currentX,
         y: currentY,
@@ -345,51 +558,55 @@ export function useMap() {
   }
 
   async function initBackground(
-    bgImg: string,
-    size: { width: number; height: number }
-  ): Promise<Konva.Image> {
-    const imageObj = await loadImage(bgImg);
+    size: { width: number; height: number },
+    bgImg?: string
+  ): Promise<Konva.Image | Konva.Rect> {
     const { width, height } = size;
-    const imgScale = WIDTH.value / width;
-    const res = new Konva.Image({
-      name: "drag-wrapper",
-      x: 0,
-      y: 0,
-      image: imageObj,
-      width: width * imgScale,
-      height: height * imgScale,
-    });
-    return res;
-  }
-
-  function initWrapper(size: { width: any; height: any }) {
-    const { width, height } = size;
-    const imgScale = WIDTH.value / width;
-    const wrapper = new Konva.Rect({
-      name: "drag-wrapper",
-      x: 0,
-      y: 0,
-      width: width * imgScale,
-      height: height * imgScale,
-    });
-    return wrapper;
+    const imgScale = clientWidth.value / width;
+    let background: Konva.Image | Konva.Rect;
+    if (bgImg) {
+      const imageObj = await loadImage(bgImg);
+      background = new Konva.Image({
+        name: DRAG_WRAPPER,
+        x: 0,
+        y: 0,
+        image: imageObj,
+        width: width * imgScale,
+        height: height * imgScale,
+      });
+    } else {
+      background = new Konva.Rect({
+        name: DRAG_WRAPPER,
+        x: 0,
+        y: 0,
+        width: width * imgScale,
+        height: height * imgScale,
+      });
+    }
+    return background;
   }
 
   async function initGroup(params: MapGroup) {
-    const { background, size, pointList, callback } = params;
+    const { background, size, pathData, pointData, callback } = params;
     group.on("wheel", (e) => zoom(e));
 
-    if (background) {
-      const image = await initBackground(background, size);
-      group.add(image);
-    } else {
-      const wrapper = initWrapper(size);
-      group.add(wrapper);
+    const wrapper = await initBackground(size, background);
+    group.add(wrapper);
+
+    // path
+    if (pathData) {
+      for (let i = 0; i < pathData.length; i++) {
+        const config = pathData[i];
+        const bezierLine = initPath(config, params);
+        group.add(bezierLine);
+      }
     }
-    if (pointList) {
-      for (let i = 0; i < pointList.length; i++) {
-        const data = pointList[i];
-        const point = await initPoint(data, params, callback);
+
+    // point
+    if (pointData) {
+      for (let i = 0; i < pointData.length; i++) {
+        const config = pointData[i];
+        const point = await initPoint(config, params, callback);
         group.add(point);
       }
     }
@@ -397,13 +614,13 @@ export function useMap() {
 
   async function init(params: MapGroup, initCallback?: () => void) {
     await nextTick();
-    WIDTH.value = params.ctx.width;
-    HEIGHT.value = imgRenderHeight.value =
-      params.size.height * (WIDTH.value / params.size.width);
+    clientWidth.value = params.ctx.width;
+    clientHeight.value = clientHeight.value =
+      params.size.height * (clientWidth.value / params.size.width);
     stage = new Konva.Stage({
       container: params.ctx.el,
-      width: WIDTH.value,
-      height: HEIGHT.value,
+      width: clientWidth.value,
+      height: clientHeight.value,
     });
 
     await initGroup(params);
@@ -424,7 +641,7 @@ export function useMap() {
     stage?.destroy();
   }
   return {
-    width: computed(() => unref(WIDTH)),
+    width: computed(() => unref(clientWidth)),
     scale: computed(() => unref(scale)),
     init,
     destroy,

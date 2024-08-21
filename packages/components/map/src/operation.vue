@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { operationEmits } from "./operation";
+import { operationProps, operationEmits } from "./operation";
+import { UPDATE_MODEL_EVENT } from "@less-write/constants";
 
-const collapse = defineModel({
-  type: Boolean,
-  required: true,
-  default: false,
+defineOptions({
+  name: "LeOperation",
+  inheritAttrs: false,
 });
+
+
+defineProps(operationProps)
 
 const emits = defineEmits(operationEmits);
 </script>
@@ -14,7 +17,7 @@ const emits = defineEmits(operationEmits);
   <div class="operation-wrapper">
     <div
       class="operation-default"
-      :style="collapse ? { width: '0', padding: '0', border: '0' } : null"
+      :style="modelValue ? { width: '0', padding: '0', border: '0' } : null"
     >
       <button class="button" @click="(evt) => emits('zoomIn', evt)">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
@@ -43,11 +46,11 @@ const emits = defineEmits(operationEmits);
     </div>
 
     <button
-      :class="[collapse ? 'collapse' : null, 'tooltip-button button']"
-      @click="collapse = !collapse"
+      :class="[modelValue ? 'collapse' : null, 'tooltip-button button']"
+      @click="emits(UPDATE_MODEL_EVENT, !modelValue)"
     >
       <svg
-        :class="[collapse ? 'arrow-right' : null]"
+        :class="[modelValue ? 'arrow-right' : null]"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 1024 1024"
       >

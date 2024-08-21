@@ -4,11 +4,6 @@ import { type Point } from "@less-write/hooks";
 import { definePropType } from "@less-write/utils";
 
 export const mapProps = {
-  height: {
-    type: Number,
-    require: true,
-    default: 0,
-  },
   background: {
     type: String,
     default: "",
@@ -18,14 +13,24 @@ export const mapProps = {
       width: number;
       height: number;
     }>(Object),
+    require: true,
     default: {
       width: 0,
       height: 0,
     },
   },
-  loading: Boolean,
-  pointList: Array<Point>,
-  showDetail: Boolean,
+  pointList: {
+    type: definePropType<Point[]>(Array),
+    default: [],
+  },
+  operation: {
+    type: Boolean,
+    default: false,
+  },
+  drawer: {
+    type: Boolean,
+    default: false,
+  },
 };
 export type MapProps = ExtractPropTypes<typeof mapProps>;
 

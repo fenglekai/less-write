@@ -50,6 +50,7 @@ type ZoomType = "in" | "out" | "reset";
 const DRAG_WRAPPER = "drag-wrapper";
 const PATH_NAME = "path";
 const POINT_NAME = "point";
+const DEFAULT_RECT_WIDTH = 10
 
 function createRect(data: RectConfig) {
   const defaultConfig = {
@@ -517,13 +518,13 @@ export function useMap() {
     const { x, y, width, height } = config;
     const renderScale = clientWidth.value / props.size.width;
     if (x) {
-      currentX = x * renderScale - 10 / 2;
+      currentX = x * renderScale - DEFAULT_RECT_WIDTH / 2;
     }
     if (x && width) {
       currentX = x * renderScale - width / 2;
     }
     if (y) {
-      currentY = y * renderScale - 10 / 2;
+      currentY = y * renderScale - DEFAULT_RECT_WIDTH / 2;
     }
     if (y && height) {
       currentY = y * renderScale - height / 2;

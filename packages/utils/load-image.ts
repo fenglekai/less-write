@@ -7,6 +7,7 @@ function loadImage(path: string) {
     resolve(imageObj);
   };
   imageObj.onerror = (err) => {
+    console.error("图片加载失败: ");
     reject(err);
   };
   return promise;

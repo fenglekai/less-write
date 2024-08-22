@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, watch } from "vue";
+import { ref, onMounted, onUnmounted, watch,useAttrs } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 import { useMap } from "@less-write/hooks";
 import { mapProps, mapEmits } from "./map";
@@ -11,6 +11,7 @@ defineOptions({
 
 const props = defineProps(mapProps);
 const emits = defineEmits(mapEmits);
+const attrs = useAttrs();
 
 const renderRef = ref<HTMLElement>();
 const drawerData = ref<any>(null);
@@ -34,8 +35,10 @@ const autoRefresh = useDebounceFn(() => {
       pathData: props.pathData,
       pointData: props.pointData,
       callback: (data) => {
-        emits("updateDetail", data);
         drawerData.value = data;
+        if(attrs['pointClick']) {
+          emits("pointClick", data);
+        }
       },
     },
     () => {

@@ -31,6 +31,7 @@ export const excludeFiles = (files: string[]) => {
     "gulpfile",
     "dist",
     "less-write-cli",
+    "conventional-changelog-custom",
   ];
   return files.filter(
     (path) => !excludes.some((exclude) => path.includes(exclude))

@@ -51,10 +51,7 @@ jobs:
             ${{ runner.os }}-pnpm-
 
       - name: Generate Changelog
-        run: |
-          pnpm install
-          conventional-changelog -p angular -r 0 -i CHANGELOG.md -s
-          pnpm gen:changelog -i release.txt -s
+        run: sh ./scripts/gen-changelog.sh
 
       - name: Commit and push changelog
         if: ${{ github.event_name != 'workflow_dispatch' }}
@@ -71,7 +68,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ github.token }}
-          body_path: release.txt
+          body_path: release.md
 
       - name: Release to NPM
         if: ${{ github.event_name != 'workflow_dispatch' }}

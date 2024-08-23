@@ -1,4 +1,29 @@
-# [](https://github.com/fenglekai/less-write/compare/v1.0.3...v) (2024-08-15)
+# [](https://github.com/fenglekai/less-write/compare/v1.0.4...v) (2024-08-23)
+
+
+
+## [1.0.4](https://github.com/fenglekai/less-write/compare/v1.0.3...v1.0.4) (2024-08-23)
+
+
+### Bug Fixes
+
+* 🐛 [map]使用modelValue代替defineModel,解决ts-morph类型检查报错 ([e8804cd](https://github.com/fenglekai/less-write/commit/e8804cd3160ce90e06d132c8c6c90f5df0ed564f))
+* 🐛 [map]改变窗口大小后使用滚轮缩放比例大小不正确 ([2f38187](https://github.com/fenglekai/less-write/commit/2f381878189ccde8d452089acb7bcbdd6a14aa6a))
+* 🐛 弃用useResizeObserver,导致函数重复加载 ([9fcb0b5](https://github.com/fenglekai/less-write/commit/9fcb0b5c43ac7aa97e731b19e87a573435c0cdd9))
+* **less-write-ui:** 🐛 修复构建错误,构建了多余的conventional-changelog-custom ([4d72d23](https://github.com/fenglekai/less-write/commit/4d72d23bb27063787b4e83ef628b7bff19457e54))
+
+
+### Features
+
+* 🎸 [button]add instance type ([f385cd1](https://github.com/fenglekai/less-write/commit/f385cd1b73b5d4dceea8c783e720db468c061763))
+* 🎸 [cli]新增axios拦截器模板 ([0da2d12](https://github.com/fenglekai/less-write/commit/0da2d123cfb184ab34838f6c7be08ddbedf6ca03))
+* 🎸 [cli]新增命令式生成map组件 ([2dfb16f](https://github.com/fenglekai/less-write/commit/2dfb16fd48759aa8b900dcd719a0af4c144bf54c))
+* 🎸 [map]不在定义高度,由size转换实际高度 ([b7af607](https://github.com/fenglekai/less-write/commit/b7af6074d179b2c30768a88080e3c5ef81bdd303))
+* 🎸 [map]新增pathData属性,可绘制贝塞尔曲线与直线;优化useMap代码 ([48a335c](https://github.com/fenglekai/less-write/commit/48a335c87f42f8367a8262f401b2a67bef61685c))
+* 🎸 [map]添加init callback;loading反应状态 ([753fc84](https://github.com/fenglekai/less-write/commit/753fc841af3cc03edc96eeb52cabf4bf62c9454b))
+* 🎸 [map]独立operation组件,默认隐藏,选项开启 ([544a2f5](https://github.com/fenglekai/less-write/commit/544a2f5ba60e734e239f68094b64baa312ce57c9))
+* 🎸 [map]设置zoomIn,zoomOut的默认值无需传参;新增默认操作选项 ([c6121cd](https://github.com/fenglekai/less-write/commit/c6121cd43ead7dbbdd15c04a7c8ad77daaaaece3))
+* 🎸 add conventional-changelog-custom package ([fc14893](https://github.com/fenglekai/less-write/commit/fc148932beaae50bc7a40f5e03ca43da2d6f0c1e))
 
 
 
@@ -8,10 +33,6 @@
 ### Bug Fixes
 
 * 🐛 PKG_NAME错误导致替换路径报错问题 ([c85ded0](https://github.com/fenglekai/less-write/commit/c85ded04ecc66d43f284f25108448f84c744e60f))
-
-
-
-# [](https://github.com/fenglekai/less-write/compare/v1.0.2...v) (2024-08-15)
 
 
 

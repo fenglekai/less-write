@@ -50,12 +50,12 @@ type ZoomType = "in" | "out" | "reset";
 const DRAG_WRAPPER = "drag-wrapper";
 const PATH_NAME = "path";
 const POINT_NAME = "point";
-const DEFAULT_RECT_WIDTH = 10
+const DEFAULT_RECT_WIDTH = 10;
 
 function createRect(data: RectConfig) {
   const defaultConfig = {
-    width: 10,
-    height: 10,
+    width: DEFAULT_RECT_WIDTH,
+    height: DEFAULT_RECT_WIDTH,
     fill: "white",
     cornerRadius: 1,
   };
@@ -71,8 +71,8 @@ function createRect(data: RectConfig) {
 
 function createImage(data: ImageConfig) {
   const defaultConfig = {
-    width: 10,
-    height: 10,
+    width: DEFAULT_RECT_WIDTH,
+    height: DEFAULT_RECT_WIDTH,
     cornerRadius: 1,
   };
   const image = new Konva.Image({
@@ -319,13 +319,9 @@ export function useMap() {
             y: item.scaleY() * SCALE_DIFF,
           });
 
-          const centerScale =
-            (item.width() * item.scaleX() -
-              (item.width() * item.scaleX()) / SCALE_DIFF) /
-            2;
           item.setPosition({
-            x: item.x() * BASE_SCALE + centerScale,
-            y: item.y() * BASE_SCALE + centerScale,
+            x: item.x() * BASE_SCALE,
+            y: item.y() * BASE_SCALE,
           });
         });
         break;
@@ -340,13 +336,9 @@ export function useMap() {
             y: item.scaleY() / SCALE_DIFF,
           });
 
-          const centerScale =
-            (item.width() * item.scaleX() -
-              item.width() * item.scaleX() * SCALE_DIFF) /
-            2;
           item.setPosition({
-            x: (item.x() + centerScale) / BASE_SCALE,
-            y: (item.y() + centerScale) / BASE_SCALE,
+            x: item.x() / BASE_SCALE,
+            y: item.y() / BASE_SCALE,
           });
         });
         break;
@@ -361,19 +353,9 @@ export function useMap() {
             y: 1,
           });
 
-          let setX = item.x();
-          let setY = item.y();
-          for (let i = scaleCount.value; i > 0; i--) {
-            const centerScale =
-              (item.width() * SCALE_DIFF ** (i - 1) -
-                item.width() * SCALE_DIFF ** i) /
-              2;
-            setX = (setX + centerScale) / BASE_SCALE;
-            setY = (setY + centerScale) / BASE_SCALE;
-          }
           item.setPosition({
-            x: setX,
-            y: setY,
+            x: item.x() / BASE_SCALE ** scaleCount.value,
+            y: item.y() / BASE_SCALE ** scaleCount.value,
           });
         });
         break;
@@ -518,17 +500,13 @@ export function useMap() {
     const { x, y, width, height } = config;
     const renderScale = clientWidth.value / props.size.width;
     if (x) {
-      currentX = x * renderScale - DEFAULT_RECT_WIDTH / 2;
+      currentX = x * renderScale;
     }
-    if (x && width) {
-      currentX = x * renderScale - width / 2;
-    }
+
     if (y) {
-      currentY = y * renderScale - DEFAULT_RECT_WIDTH / 2;
+      currentY = y * renderScale;
     }
-    if (y && height) {
-      currentY = y * renderScale - height / 2;
-    }
+
     if (config.image) {
       let imageEl = config.image;
       if (typeof imageEl === "string") {
@@ -549,6 +527,8 @@ export function useMap() {
         y: currentY,
       });
     }
+    point.offsetX(point.width() / 2);
+    point.offsetY(point.height() / 2);
 
     point.on("click", () => {
       if (callback) {

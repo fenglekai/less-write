@@ -57,13 +57,12 @@ watch(
 onMounted(async () => {
   loading.value = true;
   autoRefresh();
-  window.onresize = () => {
-    autoRefresh();
-  };
+  window.addEventListener('resize', autoRefresh)
 });
 
 onUnmounted(() => {
   destroy();
+  window.removeEventListener('resize', autoRefresh)
 });
 
 defineExpose({

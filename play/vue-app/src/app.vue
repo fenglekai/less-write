@@ -1,80 +1,19 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import type { BezierConfig, MapInstance, PointConfig } from "less-write-ui";
 
 const mapRef = ref<MapInstance>();
 
 const handleZoomIn = () => {
-  mapRef.value?.zoomIn();
+  mapRef.value?.mapInstance.zoomIn();
 };
 const handleZoomOut = () => {
-  mapRef.value?.zoomOut();
+  mapRef.value?.mapInstance.zoomOut();
 };
 const handleResetZoom = () => {
-  mapRef.value?.resetZoom();
+  mapRef.value?.mapInstance.resetZoom();
 };
-
-const tempData = ref<PointConfig[]>([
-  {
-    x: 1000,
-    y: 1000,
-    fill: "black",
-  },
-  {
-    x: 1000,
-    y: 1200,
-    fill: "black",
-  },
-
-  {
-    x: 1000,
-    y: 1400,
-    fill: "black",
-  },
-
-  {
-    x: 1000,
-    y: 1600,
-    fill: "black",
-  },
-
-  {
-    x: 1000,
-    y: 1800,
-    fill: "black",
-  },
-
-  {
-    x: 10000,
-    y: 1000,
-    fill: "black",
-  },
-  {
-    x: 1000,
-    y: 2000,
-    width: 30,
-    height: 30,
-    image:
-      "https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg",
-  },
-  {
-    x: 1000,
-    y: 3000,
-    width: 50,
-    height: 50,
-    image:
-      "https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg",
-  },
-  {
-    x: 1000,
-    y: 4000,
-    width: 70,
-    height: 70,
-    image:
-      "https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg",
-  },
-]);
-
+const size = { width: 12300, height: 6150 }
 const pathData = ref<BezierConfig[]>([
   {
     start: {
@@ -302,6 +241,23 @@ const pathData = ref<BezierConfig[]>([
   },
 ]);
 
+const deviceData = ref<PointConfig[]>([
+  {
+    x: 5000,
+    y: 2000,
+    width: 40,
+    height: 40,
+    rotation: 90,
+    image:
+      "https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg",
+    data: {
+      cooX: 100,
+      cooY: 10,
+      type: "device",
+    },
+  },
+]);
+
 const pointData = ref<PointConfig[]>([
   {
     x: 5000,
@@ -310,7 +266,7 @@ const pointData = ref<PointConfig[]>([
     data: {
       cooX: 100,
       cooY: 10,
-      type: "agv",
+      type: "point",
     },
   },
   {
@@ -354,27 +310,106 @@ const pointData = ref<PointConfig[]>([
     fill: "black",
   },
 ]);
+
+function evaluateCubicBezierAt(
+  t: number,
+  p0: { x: number; y: number },
+  p1: { x: number; y: number },
+  p2: { x: number; y: number },
+  p3: { x: number; y: number }
+) {
+  const oneMinusT = 1 - t;
+  return {
+    x:
+      oneMinusT * oneMinusT * oneMinusT * p0.x +
+      3 * oneMinusT * oneMinusT * t * p1.x +
+      3 * oneMinusT * t * t * p2.x +
+      t * t * t * p3.x,
+    y:
+      oneMinusT * oneMinusT * oneMinusT * p0.y +
+      3 * oneMinusT * oneMinusT * t * p1.y +
+      3 * oneMinusT * t * t * p2.y +
+      t * t * t * p3.y,
+  };
+}
+const bezierSource = {
+  start: {
+    x: 5000,
+    y: 2000,
+  },
+  controlStart: {
+    x: 6000,
+    y: 2000,
+  },
+  controlEnd: {
+    x: 6000,
+    y: 3000,
+  },
+  end: {
+    x: 6000,
+    y: 3000,
+  },
+  stroke: "black",
+};
+const pathSource = (bezier: {
+  start: { x: number; y: number };
+  controlStart: { x: number; y: number };
+  controlEnd: { x: number; y: number };
+  end: { x: number; y: number };
+}) => {
+  const points: { x: number; y: number }[] = [];
+  const numSamples = 100; // 采样点的数量
+  for (let i = 0; i <= numSamples; i++) {
+    const t = i / numSamples;
+    const point = evaluateCubicBezierAt(
+      t,
+      bezier.start,
+      bezier.controlStart,
+      bezier.controlEnd,
+      bezier.end
+    );
+    points.push(point);
+  }
+  return points;
+};
+
+const dynamicPath = ref<{ x: number; y: number }[]>([]);
+function sleep(ms: number | undefined) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+const run =async  () => {
+  dynamicPath.value = pathSource(bezierSource);
+  let rotation = 90
+  for (const iterator of dynamicPath.value) {
+    await sleep(50);
+    deviceData.value[0] = {
+      ...deviceData.value[0],
+      ...iterator,
+      rotation
+    };
+    rotation+=1
+  }
+};
+onMounted(() => {
+  run();
+});
+
+
 </script>
 <template>
   <div>
     <LeButton @click="handleZoomIn">放大</LeButton>
     <LeButton @click="handleZoomOut">缩小</LeButton>
     <LeButton @click="handleResetZoom">还原</LeButton>
+    <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg -->
+    <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/wallhaven-85128j.png -->
     <LeMap
       ref="mapRef"
-      :size="{ width: 12300, height: 6150 }"
+      :size="size"
       :path-data="pathData"
-      :point-data="[...tempData, ...pointData]"
+      :point-data="[...pointData, ...deviceData]"
       style="margin-top: 20px; border: 1px solid #000"
     ></LeMap>
-    <!-- <LeMap
-      ref="mapRef"
-      :size="{ width: 12300, height: 6150 }"
-      :path-data="pathData"
-      :point-data="[...tempData, ...pointData]"
-      background="https://raw.githubusercontent.com/fenglekai/image-bed/master/wallhaven-85128j.png"
-      style="margin-top: 20px; border: 1px solid #000"
-    ></LeMap> -->
   </div>
 </template>
 <style lang="less" scoped>

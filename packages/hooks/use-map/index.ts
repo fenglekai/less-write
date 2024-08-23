@@ -123,6 +123,8 @@ export function useMap() {
   const clientWidth = ref(0);
   // 容器高度
   const clientHeight = ref(0);
+  // size与容器之间的缩放比例以宽度计算
+  const renderScale = ref(0);
 
   // 显示倍率
   const scale = ref(1);
@@ -146,6 +148,7 @@ export function useMap() {
     );
   });
 
+  const pointMap = new Map<number, Konva.Image | Konva.Rect>();
   let stage: Konva.Stage;
   const layer = new Konva.Layer();
   const group = new Konva.Group({
@@ -155,7 +158,6 @@ export function useMap() {
       return limitBrink(x, y);
     },
   });
-
   // 限制边缘
   function limitBrink(limitX: number, limitY: number) {
     if (limitX > 0) {
@@ -181,7 +183,29 @@ export function useMap() {
 
     return { x: limitX, y: limitY };
   }
+  // 设置动态点位
+  function setPoint(points: PointConfig[]) {
+    for (const [key, targetPoint] of Object.entries(points)) {
+      if (pointMap.has(Number(key))) {
+        const sourcePoint = pointMap.get(Number(key));
+        if (!sourcePoint) return;
 
+        const x = targetPoint.x ? targetPoint.x : sourcePoint.x();
+        const y = targetPoint.y ? targetPoint.y : sourcePoint.y();
+        const rotation = targetPoint.rotation
+          ? targetPoint.rotation
+          : 0;
+        const fill = targetPoint.fill ? targetPoint.fill : sourcePoint.fill();
+        sourcePoint.setPosition({
+          x: x * renderScale.value,
+          y: y * renderScale.value,
+        });
+        sourcePoint.rotation(rotation);
+        sourcePoint.fill(fill)
+      }
+    }
+  }
+  // 放大时重新绘制路径坐标
   function usePathPosition(type: ZoomType) {
     const children = group.getChildren((item) => item.attrs.name === PATH_NAME);
     switch (type) {
@@ -294,7 +318,6 @@ export function useMap() {
         break;
     }
   }
-
   // 放大时改变点位之间的间距
   function usePointPosition(type: ZoomType) {
     const wrapper = group.findOne(
@@ -364,7 +387,7 @@ export function useMap() {
         break;
     }
   }
-  // 根据鼠标位置偏移量
+  // 根据鼠标位置Group偏移量
   function useGroupPosition(
     type: ZoomType,
     mouseX: number = 0,
@@ -457,30 +480,29 @@ export function useMap() {
     }
   }
 
-  function initPath(config: BezierConfig, props: MapGroup) {
+  function initPath(config: BezierConfig) {
     const { start, controlStart, controlEnd, end } = config;
-    const renderScale = clientWidth.value / props.size.width;
     let realConfig = {
       ...config,
       start: {
-        x: start.x * renderScale,
-        y: start.y * renderScale,
+        x: start.x * renderScale.value,
+        y: start.y * renderScale.value,
       },
       end: {
-        x: end.x * renderScale,
-        y: end.y * renderScale,
+        x: end.x * renderScale.value,
+        y: end.y * renderScale.value,
       },
     };
     if (controlStart && controlEnd) {
       realConfig = {
         ...realConfig,
         controlStart: {
-          x: controlStart.x * renderScale,
-          y: controlStart.y * renderScale,
+          x: controlStart.x * renderScale.value,
+          y: controlStart.y * renderScale.value,
         },
         controlEnd: {
-          x: controlEnd.x * renderScale,
-          y: controlEnd.y * renderScale,
+          x: controlEnd.x * renderScale.value,
+          y: controlEnd.y * renderScale.value,
         },
       };
     }
@@ -491,20 +513,18 @@ export function useMap() {
 
   async function initPoint(
     config: PointConfig,
-    props: MapGroup,
     callback?: (data: any) => void
   ) {
     let point;
     let currentX = 0;
     let currentY = 0;
-    const { x, y, width, height } = config;
-    const renderScale = clientWidth.value / props.size.width;
+    const { x, y } = config;
     if (x) {
-      currentX = x * renderScale;
+      currentX = x * renderScale.value;
     }
 
     if (y) {
-      currentY = y * renderScale;
+      currentY = y * renderScale.value;
     }
 
     if (config.image) {
@@ -578,7 +598,7 @@ export function useMap() {
     if (pathData) {
       for (let i = 0; i < pathData.length; i++) {
         const config = pathData[i];
-        const bezierLine = initPath(config, params);
+        const bezierLine = initPath(config);
         group.add(bezierLine);
       }
     }
@@ -587,8 +607,9 @@ export function useMap() {
     if (pointData) {
       for (let i = 0; i < pointData.length; i++) {
         const config = pointData[i];
-        const point = await initPoint(config, params, callback);
+        const point = await initPoint(config, callback);
         group.add(point);
+        pointMap.set(i, point);
       }
     }
   }
@@ -598,6 +619,7 @@ export function useMap() {
     clientWidth.value = params.ctx.width;
     clientHeight.value = clientHeight.value =
       params.size.height * (clientWidth.value / params.size.width);
+    renderScale.value = clientWidth.value / params.size.width;
     stage = new Konva.Stage({
       container: params.ctx.el,
       width: clientWidth.value,
@@ -629,5 +651,6 @@ export function useMap() {
     zoomIn,
     zoomOut,
     resetZoom,
+    setPoint,
   };
 }

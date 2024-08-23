@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, watch,useAttrs } from "vue";
+import { ref, onMounted, onUnmounted, watch, useAttrs } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 import { useMap } from "@less-write/hooks";
 import { mapProps, mapEmits } from "./map";
@@ -18,7 +18,8 @@ const drawerData = ref<any>(null);
 const loading = ref(false);
 const collapse = ref(false);
 
-const { init, destroy, zoomIn, zoomOut, resetZoom, width } = useMap();
+const mapInstance = useMap();
+const { init, destroy, zoomIn, zoomOut, resetZoom, setPoint } = mapInstance;
 
 const autoRefresh = useDebounceFn(() => {
   if (!renderRef.value) return;
@@ -36,7 +37,7 @@ const autoRefresh = useDebounceFn(() => {
       pointData: props.pointData,
       callback: (data) => {
         drawerData.value = data;
-        if(attrs['pointClick']) {
+        if (attrs["pointClick"]) {
           emits("pointClick", data);
         }
       },
@@ -48,7 +49,13 @@ const autoRefresh = useDebounceFn(() => {
 }, 200);
 
 watch(
-  () => [props.size, props.pathData, props.pointData, props.background],
+  () => props.pointData,
+  (newVal) => {
+    setPoint(newVal)
+  }
+);
+watch(
+  () => [props.size, props.pathData, props.background],
   () => {
     autoRefresh();
   }
@@ -57,19 +64,16 @@ watch(
 onMounted(async () => {
   loading.value = true;
   autoRefresh();
-  window.addEventListener('resize', autoRefresh)
+  window.addEventListener("resize", autoRefresh);
 });
 
 onUnmounted(() => {
   destroy();
-  window.removeEventListener('resize', autoRefresh)
+  window.removeEventListener("resize", autoRefresh);
 });
 
 defineExpose({
-  width,
-  zoomIn,
-  zoomOut,
-  resetZoom,
+  mapInstance,
 });
 </script>
 

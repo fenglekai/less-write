@@ -1,4 +1,4 @@
-name: Publish changelog to release
+name: Publish to Github release
 
 on:
   push:
@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  changelog:
+  release:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,20 +26,35 @@ jobs:
           ref: ${{ github.ref }}
           fetch-depth: 0
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: pnpm
 
       - name: Update version
         run: |
           echo "TAG_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
           sed -i "s/\"version\": \".*\"/\"version\": \"${{ env.TAG_VERSION }}\"/g" package.json
 
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            ./node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
       - name: Generate Changelog
         run: |
-          npx conventional-changelog-cli -p angular -r 0 -i CHANGELOG.md -s
-          npx conventional-changelog-cli -p angular -r 2 -i CHANGELOG.txt -s
+          pnpm install
+          conventional-changelog -p angular -r 0 -i CHANGELOG.md -s
+          pnpm gen:changelog -i release.txt -s
 
       - name: Commit and push changelog
         if: ${{ github.event_name != 'workflow_dispatch' }}
@@ -52,34 +67,11 @@ jobs:
           git commit -m "docs(CHANGELOG): update changelog [skip ci]"
           git push origin HEAD:main
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: changelog
-          path: |
-            CHANGELOG.txt
-
-  release:
-    needs: changelog
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-
-      - name: Download changelog file
-        uses: actions/download-artifact@v4
-        with:
-          name: changelog
-          path: .
-
       - name: Release to Github
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ github.token }}
-          body_path: CHANGELOG.txt
+          body_path: release.txt
 
       - name: Release to NPM
         if: ${{ github.event_name != 'workflow_dispatch' }}

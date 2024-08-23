@@ -18,6 +18,7 @@
 - 集成 cli 用于生成代码
 - UI 组件
 - Hook 函数
+- Changelog 自定义生成
 - Vite 开发环境
 - Gulp 工作流管理构建
 - Rollup 打包组件模块

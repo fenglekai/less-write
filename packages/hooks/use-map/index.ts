@@ -84,6 +84,18 @@ function createImage(data: ImageConfig) {
   return image;
 }
 
+async function imageFormat(data: HTMLImageElement | string) {
+  let formatData: HTMLImageElement;
+  if (typeof data === "string") {
+    formatData = await loadImage(data);
+  } else if (data instanceof HTMLImageElement) {
+    formatData = data;
+  } else {
+    throw "Unable to process image conversion.";
+  }
+  return formatData;
+}
+
 function useBezierScene(
   ctx: Context,
   shape: Shape<ShapeConfig>,
@@ -184,24 +196,30 @@ export function useMap() {
     return { x: limitX, y: limitY };
   }
   // 设置动态点位
-  function setPoint(points: PointConfig[]) {
+  async function setPoint(points: PointConfig[]) {
     for (const [key, targetPoint] of Object.entries(points)) {
       if (pointMap.has(Number(key))) {
         const sourcePoint = pointMap.get(Number(key));
         if (!sourcePoint) return;
 
-        const x = targetPoint.x ? targetPoint.x : sourcePoint.x();
-        const y = targetPoint.y ? targetPoint.y : sourcePoint.y();
-        const rotation = targetPoint.rotation
-          ? targetPoint.rotation
-          : 0;
-        const fill = targetPoint.fill ? targetPoint.fill : sourcePoint.fill();
-        sourcePoint.setPosition({
-          x: x * renderScale.value,
-          y: y * renderScale.value,
+        let x = targetPoint.x
+          ? targetPoint.x * renderScale.value
+          : sourcePoint.x();
+        let y = targetPoint.y
+          ? targetPoint.y * renderScale.value
+          : sourcePoint.y();
+        x = x * BASE_SCALE ** scaleCount.value;
+        y = y * BASE_SCALE ** scaleCount.value;
+        if (targetPoint.image) {
+          const imageEl = await imageFormat(targetPoint.image);
+          targetPoint.image = imageEl;
+        }
+
+        sourcePoint.setAttrs({
+          ...targetPoint,
+          x: x,
+          y: y,
         });
-        sourcePoint.rotation(rotation);
-        sourcePoint.fill(fill)
       }
     }
   }
@@ -393,14 +411,10 @@ export function useMap() {
     mouseX: number = 0,
     mouseY: number = 0
   ) {
-    const wrapper = group
-      .getChildren((item) => item.attrs.name === DRAG_WRAPPER)
-      .pop();
     const beforeX = group.x();
     const beforeY = group.y();
     let offsetX = 0;
     let offsetY = 0;
-    if (!wrapper) return;
 
     switch (type) {
       case "in":
@@ -528,10 +542,7 @@ export function useMap() {
     }
 
     if (config.image) {
-      let imageEl = config.image;
-      if (typeof imageEl === "string") {
-        imageEl = await loadImage(imageEl);
-      }
+      const imageEl = await imageFormat(config.image);
       point = createImage({
         name: POINT_NAME,
         ...config,

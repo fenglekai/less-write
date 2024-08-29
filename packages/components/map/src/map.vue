@@ -19,12 +19,13 @@ const loading = ref(false);
 const collapse = ref(false);
 
 const mapInstance = useMap();
-const { init, destroy, zoomIn, zoomOut, resetZoom, setPoint } = mapInstance;
+const { init, destroy, zoomIn, zoomOut, resetZoom, setPoint, setLimit } = mapInstance;
 
 const autoRefresh = useDebounceFn(() => {
   if (!renderRef.value) return;
   resetZoom();
   destroy();
+  setLimit(props.limit)
   init(
     {
       ctx: {
@@ -54,6 +55,9 @@ watch(
     setPoint(newVal)
   }
 );
+watch(() => props.limit, (value) => {
+  setLimit(value)
+})
 watch(
   () => [props.size, props.pathData, props.background],
   () => {

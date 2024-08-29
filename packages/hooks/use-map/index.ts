@@ -131,6 +131,8 @@ function createBezierPath(bezier: BezierConfig) {
 }
 
 export function useMap() {
+  // 边缘限制选项
+  const isLimit = ref(false);
   // 容器宽度
   const clientWidth = ref(0);
   // 容器高度
@@ -170,8 +172,18 @@ export function useMap() {
       return limitBrink(x, y);
     },
   });
+
+  function setLimit(bool: boolean) {
+    isLimit.value = bool;
+    console.log(bool);
+    
+  }
+
   // 限制边缘
   function limitBrink(limitX: number, limitY: number) {
+    if (!isLimit.value) {
+      return { x: limitX, y: limitY };
+    }
     if (limitX > 0) {
       limitX = 0;
     }
@@ -654,6 +666,7 @@ export function useMap() {
     layer.destroy();
     stage?.destroy();
   }
+
   return {
     width: computed(() => unref(clientWidth)),
     scale: computed(() => unref(scale)),
@@ -663,5 +676,6 @@ export function useMap() {
     zoomOut,
     resetZoom,
     setPoint,
+    setLimit,
   };
 }

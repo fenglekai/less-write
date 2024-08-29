@@ -326,6 +326,7 @@ onUnmounted(() => {
       :path-data="pathData"
       :point-data="[...pointData, ...deviceData]"
       operation
+      limit
       style="margin-top: 20px; border: 1px solid #000"
     ></LeMap>
   </div>

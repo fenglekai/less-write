@@ -31,6 +31,10 @@ export const mapProps = {
     type: Boolean,
     default: false,
   },
+  limit: {
+    type: Boolean,
+    default: false,
+  },
   drawer: {
     type: Boolean,
     default: false,

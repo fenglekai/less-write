@@ -1,17 +1,17 @@
+@import './base.less';
+
 .le-button {
+  .border-background();
+  color: @primary-text;
   padding: 8px 15px;
-  background-color: #409eff;
-  color: #fff;
   border-radius: 4px;
   transition: 0.1s;
-  border: none;
   outline: none;
   cursor: pointer;
-
   &:hover {
-      background-color: #66b1ff;
-    }
-    &:active {
-      background-color: #3375b9;
+    background-color: @hover-bg-color;
+  }
+  &:active {
+    background-color: @active-bg-color;
   }
 }

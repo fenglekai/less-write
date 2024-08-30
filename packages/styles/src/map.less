@@ -1,3 +1,7 @@
+@import "./base.less";
+
+@transition-timer: 0.3s;
+
 .map-wrapper {
   position: relative;
 }
@@ -10,6 +14,69 @@
   }
 }
 
+.slider {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .slider-content {
+    overflow: hidden;
+    transition: height @transition-timer;
+    height: 80px;
+  }
+
+  input[type=range] {
+    width: 32px;
+    height: 80px;
+    margin: 0;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    transition: @transition-timer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    cursor: pointer;
+
+    @width: 8px;
+
+    &::-webkit-slider-container {
+      overflow: hidden;
+      background-color: transparent;
+    }
+    &::-webkit-slider-runnable-track {
+      background-color: #e4e7ed;
+      width: @width;
+      border-radius: 12px;
+    }
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: calc(@width * 1.6);
+      height: calc(@width * 1.6);
+      border-radius: 50%;
+      border: 1px solid @border-color;
+      background-color: @bg-color;
+      transform: translateX(-20%);
+      transition: @transition-timer;
+
+      &:hover {
+        width: calc(@width * 2);
+        height: calc(@width * 2);
+        transform: translateX(-26%);
+        background-color: @hover-bg-color;
+      }
+      &:active {
+        background-color: @active-bg-color;
+      }
+    }
+  }
+
+  * + * {
+    margin-top: 6px;
+  }
+}
+
 .operation {
   position: absolute;
   right: 15px;
@@ -17,37 +84,25 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: transform 0.3s;
+  transition: transform @transition-timer;
   transform: translateX(0px);
-}
-
-.common() {
-  border: 1px solid #dcdfe6;
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(24px);
-  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-    drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .operation-wrapper {
   position: relative;
   padding-left: 12px;
+  font-size: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 
   & .button {
     padding: 5px 6px;
     background-color: transparent;
-    border-radius: 4px;
-    transition: 0.3s;
     line-height: 0;
     border: none;
-    outline: none;
-    cursor: pointer;
-  }
-  & .button:hover {
-    background-color: #f5f7fa;
-  }
-  & .button:active {
-    background-color: #f0f2f5;
+    backdrop-filter: none;
   }
 
   &:hover {
@@ -59,7 +114,8 @@
   }
 
   & > .tooltip-button {
-    .common();
+    .border-background();
+    .shadow();
     padding: 10px 2px;
     position: absolute;
     left: 10px;
@@ -71,7 +127,7 @@
     & > svg {
       width: 12px;
       height: 12px;
-      transition: 0.3s;
+      transition: @transition-timer;
     }
 
     & > .arrow-right {
@@ -87,15 +143,15 @@
 }
 
 .operation-default {
-  .common();
+  .border-background();
+  .shadow();
   padding: 6px;
-  color: #303133;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
   will-change: width;
   width: 32px;
-  transition: 0.3s;
+  transition: @transition-timer;
   overflow: hidden;
 
   & svg {

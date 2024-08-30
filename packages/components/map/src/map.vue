@@ -19,7 +19,7 @@ const loading = ref(false);
 const collapse = ref(false);
 
 const mapInstance = useMap();
-const { init, destroy, zoomIn, zoomOut, resetZoom, setPoint, setLimit } = mapInstance;
+const { init, destroy, zoomIn, zoomOut, resetZoom, setPoint, setLimit, setScale, scale } = mapInstance;
 
 const autoRefresh = useDebounceFn(() => {
   if (!renderRef.value) return;
@@ -95,9 +95,11 @@ defineExpose({
         <le-operation
           v-else-if="operation && !$slots.operation"
           v-model="collapse"
+          :scale="scale"
           @zoom-in="zoomIn()"
           @zoom-out="zoomOut()"
           @reset-zoom="resetZoom()"
+          @set-scale="setScale"
         ></le-operation>
       </div>
 

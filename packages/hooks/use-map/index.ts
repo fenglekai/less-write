@@ -1,4 +1,4 @@
-import { ref, computed, unref, nextTick } from "vue";
+import { ref, computed, unref, nextTick, watch } from "vue";
 import Konva from "konva";
 import type { RectConfig } from "konva/lib/shapes/Rect";
 import type { ImageConfig } from "konva/lib/shapes/Image";
@@ -142,8 +142,9 @@ export function useMap() {
 
   // 显示倍率
   const scale = ref(1);
+
   // 最大缩放比例
-  const MAX_SCALE = 9;
+  const MAX_SCALE = 10;
   // 最小缩放比例
   const MIN_SCALE = 1;
   // 每次缩放大小
@@ -162,6 +163,74 @@ export function useMap() {
     );
   });
 
+  watch(scale, (newScale, oldScale) => {
+    // path
+    const pathChildren = group.getChildren(
+      (item) => item.attrs.name === PATH_NAME
+    );
+    pathChildren.forEach((path) => {
+      const { attrs } = path;
+      let position: BezierConfig = {
+        start: {
+          x: (attrs.start.x / oldScale) * newScale,
+          y: (attrs.start.y / oldScale) * newScale,
+        },
+        end: {
+          x: (attrs.end.x / oldScale) * newScale,
+          y: (attrs.end.y / oldScale) * newScale,
+        },
+      };
+      if (attrs.controlStart && attrs.controlEnd) {
+        position = {
+          ...position,
+          controlStart: {
+            x: (attrs.controlStart.x / oldScale) * newScale,
+            y: (attrs.controlStart.y / oldScale) * newScale,
+          },
+          controlEnd: {
+            x: (attrs.controlEnd.x / oldScale) * newScale,
+            y: (attrs.controlEnd.y / oldScale) * newScale,
+          },
+        };
+      }
+      path.setAttrs({
+        ...path.attrs,
+        ...position,
+        sceneFunc: (ctx: Context, shape: Shape<ShapeConfig>) =>
+          useBezierScene(ctx, shape, position),
+      });
+    });
+
+    // point
+    const wrapper = group.findOne(
+      (item: any) => item.attrs.name === DRAG_WRAPPER
+    );
+    const pointChildren = group.getChildren(
+      (item) => item.attrs.name === POINT_NAME
+    );
+    if (wrapper) {
+      wrapper.scale({
+        x: (wrapper.scaleX() / oldScale) * newScale,
+        y: (wrapper.scaleY() / oldScale) * newScale,
+      });
+    }
+    pointChildren.forEach((item) => {
+      item.scale({
+        x: (item.scaleX() / oldScale) * newScale,
+        y: (item.scaleY() / oldScale) * newScale,
+      });
+
+      item.setPosition({
+        x: (item.x() / oldScale) * newScale,
+        y: (item.y() / oldScale) * newScale,
+      });
+    });
+  });
+
+  function setScale(value: number) {
+    scale.value = value;
+  }
+
   const pointMap = new Map<number, Konva.Image | Konva.Rect>();
   let stage: Konva.Stage;
   const layer = new Konva.Layer();
@@ -175,8 +244,6 @@ export function useMap() {
 
   function setLimit(bool: boolean) {
     isLimit.value = bool;
-    console.log(bool);
-    
   }
 
   // 限制边缘
@@ -235,219 +302,64 @@ export function useMap() {
       }
     }
   }
-  // 放大时重新绘制路径坐标
-  function usePathPosition(type: ZoomType) {
-    const children = group.getChildren((item) => item.attrs.name === PATH_NAME);
-    switch (type) {
-      case "in":
-        children.forEach((path) => {
-          const { attrs } = path;
-          let position: BezierConfig = {
-            start: {
-              x: attrs.start.x * BASE_SCALE,
-              y: attrs.start.y * BASE_SCALE,
-            },
-            end: {
-              x: attrs.end.x * BASE_SCALE,
-              y: attrs.end.y * BASE_SCALE,
-            },
-          };
-          if (attrs.controlStart && attrs.controlEnd) {
-            position = {
-              ...position,
-              controlStart: {
-                x: attrs.controlStart.x * BASE_SCALE,
-                y: attrs.controlStart.y * BASE_SCALE,
-              },
-              controlEnd: {
-                x: attrs.controlEnd.x * BASE_SCALE,
-                y: attrs.controlEnd.y * BASE_SCALE,
-              },
-            };
-          }
-          path.setAttrs({
-            ...path.attrs,
-            ...position,
-            sceneFunc: (ctx: Context, shape: Shape<ShapeConfig>) =>
-              useBezierScene(ctx, shape, position),
-          });
-        });
-        break;
 
-      case "out":
-        children.forEach((path) => {
-          const { attrs } = path;
-          let position: BezierConfig = {
-            start: {
-              x: attrs.start.x / BASE_SCALE,
-              y: attrs.start.y / BASE_SCALE,
-            },
-            end: {
-              x: attrs.end.x / BASE_SCALE,
-              y: attrs.end.y / BASE_SCALE,
-            },
-          };
-          if (attrs.controlStart && attrs.controlEnd) {
-            position = {
-              ...position,
-              controlStart: {
-                x: attrs.controlStart.x / BASE_SCALE,
-                y: attrs.controlStart.y / BASE_SCALE,
-              },
-              controlEnd: {
-                x: attrs.controlEnd.x / BASE_SCALE,
-                y: attrs.controlEnd.y / BASE_SCALE,
-              },
-            };
-          }
-          path.setAttrs({
-            ...path.attrs,
-            ...position,
-            sceneFunc: (ctx: Context, shape: Shape<ShapeConfig>) =>
-              useBezierScene(ctx, shape, position),
-          });
-        });
-        break;
-
-      case "reset":
-        children.forEach((path) => {
-          const { attrs } = path;
-          let position: BezierConfig = {
-            start: {
-              x: attrs.start.x / BASE_SCALE ** scaleCount.value,
-              y: attrs.start.y / BASE_SCALE ** scaleCount.value,
-            },
-            end: {
-              x: attrs.end.x / BASE_SCALE ** scaleCount.value,
-              y: attrs.end.y / BASE_SCALE ** scaleCount.value,
-            },
-          };
-          if (attrs.controlStart && attrs.controlEnd) {
-            position = {
-              ...position,
-              controlStart: {
-                x: attrs.controlStart.x / BASE_SCALE ** scaleCount.value,
-                y: attrs.controlStart.y / BASE_SCALE ** scaleCount.value,
-              },
-              controlEnd: {
-                x: attrs.controlEnd.x / BASE_SCALE ** scaleCount.value,
-                y: attrs.controlEnd.y / BASE_SCALE ** scaleCount.value,
-              },
-            };
-          }
-          path.setAttrs({
-            ...path.attrs,
-            ...position,
-            sceneFunc: (ctx: Context, shape: Shape<ShapeConfig>) =>
-              useBezierScene(ctx, shape, position),
-          });
-        });
-        break;
-
-      default:
-        break;
-    }
-  }
-  // 放大时改变点位之间的间距
-  function usePointPosition(type: ZoomType) {
-    const wrapper = group.findOne(
-      (item: any) => item.attrs.name === DRAG_WRAPPER
-    );
-
-    const children = group.getChildren(
-      (item) => item.attrs.name === POINT_NAME
-    );
-
-    if (!wrapper) return;
-
-    switch (type) {
-      case "in":
-        wrapper.scale({
-          x: wrapper.scaleX() * BASE_SCALE,
-          y: wrapper.scaleY() * BASE_SCALE,
-        });
-        children.forEach((item) => {
-          item.scale({
-            x: item.scaleX() * SCALE_DIFF,
-            y: item.scaleY() * SCALE_DIFF,
-          });
-
-          item.setPosition({
-            x: item.x() * BASE_SCALE,
-            y: item.y() * BASE_SCALE,
-          });
-        });
-        break;
-      case "out":
-        wrapper.scale({
-          x: wrapper.scaleX() / BASE_SCALE,
-          y: wrapper.scaleY() / BASE_SCALE,
-        });
-        children.forEach((item) => {
-          item.scale({
-            x: item.scaleX() / SCALE_DIFF,
-            y: item.scaleY() / SCALE_DIFF,
-          });
-
-          item.setPosition({
-            x: item.x() / BASE_SCALE,
-            y: item.y() / BASE_SCALE,
-          });
-        });
-        break;
-      case "reset":
-        wrapper.scale({
-          x: 1,
-          y: 1,
-        });
-        children.forEach((item) => {
-          item.scale({
-            x: 1,
-            y: 1,
-          });
-
-          item.setPosition({
-            x: item.x() / BASE_SCALE ** scaleCount.value,
-            y: item.y() / BASE_SCALE ** scaleCount.value,
-          });
-        });
-        break;
-
-      default:
-        break;
-    }
-  }
   // 根据鼠标位置Group偏移量
   function useGroupPosition(
     type: ZoomType,
     mouseX: number = 0,
     mouseY: number = 0
   ) {
-    const beforeX = group.x();
-    const beforeY = group.y();
+    const gX = group.x();
+    const gY = group.y();
     let offsetX = 0;
     let offsetY = 0;
+    const baseScale = scale.value - 1;
+    let mouseXBefore = 0;
+    let mouseYBefore = 0;
+    let mouseXDiff = 0;
+    let mouseYDiff = 0;
+    if (gX < 0) {
+      mouseXBefore = Math.abs(gX) / (baseScale - SCALE_STEP);
+    }
+    if (gY < 0) {
+      mouseYBefore = Math.abs(gY) / (baseScale - SCALE_STEP);
+    }
+    if (mouseXBefore !== 0) {
+      mouseXDiff = mouseX - mouseXBefore;
+    }
+    if (mouseYBefore !== 0) {
+      mouseYDiff = mouseY - mouseYBefore;
+    }
+    console.log("mouseXBefore", mouseXBefore);
+    console.log("mouseX", mouseX);
+    console.log("mouseXDiff", mouseXDiff);
 
     switch (type) {
       case "in":
-        offsetX = (mouseX + Math.abs(beforeX)) * SCALE_STEP;
-        offsetY = (mouseY + Math.abs(beforeY)) * SCALE_STEP;
-        group.move({ x: -offsetX, y: -offsetY });
+        // offsetX = mouseX * SCALE_STEP + Math.abs(gX);
+        // offsetY = mouseY * SCALE_STEP + Math.abs(gY);
+        offsetX = mouseX * baseScale;
+        offsetY = mouseY * baseScale;
+        group.position({ x: -offsetX, y: -offsetY });
         break;
 
       case "out":
-        offsetX = ((mouseX + Math.abs(beforeX)) * SCALE_STEP) / BASE_SCALE;
-        offsetY = ((mouseY + Math.abs(beforeY)) * SCALE_STEP) / BASE_SCALE;
-        group.move({ x: offsetX, y: offsetY });
+        // offsetX = Math.abs(gX) - mouseX * SCALE_STEP;
+        // offsetY = Math.abs(gY) - mouseY * SCALE_STEP;
+        offsetX = mouseX * baseScale;
+        offsetY = mouseY * baseScale;
+        group.position({ x: -offsetX, y: -offsetY });
         break;
 
       case "reset":
         group.position({ x: 0, y: 0 });
+        break;
 
       default:
         break;
     }
   }
+
   function zoomIn(
     mouseX: number = clientWidth.value / 2,
     mouseY: number = clientHeight.value / 2
@@ -458,8 +370,7 @@ export function useMap() {
       (scale.value * DECIMAL_PLACE + SCALE_STEP * DECIMAL_PLACE) / DECIMAL_PLACE
     );
     scale.value = newScale;
-    usePathPosition("in");
-    usePointPosition("in");
+
     useGroupPosition("in", mouseX, mouseY);
     layer.batchDraw();
   }
@@ -474,8 +385,6 @@ export function useMap() {
     );
 
     scale.value = newScale;
-    usePathPosition("out");
-    usePointPosition("out");
     useGroupPosition("out", mouseX, mouseY);
 
     const { x, y } = group.position();
@@ -483,10 +392,8 @@ export function useMap() {
     layer.batchDraw();
   }
   function resetZoom() {
-    usePathPosition("reset");
-    usePointPosition("reset");
-    useGroupPosition("reset");
     scale.value = 1;
+    useGroupPosition("reset");
     layer.batchDraw();
   }
 
@@ -677,5 +584,6 @@ export function useMap() {
     resetZoom,
     setPoint,
     setLimit,
+    setScale,
   };
 }

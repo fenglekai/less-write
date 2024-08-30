@@ -305,7 +305,7 @@ const handleRunClick = () => {
 };
 
 onMounted(() => {
-  runInstance.init();
+  // runInstance.init();
 });
 onUnmounted(() => {
   runInstance.destoy();
@@ -319,7 +319,7 @@ onUnmounted(() => {
     <LeButton @click="handleResetZoom">还原</LeButton>
     <LeButton @click="handleRunClick">运行轨迹</LeButton>
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg -->
-    <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/wallhaven-85128j.png -->
+    <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png -->
     <LeMap
       ref="mapRef"
       :size="size"
@@ -327,7 +327,7 @@ onUnmounted(() => {
       :point-data="[...pointData, ...deviceData]"
       operation
       limit
-      style="margin-top: 20px; border: 1px solid #000"
+      style="margin-top: 20px; border: 1px solid #dcdfe6; border-radius: 6px;overflow: hidden;"
     ></LeMap>
   </div>
 </template>

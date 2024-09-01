@@ -151,8 +151,6 @@ export function useMap() {
   const SCALE_STEP = 0.2;
   // 基础缩放倍率
   const BASE_SCALE = 1 + SCALE_STEP;
-  // 点与点间距差异化放大
-  const SCALE_DIFF = BASE_SCALE - 0.1;
   // 计算小数位
   const DECIMAL_PLACE = 10 ** SCALE_STEP.toString().split(".")[1].length;
   // 放大统计
@@ -163,33 +161,77 @@ export function useMap() {
     );
   });
 
+  // 监听缩放变换
   watch(scale, (newScale, oldScale) => {
+    const isZoomIn = newScale > oldScale;
     // path
     const pathChildren = group.getChildren(
       (item) => item.attrs.name === PATH_NAME
     );
+
+    // point
+    const wrapper = group.findOne(
+      (item: any) => item.attrs.name === DRAG_WRAPPER
+    );
+    const pointChildren = group.getChildren(
+      (item) => item.attrs.name === POINT_NAME
+    );
+    if (!wrapper) return;
+
+    const zoomComputed = (base: number) => {
+      if (
+        Math.abs(newScale * DECIMAL_PLACE - oldScale * DECIMAL_PLACE) !==
+        SCALE_STEP * DECIMAL_PLACE
+      ) {
+        const scaleCount =
+          (oldScale * DECIMAL_PLACE - 1 * DECIMAL_PLACE) /
+          (SCALE_STEP * DECIMAL_PLACE);
+        return base / BASE_SCALE ** scaleCount;
+      }
+      if (isZoomIn) {
+        return base * BASE_SCALE;
+      } else {
+        return base / BASE_SCALE;
+      }
+    };
+
+    wrapper.scale({
+      x: zoomComputed(wrapper.scaleX()),
+      y: zoomComputed(wrapper.scaleY()),
+    });
+    pointChildren.forEach((item) => {
+      item.scale({
+        x: newScale,
+        y: newScale,
+      });
+
+      item.setPosition({
+        x: zoomComputed(item.x()),
+        y: zoomComputed(item.y()),
+      });
+    });
     pathChildren.forEach((path) => {
       const { attrs } = path;
       let position: BezierConfig = {
         start: {
-          x: (attrs.start.x / oldScale) * newScale,
-          y: (attrs.start.y / oldScale) * newScale,
+          x: zoomComputed(attrs.start.x),
+          y: zoomComputed(attrs.start.y),
         },
         end: {
-          x: (attrs.end.x / oldScale) * newScale,
-          y: (attrs.end.y / oldScale) * newScale,
+          x: zoomComputed(attrs.end.x),
+          y: zoomComputed(attrs.end.y),
         },
       };
       if (attrs.controlStart && attrs.controlEnd) {
         position = {
           ...position,
           controlStart: {
-            x: (attrs.controlStart.x / oldScale) * newScale,
-            y: (attrs.controlStart.y / oldScale) * newScale,
+            x: zoomComputed(attrs.controlStart.x),
+            y: zoomComputed(attrs.controlStart.y),
           },
           controlEnd: {
-            x: (attrs.controlEnd.x / oldScale) * newScale,
-            y: (attrs.controlEnd.y / oldScale) * newScale,
+            x: zoomComputed(attrs.controlEnd.x),
+            y: zoomComputed(attrs.controlEnd.y),
           },
         };
       }
@@ -200,34 +242,14 @@ export function useMap() {
           useBezierScene(ctx, shape, position),
       });
     });
-
-    // point
-    const wrapper = group.findOne(
-      (item: any) => item.attrs.name === DRAG_WRAPPER
-    );
-    const pointChildren = group.getChildren(
-      (item) => item.attrs.name === POINT_NAME
-    );
-    if (wrapper) {
-      wrapper.scale({
-        x: (wrapper.scaleX() / oldScale) * newScale,
-        y: (wrapper.scaleY() / oldScale) * newScale,
-      });
-    }
-    pointChildren.forEach((item) => {
-      item.scale({
-        x: (item.scaleX() / oldScale) * newScale,
-        y: (item.scaleY() / oldScale) * newScale,
-      });
-
-      item.setPosition({
-        x: (item.x() / oldScale) * newScale,
-        y: (item.y() / oldScale) * newScale,
-      });
-    });
   });
 
   function setScale(value: number) {
+    if (value > scale.value) {
+      useGroupPosition("in", clientWidth.value / 2, clientHeight.value / 2);
+    } else {
+      useGroupPosition("out", clientWidth.value / 2, clientHeight.value / 2);
+    }
     scale.value = value;
   }
 
@@ -313,42 +335,18 @@ export function useMap() {
     const gY = group.y();
     let offsetX = 0;
     let offsetY = 0;
-    const baseScale = scale.value - 1;
-    let mouseXBefore = 0;
-    let mouseYBefore = 0;
-    let mouseXDiff = 0;
-    let mouseYDiff = 0;
-    if (gX < 0) {
-      mouseXBefore = Math.abs(gX) / (baseScale - SCALE_STEP);
-    }
-    if (gY < 0) {
-      mouseYBefore = Math.abs(gY) / (baseScale - SCALE_STEP);
-    }
-    if (mouseXBefore !== 0) {
-      mouseXDiff = mouseX - mouseXBefore;
-    }
-    if (mouseYBefore !== 0) {
-      mouseYDiff = mouseY - mouseYBefore;
-    }
-    console.log("mouseXBefore", mouseXBefore);
-    console.log("mouseX", mouseX);
-    console.log("mouseXDiff", mouseXDiff);
 
     switch (type) {
       case "in":
-        // offsetX = mouseX * SCALE_STEP + Math.abs(gX);
-        // offsetY = mouseY * SCALE_STEP + Math.abs(gY);
-        offsetX = mouseX * baseScale;
-        offsetY = mouseY * baseScale;
-        group.position({ x: -offsetX, y: -offsetY });
+        offsetX = (mouseX + Math.abs(gX)) * SCALE_STEP;
+        offsetY = (mouseY + Math.abs(gY)) * SCALE_STEP;
+        group.move({ x: -offsetX, y: -offsetY });
         break;
 
       case "out":
-        // offsetX = Math.abs(gX) - mouseX * SCALE_STEP;
-        // offsetY = Math.abs(gY) - mouseY * SCALE_STEP;
-        offsetX = mouseX * baseScale;
-        offsetY = mouseY * baseScale;
-        group.position({ x: -offsetX, y: -offsetY });
+        offsetX = ((mouseX + Math.abs(gX)) * SCALE_STEP) / BASE_SCALE;
+        offsetY = ((mouseY + Math.abs(gY)) * SCALE_STEP) / BASE_SCALE;
+        group.move({ x: offsetX, y: offsetY });
         break;
 
       case "reset":

@@ -1,4 +1,22 @@
-# [](https://github.com/fenglekai/less-write/compare/v1.0.4...v) (2024-08-23)
+# [](https://github.com/fenglekai/less-write/compare/v1.0.5...v) (2024-09-02)
+
+
+
+## [1.0.5](https://github.com/fenglekai/less-write/compare/v1.0.4...v1.0.5) (2024-09-02)
+
+
+### Bug Fixes
+
+* **map:** 🐛 修复多个组件显示异常问题;修复滑块拖动缩放异常 ([fe8ada4](https://github.com/fenglekai/less-write/commit/fe8ada4370778561f986562821d07b8da4cff73a))
+* **map:** 🐛 修复错误的引用组件方式 ([bc2acdf](https://github.com/fenglekai/less-write/commit/bc2acdf211e4d0256cacd34a3713b4196381e2c6))
+* **map:** 🐛 修复鼠标缩放偏移，未放大点与点间距 ([b3420eb](https://github.com/fenglekai/less-write/commit/b3420eb7aeb6adc1daff435ee9bf3ba4f8a06385))
+* **map:** 🐛 动态点位在缩放时显示位置错误 ([384be2d](https://github.com/fenglekai/less-write/commit/384be2d53c3635eee2fcf3d3023e58478f24bb15))
+
+
+### Features
+
+* **map:** 🎸 动态的点位显示:位置/旋转/颜色 ([e1b9fb9](https://github.com/fenglekai/less-write/commit/e1b9fb96ae091077dbc45f916ce51379add758e1))
+* **map:** 🎸 可选择的边缘限制选项，默认关闭 ([61adcbf](https://github.com/fenglekai/less-write/commit/61adcbfcfab9af566be2402fdbae89a8505dc270))
 
 
 

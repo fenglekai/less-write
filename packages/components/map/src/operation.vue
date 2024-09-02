@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { LeButton } from "less-write-ui";
+import { LeButton } from "@less-write/components";
 import { operationProps, operationEmits } from "./operation";
 import { UPDATE_MODEL_EVENT } from "@less-write/constants";
 

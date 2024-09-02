@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted, watch, useAttrs } from "vue";
 import { useDebounceFn } from "@vueuse/core";
 import { useMap } from "@less-write/hooks";
 import { mapProps, mapEmits } from "./map";
-import LeOperation from "./operation.vue";
+import { LeOperation } from "@less-write/components";
 
 defineOptions({
   name: "LeMap",
@@ -19,13 +19,23 @@ const loading = ref(false);
 const collapse = ref(false);
 
 const mapInstance = useMap();
-const { init, destroy, zoomIn, zoomOut, resetZoom, setPoint, setLimit, setScale, scale } = mapInstance;
+const {
+  init,
+  destroy,
+  zoomIn,
+  zoomOut,
+  resetZoom,
+  setPoint,
+  setLimit,
+  setScale,
+  scale,
+} = mapInstance;
 
 const autoRefresh = useDebounceFn(() => {
   if (!renderRef.value) return;
   resetZoom();
   destroy();
-  setLimit(props.limit)
+  setLimit(props.limit);
   init(
     {
       ctx: {
@@ -52,12 +62,15 @@ const autoRefresh = useDebounceFn(() => {
 watch(
   () => props.pointData,
   (newVal) => {
-    setPoint(newVal)
+    setPoint(newVal);
   }
 );
-watch(() => props.limit, (value) => {
-  setLimit(value)
-})
+watch(
+  () => props.limit,
+  (value) => {
+    setLimit(value);
+  }
+);
 watch(
   () => [props.size, props.pathData, props.background],
   () => {

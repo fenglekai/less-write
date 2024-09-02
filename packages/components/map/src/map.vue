@@ -13,7 +13,7 @@ const props = defineProps(mapProps);
 const emits = defineEmits(mapEmits);
 const attrs = useAttrs();
 
-const renderRef = ref<HTMLElement>();
+const renderRef = ref<HTMLDivElement>();
 const drawerData = ref<any>(null);
 const loading = ref(false);
 const collapse = ref(false);
@@ -29,7 +29,7 @@ const autoRefresh = useDebounceFn(() => {
   init(
     {
       ctx: {
-        el: "map-container",
+        el: renderRef.value,
         width: renderRef.value.clientWidth,
       },
       background: props.background,

@@ -244,6 +244,16 @@ const pathData = ref<BezierConfig[]>([
 
 const pointData = ref<PointConfig[]>([
   {
+    x: 1000,
+    y: 1000,
+    fill: "black",
+  },
+  {
+    x: 1100,
+    y: 1000,
+    fill: "black",
+  },
+  {
     x: 5000,
     y: 2000,
     fill: "black",
@@ -322,6 +332,15 @@ onUnmounted(() => {
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png -->
     <LeMap
       ref="mapRef"
+      :size="size"
+      :path-data="[]"
+      :point-data="[]"
+      operation
+      limit
+      background="https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png"
+      style="margin-top: 20px; border: 1px solid #dcdfe6; border-radius: 6px;overflow: hidden;"
+    ></LeMap>
+    <LeMap
       :size="size"
       :path-data="pathData"
       :point-data="[...pointData, ...deviceData]"

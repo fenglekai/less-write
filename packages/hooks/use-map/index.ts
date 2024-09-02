@@ -32,7 +32,7 @@ export interface PointConfig extends ShapeConfig {
 
 export interface MapGroup {
   ctx: {
-    el: string;
+    el: string | HTMLDivElement;
     width: number;
   };
   size: {
@@ -178,22 +178,16 @@ export function useMap() {
     );
     if (!wrapper) return;
 
+    
+    const scaleCount = Math.abs(newScale * DECIMAL_PLACE - oldScale * DECIMAL_PLACE) / (SCALE_STEP * DECIMAL_PLACE)
     const zoomComputed = (base: number) => {
-      if (
-        Math.abs(newScale * DECIMAL_PLACE - oldScale * DECIMAL_PLACE) !==
-        SCALE_STEP * DECIMAL_PLACE
-      ) {
-        const scaleCount =
-          (oldScale * DECIMAL_PLACE - 1 * DECIMAL_PLACE) /
-          (SCALE_STEP * DECIMAL_PLACE);
+      if (isZoomIn) {
+        return base * BASE_SCALE ** scaleCount;
+      } else {
         return base / BASE_SCALE ** scaleCount;
       }
-      if (isZoomIn) {
-        return base * BASE_SCALE;
-      } else {
-        return base / BASE_SCALE;
-      }
     };
+    
 
     wrapper.scale({
       x: zoomComputed(wrapper.scaleX()),
@@ -245,10 +239,15 @@ export function useMap() {
   });
 
   function setScale(value: number) {
+    const scaleCount = Math.abs(value * DECIMAL_PLACE - scale.value * DECIMAL_PLACE) / (SCALE_STEP * DECIMAL_PLACE)
     if (value > scale.value) {
-      useGroupPosition("in", clientWidth.value / 2, clientHeight.value / 2);
+      for (let i = 0; i < scaleCount; i++) {
+        useGroupPosition("in", clientWidth.value / 2, clientHeight.value / 2);
+      }
     } else {
-      useGroupPosition("out", clientWidth.value / 2, clientHeight.value / 2);
+      for (let i = 0; i < scaleCount; i++) {
+        useGroupPosition("out", clientWidth.value / 2, clientHeight.value / 2);
+      }
     }
     scale.value = value;
   }

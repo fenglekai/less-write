@@ -1,0 +1,65 @@
+@import "mixins/mixins.less";
+@import 'common/var.less';
+
+.b("slider", {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .slider-content {
+    overflow: hidden;
+    transition: width,height @transition-timer;
+    height: 80px;
+  }
+
+  input[type=range] {
+    width: 32px;
+    height: 80px;
+    margin: 0;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    transition: @transition-timer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    cursor: pointer;
+
+    @width: 8px;
+
+    &::-webkit-slider-container {
+      overflow: hidden;
+      background-color: transparent;
+    }
+    &::-webkit-slider-runnable-track {
+      background-color: #e4e7ed;
+      width: @width;
+      border-radius: 12px;
+    }
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: calc(@width * 1.6);
+      height: calc(@width * 1.6);
+      border-radius: 50%;
+      border: 1px solid @border-color;
+      background-color: @bg-color;
+      transform: translateX(-20%);
+      transition: @transition-timer;
+
+      &:hover {
+        width: calc(@width * 2);
+        height: calc(@width * 2);
+        transform: translateX(-26%);
+        background-color: @hover-bg-color;
+      }
+      &:active {
+        background-color: @active-bg-color;
+      }
+    }
+  }
+
+  * + * {
+    margin-top: 6px;
+  }
+});

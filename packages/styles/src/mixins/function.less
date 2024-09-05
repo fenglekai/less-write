@@ -1,0 +1,31 @@
+@import "config.less";
+@plugin "../plugins/index.js";
+
+// join var name
+/*
+    @alias: button, text-color
+    .join-var-name(@alias) => {
+      @prefix: --le
+      @join-name: button-text-color
+      @name: --le-button-text-color
+    }
+    */
+.join-var-name(@list) {
+  @prefix: ~"@{modifier-separator}@{namespace}";
+  @join-name: join(@list, @common-separator);
+  @name: splice(@prefix, @common-separator, @join-name);
+}
+
+/*
+    @alias: button, text-color
+    .get-css-var(@alias, red) => {
+      @name: --le-button-text-color
+      @var-name: var(--le-button-text-color)
+      @default-var-name: var(--le-button-text-color, red)
+    }
+    */
+.get-css-var(@args, @default: '') {
+  .join-var-name(@args);
+  @var-name: var(@name);
+  @default-var-name: if(@default ='', @name, var(@name, @default));
+}

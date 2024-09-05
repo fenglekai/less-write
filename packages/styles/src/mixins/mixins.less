@@ -1,0 +1,10 @@
+@import "config.less";
+
+// BEM
+.b(@block , @content) {
+  @B: ~"@{namespace}@{common-separator}@{block}";
+
+  .@{B} {
+    @content();
+  }
+}

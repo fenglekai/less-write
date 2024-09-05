@@ -1,0 +1,44 @@
+@primary-text: #303133;
+
+@border-color: #dcdfe6;
+@bg-color: rgba(255, 255, 255, 0.8);
+
+@hover-bg-color: #f5f7fa;
+@active-bg-color: #f0f2f5;
+
+@success: #67C23A;
+@warning: #E6A23C;
+@danger: #F56C6C;
+@info: #909399;
+
+@transition-timer: 0.3s;
+
+@border-radius: {
+  base: 4px;
+  small: 2px;
+  round: 20px;
+  circle: 100%;
+}
+
+@button-padding-vertical: {
+  large: 13px;
+  default: 9px;
+  small: 6px;
+}
+
+@button-padding-horizontal: {
+  large: 20px;
+  default: 16px;
+  small: 12px;
+}
+
+.base-border-background() {
+  border: 1px solid @border-color;
+  background-color: @bg-color;
+  backdrop-filter: blur(24px);
+}
+
+.base-shadow() {
+  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+    drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+}

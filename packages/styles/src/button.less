@@ -1,17 +1,40 @@
-@import './base.less';
+@import "mixins/mixins.less";
+@import "mixins/function.less";
+@import "common/var.less";
 
-.le-button {
-  .border-background();
-  color: @primary-text;
-  padding: 8px 15px;
-  border-radius: 4px;
-  transition: 0.1s;
-  outline: none;
-  cursor: pointer;
-  &:hover {
-    background-color: @hover-bg-color;
-  }
-  &:active {
-    background-color: @active-bg-color;
-  }
+.get-root-button-padding-vertical() {
+  .get-css-var(~"button-padding-vertical");
+  @padding-vertical: @var-name;
 }
+.get-root-button-padding-horizontal() {
+  .get-css-var(~"button-padding-horizontal");
+  @padding-horizontal: @var-name;
+}
+.get-root-border-radius() {
+  @alias: border-radius, base;
+  .get-css-var(@alias);
+  @border-radius: @var-name;
+}
+
+.b(button, {
+    .base-border-background();
+    .get-root-button-padding-vertical();
+    .get-root-button-padding-horizontal();
+    .get-root-border-radius();
+    color: @primary-text;
+    padding: @padding-vertical @padding-horizontal;
+    border-radius: @border-radius;
+    transition: 0.1s;
+    outline: none;
+    cursor: pointer;
+
+    &:hover {
+      background-color: @hover-bg-color;
+    }
+
+    &:active {
+      background-color: @active-bg-color;
+    }
+  }
+
+);

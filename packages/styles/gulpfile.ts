@@ -7,7 +7,7 @@ import cssnano from "cssnano";
 import { Transform } from "stream";
 import type Vinly from "vinyl";
 import consola from "consola";
-import chalk from 'chalk'
+import chalk from "chalk";
 
 const distFolder = path.resolve(__dirname, "dist");
 const distBundle = path.resolve(leOutput, "styles");
@@ -54,7 +54,15 @@ function compressWithCssnano() {
 }
 
 function buildLessStyle() {
-  return src("src/*.less").pipe(less()).pipe(compressWithCssnano()).pipe(dest(distFolder));
+  const plugins = require("./src/plugins/index.js");
+  return src("src/*.less")
+    .pipe(
+      less({
+        plugins: [plugins],
+      })
+    )
+    .pipe(compressWithCssnano())
+    .pipe(dest(distFolder));
 }
 
 export function copyLessStyleSource() {

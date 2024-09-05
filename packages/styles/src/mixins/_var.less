@@ -1,0 +1,26 @@
+@import "../common/var.less";
+@import "function.less";
+
+
+.set-component-css-var(@name, @variables) {
+
+  each(@variables, .(@value,
+      @attribute,
+      @index) {
+      .is-default(@attribute) when (@attribute =default) {
+        .get-css-var(@name);
+        @{name}: @value;
+      }
+
+      .is-default(@attribute) when not (@attribute =default) {
+        .get-css-var(@name);
+        @alias: splice(@name, @common-separator, @attribute);
+        @{alias}: @value;
+      }
+
+      .is-default(@attribute);
+
+    }
+
+  );
+}

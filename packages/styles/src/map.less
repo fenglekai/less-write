@@ -1,6 +1,5 @@
-@import "./base.less";
-
-@transition-timer: 0.3s;
+@import "mixins/mixins.less";
+@import "common/var.less";
 
 .map-wrapper {
   position: relative;
@@ -22,7 +21,7 @@
 
   .slider-content {
     overflow: hidden;
-    transition: height @transition-timer;
+    transition: width,height @transition-timer;
     height: 80px;
   }
 
@@ -114,13 +113,13 @@
   }
 
   & > .tooltip-button {
-    .border-background();
-    .shadow();
+    .base-border-background();
+    .base-shadow();
     padding: 10px 2px;
     position: absolute;
     left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+    bottom: 50%;
+    transform: translateY(50%);
     visibility: hidden;
     opacity: 0;
 
@@ -139,12 +138,14 @@
     visibility: visible;
     opacity: 1;
     left: 0px;
+    bottom: 0px;
+    transform: none;
   }
 }
 
 .operation-default {
-  .border-background();
-  .shadow();
+  .base-border-background();
+  .base-shadow();
   padding: 6px;
   border-radius: 4px;
   display: flex;

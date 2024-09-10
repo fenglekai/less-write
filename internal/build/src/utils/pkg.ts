@@ -32,6 +32,7 @@ export const excludeFiles = (files: string[]) => {
     "dist",
     "less-write-cli",
     "conventional-changelog-custom",
+    'styles/src/plugins'
   ];
   return files.filter(
     (path) => !excludes.some((exclude) => path.includes(exclude))

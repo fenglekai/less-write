@@ -1,15 +1,52 @@
+// #056abf
+// #6ad8fe
+// #1ba7fd
+// #0185ee
+@color-white: #ffffff;
+@color-black: #000000;
+@colors: {
+  primary: #056abf;
+  success: #67c23a;
+  warning: #e6a23c;
+  danger: #f56c6c;
+  info: #909399;
+}
+
+// --le-color-primary-light-i
+// 10% 53a8ff
+// 20% 66b1ff
+// 30% 79bbff
+// 40% 8cc5ff
+// 50% a0cfff
+// 60% b3d8ff
+// 70% c6e2ff
+// 80% d9ecff
+// 90% ecf5ff
+.set-color-mix-level(@mode: light) {
+  @prefix: ~"@{modifier-separator}@{namespace}";
+
+  each(@colors, .(@v, @k) {
+      @color: ~"@{prefix}-color-@{k}-@{mode}";
+
+      each(range(9), {
+          @percent: 10% * @value;
+          @{color}-@{index}: tint(@v, @percent);
+        }
+
+      );
+    }
+
+  );
+}
+
 @primary-text: #303133;
 
-@border-color: #dcdfe6;
-@bg-color: rgba(255, 255, 255, 0.8);
+@border-color: #e8e9eb;
+@bg-color: #fcfcfe;
+@outside-color: #f1f3f4;
 
 @hover-bg-color: #f5f7fa;
 @active-bg-color: #f0f2f5;
-
-@success: #67C23A;
-@warning: #E6A23C;
-@danger: #F56C6C;
-@info: #909399;
 
 @transition-timer: 0.3s;
 
@@ -39,6 +76,5 @@
 }
 
 .base-shadow() {
-  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-    drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }

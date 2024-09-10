@@ -1,0 +1,1 @@
+import "@less-write/styles/slider.css";

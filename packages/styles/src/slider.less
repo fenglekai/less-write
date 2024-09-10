@@ -1,65 +1,87 @@
 @import "mixins/mixins.less";
+@import "mixins/function.less";
 @import 'common/var.less';
 
 .b("slider", {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    display: flex;
 
-  .slider-content {
-    overflow: hidden;
-    transition: width,height @transition-timer;
-    height: 80px;
-  }
-
-  input[type=range] {
-    width: 32px;
-    height: 80px;
-    margin: 0;
-    writing-mode: vertical-lr;
-    direction: rtl;
-    transition: @transition-timer;
-    -webkit-appearance: none;
-    appearance: none;
-    background-color: transparent;
-    cursor: pointer;
-
-    @width: 8px;
-
-    &::-webkit-slider-container {
-      overflow: hidden;
-      background-color: transparent;
+    .slider-content {
+      flex: 1;
+      position: relative;
+      margin-top: 7px;
+      margin-bottom: 7px;
     }
-    &::-webkit-slider-runnable-track {
-      background-color: #e4e7ed;
-      width: @width;
+
+    .runnable-track {
+      height: 8px;
+      background-color: @outside-color;
       border-radius: 12px;
+
     }
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: calc(@width * 1.6);
-      height: calc(@width * 1.6);
+
+    .thumb {
+      .base-shadow();
+      width: 12px;
+      height: 12px;
+      position: absolute;
+      z-index: 1;
+      top: -7px;
+      transform: translateX(-50%);
+      background-color: @colors[primary];
       border-radius: 50%;
-      border: 1px solid @border-color;
-      background-color: @bg-color;
-      transform: translateX(-20%);
-      transition: @transition-timer;
-
+      border: 5px solid @color-white;
+      cursor: pointer;
       &:hover {
-        width: calc(@width * 2);
-        height: calc(@width * 2);
-        transform: translateX(-26%);
-        background-color: @hover-bg-color;
+        @args: color, primary, light, 3;
+        .join-var-name(@args);
+        background-color: var(@name);
       }
+
       &:active {
-        background-color: @active-bg-color;
+        @args: color, primary, light, 1;
+        .join-var-name(@args);
+        background-color: var(@name);
+      }
+    }
+
+    .fill {
+      height: 8px;
+      border-radius: 12px;
+      background-color: @colors[primary];
+      position: absolute;
+    }
+
+    &.@{state-prefix}vertical {
+      height: 100%;
+
+      .slider-content {
+        flex: 0;
+        position: relative;
+        margin-left: 7px;
+        margin-right: 7px;
+      }
+  
+      .runnable-track {
+        width: 8px;
+        height: 100%;
+        background-color: @outside-color;
+        border-radius: 12px;
+  
+      }
+  
+      .thumb {
+        top: auto;
+        left: 5px;
+        bottom: 0px;
+        transform: translate(-50%, 50%);
+      }
+  
+      .fill {
+        width: 8px;
+        height: 0%;
+        bottom: 0px;
       }
     }
   }
 
-  * + * {
-    margin-top: 6px;
-  }
-});
+);

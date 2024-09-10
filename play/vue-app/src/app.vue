@@ -321,9 +321,16 @@ onUnmounted(() => {
   runInstance.destoy();
   runInstance = null;
 });
+
+const value = ref(0);
 </script>
 <template>
   <div>
+    <div class="slider-wrapper">
+      <div>{{ value }}</div>
+      <LeSlider v-model="value"></LeSlider>
+      <LeSlider v-model="value" vertical></LeSlider>
+    </div>
     <LeButton @click="handleZoomIn">放大</LeButton>
     <LeButton @click="handleZoomOut">缩小</LeButton>
     <LeButton @click="handleResetZoom">还原</LeButton>
@@ -338,7 +345,12 @@ onUnmounted(() => {
       operation
       limit
       background="https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png"
-      style="margin-top: 20px; border: 1px solid #dcdfe6; border-radius: 6px;overflow: hidden;"
+      style="
+        margin-top: 20px;
+        border: 1px solid #dcdfe6;
+        border-radius: 6px;
+        overflow: hidden;
+      "
     ></LeMap>
     <LeMap
       :size="size"
@@ -346,11 +358,30 @@ onUnmounted(() => {
       :point-data="[...pointData, ...deviceData]"
       operation
       limit
-      style="margin-top: 20px; border: 1px solid #dcdfe6; border-radius: 6px;overflow: hidden;"
+      style="
+        margin-top: 20px;
+        border: 1px solid #dcdfe6;
+        border-radius: 6px;
+        overflow: hidden;
+      "
     ></LeMap>
   </div>
 </template>
 <style lang="less" scoped>
+.slider-wrapper {
+  width: 50%;
+  height: 200px;
+  margin: 20px;
+  display: flex;
+  & > *:not(:first-child) {
+    flex: 1;
+    margin-right: 20px;
+  }
+  & > *:first-child {
+    width: 30px;
+    margin-right: 20px;
+  }
+}
 .le-button:not(:last-child) {
   margin-right: 5px;
 }

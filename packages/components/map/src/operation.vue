@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import { LeButton } from "@less-write/components";
-import { operationProps, operationEmits } from "./operation";
+import { ref, watch } from "vue";
+import { LeButton, LeSlider } from "@less-write/components";
+import { operationProps, operationEmits, UPDATE_SCALE_EVENT } from "./operation";
 import { UPDATE_MODEL_EVENT } from "@less-write/constants";
 
 defineOptions({
@@ -9,20 +9,34 @@ defineOptions({
   inheritAttrs: false,
 });
 
- defineProps(operationProps);
+const props = defineProps(operationProps);
 
 const emits = defineEmits(operationEmits);
 
 const showSlider = ref(false);
+const scale = ref(0);
+watch(
+  () => props.modelValue,
+  (val) => {
+    if (val) {
+      showSlider.value = false;
+    }
+  }
+);
+watch(
+  () => props.scale,
+  (val) => {
+    scale.value = val;
+  }
+);
 
 function handleManualScale() {
   showSlider.value = !showSlider.value;
 }
 
-function handleSliderInput(e: Event) {
-  if (e.target) {
-    emits('setScale',  Number((e.target as HTMLInputElement).value))
-  }
+function handleScaleChange(scale: number) {
+  emits(UPDATE_SCALE_EVENT, scale);
+  emits('setScale', scale);
 }
 </script>
 
@@ -47,18 +61,17 @@ function handleSliderInput(e: Event) {
       <div class="slider">
         <span>{{ scale }}</span>
         <div
-          class="slider-content"
-          :style="!showSlider ? { height: '0' } : null"
+          class="slider-wrapper"
+          :style="!showSlider ? { width: '0', height: '0' } : null"
         >
-          <input
-            type="range"
-            name="scale"
+          <le-slider
+            v-model="scale"
             :min="minScale"
             :max="maxScale"
             :step="scaleStep"
-            :value="scale"
-            @input="handleSliderInput"
-          />
+            @change="handleScaleChange"
+            vertical
+          ></le-slider>
         </div>
       </div>
     </div>

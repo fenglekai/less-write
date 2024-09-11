@@ -70,10 +70,12 @@
   "author": "fenglekai",
   "license": "MIT",
   "peerDependencies": {
-    "vue": "^3.4.27",
-    "konva": "^9.3.9"
+    "vue": "^3.4.27"
   },
   "dependencies": {
-    "@vueuse/core": "^10.9.0"
+    "@vueuse/core": "^10.9.0",
+    "big.js": "^6.2.2",
+    "konva": "^9.3.9",
+    "lodash": "^4.17.21"
   }
 }

@@ -31,12 +31,16 @@
     "@less-write/hooks": "workspace:*",
     "@less-write/styles": "workspace:*",
     "@less-write/utils": "workspace:*",
-    "less-write-cli": "workspace:*"
+    "big.js": "^6.2.2",
+    "less-write-cli": "workspace:*",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@esbuild-kit/cjs-loader": "^2.4.4",
     "@pnpm/find-workspace-packages": "^6.0.9",
+    "@types/big.js": "^6.2.2",
     "@types/less": "^3.0.6",
+    "@types/lodash": "^4.17.7",
     "@types/node": "^20.12.12",
     "@vitejs/plugin-vue": "^5.0.4",
     "consola": "^3.2.3",

@@ -1,15 +1,15 @@
 @import "mixins/mixins.less";
 @import "mixins/function.less";
-@import 'common/var.less';
+@import "common/var.less";
 
 .b("slider", {
     display: flex;
+    transition: @transition-timer;
 
     .slider-content {
       flex: 1;
       position: relative;
-      margin-top: 7px;
-      margin-bottom: 7px;
+      margin: 7px 11px 7px 11px;
     }
 
     .runnable-track {
@@ -31,6 +31,7 @@
       border-radius: 50%;
       border: 5px solid @color-white;
       cursor: pointer;
+
       &:hover {
         @args: color, primary, light, 3;
         .join-var-name(@args);
@@ -57,25 +58,24 @@
       .slider-content {
         flex: 0;
         position: relative;
-        margin-left: 7px;
-        margin-right: 7px;
+        margin: 11px 7px 11px 7px;
       }
-  
+
       .runnable-track {
         width: 8px;
         height: 100%;
         background-color: @outside-color;
         border-radius: 12px;
-  
+
       }
-  
+
       .thumb {
         top: auto;
         left: 5px;
         bottom: 0px;
         transform: translate(-50%, 50%);
       }
-  
+
       .fill {
         width: 8px;
         height: 0%;

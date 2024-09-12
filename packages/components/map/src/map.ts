@@ -1,9 +1,25 @@
 import { ExtractPropTypes } from "vue";
 import type Map from "./map.vue";
-import type { BezierConfig, PointConfig } from "@less-write/hooks";
+import type { ShapeConfig } from "konva/lib/Shape";
 import { definePropType } from "@less-write/utils";
 
 export const mapProps = {
+  scale: {
+    type: Number,
+    default: 1,
+  },
+  min: {
+    type: definePropType<number | string>([Number, String]),
+    default: 1,
+  },
+  max: {
+    type: definePropType<number | string>([Number, String]),
+    default: 10,
+  },
+  step: {
+    type: definePropType<number | string>([Number, String]),
+    default: 1,
+  },
   background: {
     type: String,
     default: "",
@@ -48,3 +64,27 @@ export const mapEmits = {
 export type MapEmits = typeof mapEmits;
 
 export type MapInstance = InstanceType<typeof Map>;
+
+export interface BezierConfig extends ShapeConfig {
+  start: {
+    x: number;
+    y: number;
+  };
+  controlStart?: {
+    x: number;
+    y: number;
+  };
+  controlEnd?: {
+    x: number;
+    y: number;
+  };
+  end: {
+    x: number;
+    y: number;
+  };
+}
+
+export interface PointConfig extends ShapeConfig {
+  image?: HTMLImageElement | string;
+  data?: any;
+}

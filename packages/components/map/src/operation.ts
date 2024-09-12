@@ -3,7 +3,7 @@ import type Operation from "./operation.vue";
 import { ExtractPropTypes } from "vue";
 import { UPDATE_MODEL_EVENT } from "@less-write/constants";
 
-export const UPDATE_SCALE_EVENT = 'update:scale';
+export const UPDATE_SCALE_EVENT = "update:scale";
 
 export const operationProps = {
   modelValue: {
@@ -11,20 +11,20 @@ export const operationProps = {
     default: false,
   },
   scale: {
-    type: Number,
+    type: definePropType<number | string>([Number, String]),
     default: 1,
   },
   minScale: {
-    type: Number,
+    type: definePropType<number | string>([Number, String]),
     default: 1,
   },
   maxScale: {
-    type: Number,
+    type: definePropType<number | string>([Number, String]),
     default: 10,
   },
   scaleStep: {
-    type: Number,
-    default: 0.2,
+    type: definePropType<number | string>([Number, String]),
+    default: 1,
   },
 };
 export type OperationProps = ExtractPropTypes<typeof operationProps>;
@@ -35,7 +35,7 @@ export const operationEmits = {
   zoomIn: (evt: MouseEvent) => evt instanceof MouseEvent,
   zoomOut: (evt: MouseEvent) => evt instanceof MouseEvent,
   resetZoom: (evt: MouseEvent) => evt instanceof MouseEvent,
-  setScale: (value: number) => typeof value === "number"
+  setScale: (value: number) => typeof value === "number",
 };
 export type OperationEmits = typeof operationEmits;
 

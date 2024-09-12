@@ -5,30 +5,9 @@ import type { ImageConfig } from "konva/lib/shapes/Image";
 import type { Shape, ShapeConfig } from "konva/lib/Shape";
 import type { Context } from "konva/lib/Context";
 import { loadImage } from "@less-write/utils";
-
-export interface BezierConfig extends ShapeConfig {
-  start: {
-    x: number;
-    y: number;
-  };
-  controlStart?: {
-    x: number;
-    y: number;
-  };
-  controlEnd?: {
-    x: number;
-    y: number;
-  };
-  end: {
-    x: number;
-    y: number;
-  };
-}
-
-export interface PointConfig extends ShapeConfig {
-  image?: HTMLImageElement | string;
-  data?: any;
-}
+import Big from "big.js";
+import { isNumber } from "lodash";
+import type { BezierConfig, MapProps, PointConfig } from "../map";
 
 export interface MapGroup {
   ctx: {
@@ -130,7 +109,17 @@ function createBezierPath(bezier: BezierConfig) {
   return bezierLine;
 }
 
-export function useMap() {
+function parseProps(val: any, def: number): number {
+  const parse = Number(val);
+
+  if (isNumber(parse)) {
+    return parse;
+  } else {
+    return def;
+  }
+}
+
+export function useMap(props: MapProps) {
   // 边缘限制选项
   const isLimit = ref(false);
   // 容器宽度
@@ -144,21 +133,17 @@ export function useMap() {
   const scale = ref(1);
 
   // 最大缩放比例
-  const MAX_SCALE = 10;
+  const max = computed(() => parseProps(props.max, 10));
   // 最小缩放比例
-  const MIN_SCALE = 1;
+  const min = computed(() => parseProps(props.min, 1));
   // 每次缩放大小
-  const SCALE_STEP = 0.2;
+  const step = computed(() => parseProps(props.step, 1));
   // 基础缩放倍率
-  const BASE_SCALE = 1 + SCALE_STEP;
-  // 计算小数位
-  const DECIMAL_PLACE = 10 ** SCALE_STEP.toString().split(".")[1].length;
+  const baseScale = new Big(step.value).plus(1).toNumber();
   // 放大统计
   const scaleCount = computed(() => {
-    return (
-      (scale.value * DECIMAL_PLACE - 1 * DECIMAL_PLACE) /
-      (SCALE_STEP * DECIMAL_PLACE)
-    );
+    const big = new Big(scale.value).minus(min.value).div(step.value);
+    return big.toNumber();
   });
 
   // 监听缩放变换
@@ -178,16 +163,18 @@ export function useMap() {
     );
     if (!wrapper) return;
 
-    
-    const scaleCount = Math.abs(newScale * DECIMAL_PLACE - oldScale * DECIMAL_PLACE) / (SCALE_STEP * DECIMAL_PLACE)
+    const scaleCount = new Big(newScale)
+      .minus(oldScale)
+      .div(step.value)
+      .abs()
+      .toNumber();
     const zoomComputed = (base: number) => {
       if (isZoomIn) {
-        return base * BASE_SCALE ** scaleCount;
+        return base * baseScale ** scaleCount;
       } else {
-        return base / BASE_SCALE ** scaleCount;
+        return base / baseScale ** scaleCount;
       }
     };
-    
 
     wrapper.scale({
       x: zoomComputed(wrapper.scaleX()),
@@ -238,9 +225,13 @@ export function useMap() {
     });
   });
 
-  function setScale(value: number) {
-    const scaleCount = Math.abs(value * DECIMAL_PLACE - scale.value * DECIMAL_PLACE) / (SCALE_STEP * DECIMAL_PLACE)
-    if (value > scale.value) {
+  function setScale(newScale: number) {
+    const scaleCount = new Big(newScale)
+      .minus(scale.value)
+      .div(step.value)
+      .abs()
+      .toNumber();
+    if (newScale > scale.value) {
       for (let i = 0; i < scaleCount; i++) {
         useGroupPosition("in", clientWidth.value / 2, clientHeight.value / 2);
       }
@@ -249,7 +240,7 @@ export function useMap() {
         useGroupPosition("out", clientWidth.value / 2, clientHeight.value / 2);
       }
     }
-    scale.value = value;
+    scale.value = newScale;
   }
 
   const pointMap = new Map<number, Konva.Image | Konva.Rect>();
@@ -282,13 +273,13 @@ export function useMap() {
 
     // // 计算底图与底图高度差距
     const bottomLimit =
-      clientHeight.value - clientHeight.value * BASE_SCALE ** scaleCount.value;
+      clientHeight.value - clientHeight.value * baseScale ** scaleCount.value;
     if (limitY < bottomLimit) {
       // 当底图实际宽度小于地图宽度设为0
       limitY = bottomLimit > 0 ? 0 : bottomLimit;
     }
     const rightLimit =
-      clientWidth.value - clientWidth.value * BASE_SCALE ** scaleCount.value;
+      clientWidth.value - clientWidth.value * baseScale ** scaleCount.value;
     if (limitX < rightLimit) {
       limitX = rightLimit > 0 ? 0 : rightLimit;
     }
@@ -308,8 +299,8 @@ export function useMap() {
         let y = targetPoint.y
           ? targetPoint.y * renderScale.value
           : sourcePoint.y();
-        x = x * BASE_SCALE ** scaleCount.value;
-        y = y * BASE_SCALE ** scaleCount.value;
+        x = x * baseScale ** scaleCount.value;
+        y = y * baseScale ** scaleCount.value;
         if (targetPoint.image) {
           const imageEl = await imageFormat(targetPoint.image);
           targetPoint.image = imageEl;
@@ -337,14 +328,14 @@ export function useMap() {
 
     switch (type) {
       case "in":
-        offsetX = (mouseX + Math.abs(gX)) * SCALE_STEP;
-        offsetY = (mouseY + Math.abs(gY)) * SCALE_STEP;
+        offsetX = (mouseX + Math.abs(gX)) * step.value;
+        offsetY = (mouseY + Math.abs(gY)) * step.value;
         group.move({ x: -offsetX, y: -offsetY });
         break;
 
       case "out":
-        offsetX = ((mouseX + Math.abs(gX)) * SCALE_STEP) / BASE_SCALE;
-        offsetY = ((mouseY + Math.abs(gY)) * SCALE_STEP) / BASE_SCALE;
+        offsetX = ((mouseX + Math.abs(gX)) * step.value) / baseScale;
+        offsetY = ((mouseY + Math.abs(gY)) * step.value) / baseScale;
         group.move({ x: offsetX, y: offsetY });
         break;
 
@@ -361,10 +352,10 @@ export function useMap() {
     mouseX: number = clientWidth.value / 2,
     mouseY: number = clientHeight.value / 2
   ) {
-    if (scale.value === MAX_SCALE) return;
+    if (scale.value === max.value) return;
     const newScale = Math.min(
-      MAX_SCALE,
-      (scale.value * DECIMAL_PLACE + SCALE_STEP * DECIMAL_PLACE) / DECIMAL_PLACE
+      max.value,
+      new Big(scale.value).plus(step.value).toNumber()
     );
     scale.value = newScale;
 
@@ -375,10 +366,10 @@ export function useMap() {
     mouseX: number = clientWidth.value / 2,
     mouseY: number = clientHeight.value / 2
   ) {
-    if (scale.value === MIN_SCALE) return;
+    if (scale.value === min.value) return;
     const newScale = Math.max(
-      MIN_SCALE,
-      (scale.value * DECIMAL_PLACE - SCALE_STEP * DECIMAL_PLACE) / DECIMAL_PLACE
+      min.value,
+      new Big(scale.value).minus(step.value).toNumber()
     );
 
     scale.value = newScale;
@@ -516,7 +507,7 @@ export function useMap() {
 
   async function initGroup(params: MapGroup) {
     const { background, size, pathData, pointData, callback } = params;
-    group.on("wheel", (e) => zoom(e));
+    group.on("wheel", zoom);
 
     const wrapper = await initBackground(size, background);
     group.add(wrapper);
@@ -565,7 +556,7 @@ export function useMap() {
   }
 
   function destroy() {
-    group.removeEventListener("wheel");
+    group.off("wheel");
     group.destroy();
     layer.destroy();
     stage?.destroy();

@@ -26,7 +26,7 @@ watch(
 watch(
   () => props.scale,
   (val) => {
-    scale.value = val;
+    scale.value = val as number;
   }
 );
 

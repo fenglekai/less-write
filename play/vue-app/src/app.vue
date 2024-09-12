@@ -325,7 +325,7 @@ onUnmounted(() => {
 const value = ref(0);
 </script>
 <template>
-  <div>
+  <div class="container">
     <div class="slider-wrapper">
       <div>{{ value }}</div>
       <LeSlider v-model="value" min="1" max="10" step="0.2"></LeSlider>
@@ -334,32 +334,32 @@ const value = ref(0);
     <LeButton @click="handleZoomIn">放大</LeButton>
     <LeButton @click="handleZoomOut">缩小</LeButton>
     <LeButton @click="handleResetZoom">还原</LeButton>
-    <LeButton @click="handleRunClick">运行轨迹</LeButton>
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg -->
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png -->
     <LeMap
       ref="mapRef"
+      min="1"
+      max="10"
+      step="1"
       :size="size"
-      :path-data="[]"
-      :point-data="[]"
-      operation
-      limit
       background="https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png"
       style="
-        margin-top: 20px;
         border: 1px solid #dcdfe6;
         border-radius: 6px;
         overflow: hidden;
       "
     ></LeMap>
+    <LeButton @click="handleRunClick">运行轨迹</LeButton>
     <LeMap
+      min="1"
+      max="10"
+      step="0.2"
       :size="size"
       :path-data="pathData"
       :point-data="[...pointData, ...deviceData]"
       operation
       limit
       style="
-        margin-top: 20px;
         border: 1px solid #dcdfe6;
         border-radius: 6px;
         overflow: hidden;
@@ -384,5 +384,8 @@ const value = ref(0);
 }
 .le-button:not(:last-child) {
   margin-right: 5px;
+}
+.container > * + * {
+  margin-bottom: 20px;
 }
 </style>

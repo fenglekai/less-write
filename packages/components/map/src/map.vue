@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, watch, useAttrs } from "vue";
 import { useDebounceFn } from "@vueuse/core";
-import { useMap } from "@less-write/hooks";
+import { useMap } from "./composable";
 import { mapProps, mapEmits } from "./map";
 import { LeOperation } from "@less-write/components";
 
@@ -18,7 +18,7 @@ const drawerData = ref<any>(null);
 const loading = ref(false);
 const collapse = ref(false);
 
-const mapInstance = useMap();
+const mapInstance = useMap(props);
 const {
   init,
   destroy,
@@ -109,6 +109,9 @@ defineExpose({
           v-else-if="operation && !$slots.operation"
           v-model="collapse"
           :scale="scale"
+          :min-scale="min"
+          :max-scale="max"
+          :scale-step="step"
           @zoom-in="zoomIn()"
           @zoom-out="zoomOut()"
           @reset-zoom="resetZoom()"

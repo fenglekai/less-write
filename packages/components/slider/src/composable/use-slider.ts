@@ -98,7 +98,6 @@ export function useSlider(
 
   async function setPosition(position: number) {
     const diff = initData.currentPosition - position;
-
     if (Math.abs(diff - commonData.value.stepPercent) > 0) {
       const stepCount = parsePos(diff / commonData.value.stepPercent);
       let pos = parsePos(
@@ -112,10 +111,11 @@ export function useSlider(
         pos = 100;
       }
 
-      changeStyle(pos)
-      initData.currentPosition = pos;
-      emitChange(pos);
-      await nextTick()
+      if (initData.currentPosition !== pos) {
+        changeStyle(pos)
+        initData.currentPosition = pos;
+        emitChange(pos);
+      }
     }
   }
 

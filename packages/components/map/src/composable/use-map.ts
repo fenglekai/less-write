@@ -105,7 +105,7 @@ function parseProps(val: any, def: number): number {
   }
 }
 
-const isHTMLImage = (val: any) => val instanceof HTMLImageElement
+const isHTMLImage = (val: any) => val instanceof HTMLImageElement;
 
 export function useMap(props: MapProps) {
   // 容器宽度
@@ -260,16 +260,18 @@ export function useMap(props: MapProps) {
     }
 
     // // 计算底图与底图高度差距
-    const bottomLimit =
-      clientHeight.value -
-      clientHeight.value * baseScale.value ** scaleCount.value;
+    let scaleValue: number;
+    if (props.space) {
+      scaleValue = baseScale.value ** scaleCount.value;
+    } else {
+      scaleValue = scale.value;
+    }
+    const bottomLimit = clientHeight.value - clientHeight.value * scaleValue;
     if (limitY < bottomLimit) {
       // 当底图实际宽度小于地图宽度设为0
       limitY = bottomLimit > 0 ? 0 : bottomLimit;
     }
-    const rightLimit =
-      clientWidth.value -
-      clientWidth.value * baseScale.value ** scaleCount.value;
+    const rightLimit = clientWidth.value - clientWidth.value * scaleValue;
     if (limitX < rightLimit) {
       limitX = rightLimit > 0 ? 0 : rightLimit;
     }
@@ -467,7 +469,7 @@ export function useMap(props: MapProps) {
         y: currentY,
       });
       if (config.image) {
-        console.warn('image is not HTMLImageElement')
+        console.warn("image is not HTMLImageElement");
       }
     }
     point.offsetX(point.width() / 2);
@@ -475,7 +477,7 @@ export function useMap(props: MapProps) {
 
     point.on("click", () => {
       if (callback) {
-        const parse = toRaw(config)
+        const parse = toRaw(config);
         callback(parse);
       }
     });

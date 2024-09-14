@@ -77,7 +77,7 @@ onUnmounted(() => {
 });
 
 defineExpose({
-  mapInstance,
+  ...mapInstance,
 });
 </script>
 

@@ -6,13 +6,13 @@ import { deviceData, run } from "./runTrack";
 const mapRef = ref<MapInstance>();
 
 const handleZoomIn = () => {
-  mapRef.value?.mapInstance.zoomIn();
+  mapRef.value?.zoomIn();
 };
 const handleZoomOut = () => {
-  mapRef.value?.mapInstance.zoomOut();
+  mapRef.value?.zoomOut();
 };
 const handleResetZoom = () => {
-  mapRef.value?.mapInstance.resetZoom();
+  mapRef.value?.resetZoom();
 };
 const size = { width: 12300, height: 6150 };
 const pathData = ref<BezierConfig[]>([
@@ -350,7 +350,7 @@ const value = ref(0);
     <LeMap
       min="1"
       max="10"
-      step="0.2"
+      step="0.05"
       :size="size"
       :path-data="pathData"
       :point-data="[...pointData, ...deviceData]"

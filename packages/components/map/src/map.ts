@@ -89,6 +89,6 @@ export interface BezierConfig extends ShapeConfig {
 }
 
 export interface PointConfig extends ShapeConfig {
-  image?: HTMLImageElement | string;
+  image?: HTMLImageElement;
   data?: any;
 }

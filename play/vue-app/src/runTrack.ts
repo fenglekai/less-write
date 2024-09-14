@@ -1,25 +1,8 @@
 import { ref } from "vue";
 import type { PointConfig } from "less-write-ui/index.ts";
+import { loadImage } from "@less-write/utils";
 
-const tempPoint =   {
-  x: 5000,
-  y: 2000,
-  width: 40,
-  height: 40,
-  rotation: 90,
-  image:
-    "https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg",
-    // "https://raw.githubusercontent.com/fenglekai/image-bed/master/wallhaven-85128j.png",
-  data: {
-    cooX: 100,
-    cooY: 10,
-    type: "device",
-  },
-}
-
-const deviceData = ref<PointConfig[]>([
-  tempPoint
-]);
+const deviceData = ref<PointConfig[]>([]);
 
 const bezierSource = {
   start: {
@@ -93,10 +76,29 @@ function sleep(ms: number | undefined) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const run = () => {
+const run = async () => {
+  const logo = await loadImage(
+    "https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg"
+  );
+  const bg = await loadImage(
+    "https://raw.githubusercontent.com/fenglekai/image-bed/master/wallhaven-85128j.png"
+  );
+  const tempPoint = {
+    x: 5000,
+    y: 2000,
+    width: 40,
+    height: 40,
+    rotation: 90,
+    image: logo,
+    data: {
+      cooX: 100,
+      cooY: 10,
+      type: "device",
+    },
+  };
   deviceData.value[0] = tempPoint;
   let flag = true;
-  const destoy = () => {
+  const destroy = () => {
     flag = false;
   };
   const init = async () => {
@@ -110,15 +112,15 @@ const run = () => {
         ...iterator,
         rotation,
       };
-      if (rotation>135) {
-        deviceData.value[0].image = "https://raw.githubusercontent.com/fenglekai/image-bed/master/wallhaven-85128j.png"
+      if (rotation > 135) {
+        deviceData.value[0].image = bg;
       }
       rotation += 1;
     }
   };
   return {
     init,
-    destoy,
+    destroy,
   };
 };
 

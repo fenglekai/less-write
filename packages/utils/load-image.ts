@@ -1,4 +1,4 @@
-function loadImage(path: string) {
+export function loadImage(path: string) {
   const { promise, resolve, reject } = Promise.withResolvers<HTMLImageElement>();
   const imageObj = new Image();
   imageObj.crossOrigin = 'Anonymous'
@@ -12,7 +12,5 @@ function loadImage(path: string) {
   };
   return promise;
 }
-
-export { loadImage };
 
 export default loadImage;

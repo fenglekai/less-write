@@ -305,20 +305,21 @@ const pointData = ref<PointConfig[]>([
   },
 ]);
 
-let runInstance: any = run();
+let runInstance: any ;
 
-const handleRunClick = () => {
-  runInstance.destoy();
+const handleRunClick = async () => {
+  runInstance.destroy();
   runInstance = null;
-  runInstance = run();
+  runInstance = await run();
   runInstance.init();
 };
 
-onMounted(() => {
+onMounted(async () => {
+  runInstance = await run()
   // runInstance.init();
 });
 onUnmounted(() => {
-  runInstance.destoy();
+  runInstance.destroy();
   runInstance = null;
 });
 

@@ -61,18 +61,6 @@ function createImage(data: ImageConfig) {
   return image;
 }
 
-async function imageFormat(data: HTMLImageElement | string) {
-  let formatData: HTMLImageElement;
-  if (typeof data === "string") {
-    formatData = await loadImage(data);
-  } else if (data instanceof HTMLImageElement) {
-    formatData = data;
-  } else {
-    throw "Unable to process image conversion.";
-  }
-  return formatData;
-}
-
 function useBezierScene(
   ctx: Context,
   shape: Shape<ShapeConfig>,
@@ -116,6 +104,8 @@ function parseProps(val: any, def: number): number {
     return def;
   }
 }
+
+const isHTMLImage = (val: any) => val instanceof HTMLImageElement
 
 export function useMap(props: MapProps) {
   // 容器宽度
@@ -301,8 +291,8 @@ export function useMap(props: MapProps) {
           : sourcePoint.y();
         x = x * baseScale.value ** scaleCount.value;
         y = y * baseScale.value ** scaleCount.value;
-        if (targetPoint.image) {
-          const imageEl = await imageFormat(targetPoint.image);
+        if (isHTMLImage(targetPoint.image)) {
+          const imageEl = targetPoint.image;
           targetPoint.image = imageEl;
         }
 
@@ -460,8 +450,8 @@ export function useMap(props: MapProps) {
       currentY = y * renderScale.value;
     }
 
-    if (config.image) {
-      const imageEl = await imageFormat(config.image);
+    if (isHTMLImage(config.image)) {
+      const imageEl = config.image;
       point = createImage({
         name: POINT_NAME,
         ...config,
@@ -476,6 +466,9 @@ export function useMap(props: MapProps) {
         x: currentX,
         y: currentY,
       });
+      if (config.image) {
+        console.warn('image is not HTMLImageElement')
+      }
     }
     point.offsetX(point.width() / 2);
     point.offsetY(point.height() / 2);

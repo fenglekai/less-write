@@ -331,11 +331,12 @@ const value = ref(0);
       <LeSlider v-model="value" min="1" max="10" step="0.2"></LeSlider>
       <LeSlider v-model="value" vertical min="1" max="10" step="0.2"></LeSlider>
     </div>
-    <LeButton @click="handleZoomIn">放大</LeButton>
-    <LeButton @click="handleZoomOut">缩小</LeButton>
-    <LeButton @click="handleResetZoom">还原</LeButton>
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg -->
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png -->
+    <!-- <LeButton @click="handleZoomIn">放大</LeButton>
+    <LeButton @click="handleZoomOut">缩小</LeButton>
+    <LeButton @click="handleResetZoom">还原</LeButton>
+     scale: {{ mapRef?.mapInstance.scale }}
     <LeMap
       ref="mapRef"
       min="1"
@@ -343,12 +344,8 @@ const value = ref(0);
       step="1"
       :size="size"
       background="https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png"
-      style="
-        border: 1px solid #dcdfe6;
-        border-radius: 6px;
-        overflow: hidden;
-      "
-    ></LeMap>
+      style="border: 1px solid #dcdfe6; border-radius: 6px; overflow: hidden"
+    ></LeMap> -->
     <LeButton @click="handleRunClick">运行轨迹</LeButton>
     <LeMap
       min="1"
@@ -359,11 +356,8 @@ const value = ref(0);
       :point-data="[...pointData, ...deviceData]"
       operation
       limit
-      style="
-        border: 1px solid #dcdfe6;
-        border-radius: 6px;
-        overflow: hidden;
-      "
+      space
+      style="border: 1px solid #dcdfe6; border-radius: 6px; overflow: hidden"
     ></LeMap>
   </div>
 </template>

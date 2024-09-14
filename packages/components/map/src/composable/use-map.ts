@@ -1,4 +1,4 @@
-import { ref, computed, unref, nextTick, watch } from "vue";
+import { ref, computed, unref, nextTick, watch, reactive } from "vue";
 import Konva from "konva";
 import type { RectConfig } from "konva/lib/shapes/Rect";
 import type { ImageConfig } from "konva/lib/shapes/Image";
@@ -23,8 +23,6 @@ export interface MapGroup {
   pointData?: PointConfig[];
   callback?: (data: any) => void;
 }
-
-type ZoomType = "in" | "out" | "reset";
 
 const DRAG_WRAPPER = "drag-wrapper";
 const PATH_NAME = "path";
@@ -120,8 +118,6 @@ function parseProps(val: any, def: number): number {
 }
 
 export function useMap(props: MapProps) {
-  // 边缘限制选项
-  const isLimit = ref(false);
   // 容器宽度
   const clientWidth = ref(0);
   // 容器高度
@@ -130,7 +126,7 @@ export function useMap(props: MapProps) {
   const renderScale = ref(0);
 
   // 显示倍率
-  const scale = ref(1);
+  const scale = ref(parseProps(props.min, 1));
 
   // 最大缩放比例
   const max = computed(() => parseProps(props.max, 10));
@@ -139,25 +135,34 @@ export function useMap(props: MapProps) {
   // 每次缩放大小
   const step = computed(() => parseProps(props.step, 1));
   // 基础缩放倍率
-  const baseScale = new Big(step.value).plus(1).toNumber();
+  const baseScale = computed(() =>
+    new Big(step.value).plus(min.value).toNumber()
+  );
   // 放大统计
   const scaleCount = computed(() => {
     const big = new Big(scale.value).minus(min.value).div(step.value);
     return big.toNumber();
   });
 
+  watch(
+    () => props.pointData,
+    (newVal) => {
+      setPoint(newVal);
+    }
+  );
+
   // 监听缩放变换
   watch(scale, (newScale, oldScale) => {
     const isZoomIn = newScale > oldScale;
+    const wrapper = group.findOne(
+      (item: any) => item.attrs.name === DRAG_WRAPPER
+    );
     // path
     const pathChildren = group.getChildren(
       (item) => item.attrs.name === PATH_NAME
     );
 
     // point
-    const wrapper = group.findOne(
-      (item: any) => item.attrs.name === DRAG_WRAPPER
-    );
     const pointChildren = group.getChildren(
       (item) => item.attrs.name === POINT_NAME
     );
@@ -169,10 +174,14 @@ export function useMap(props: MapProps) {
       .abs()
       .toNumber();
     const zoomComputed = (base: number) => {
-      if (isZoomIn) {
-        return base * baseScale ** scaleCount;
+      if (props.space) {
+        if (isZoomIn) {
+          return base * baseScale.value ** scaleCount;
+        } else {
+          return base / baseScale.value ** scaleCount;
+        }
       } else {
-        return base / baseScale ** scaleCount;
+        return (base / oldScale) * newScale;
       }
     };
 
@@ -180,15 +189,15 @@ export function useMap(props: MapProps) {
       x: zoomComputed(wrapper.scaleX()),
       y: zoomComputed(wrapper.scaleY()),
     });
-    pointChildren.forEach((item) => {
-      item.scale({
+    pointChildren.forEach((point) => {
+      point.scale({
         x: newScale,
         y: newScale,
       });
 
-      item.setPosition({
-        x: zoomComputed(item.x()),
-        y: zoomComputed(item.y()),
+      point.setPosition({
+        x: zoomComputed(point.x()),
+        y: zoomComputed(point.y()),
       });
     });
     pathChildren.forEach((path) => {
@@ -226,21 +235,14 @@ export function useMap(props: MapProps) {
   });
 
   function setScale(newScale: number) {
-    const scaleCount = new Big(newScale)
-      .minus(scale.value)
-      .div(step.value)
-      .abs()
-      .toNumber();
     if (newScale > scale.value) {
-      for (let i = 0; i < scaleCount; i++) {
-        useGroupPosition("in", clientWidth.value / 2, clientHeight.value / 2);
-      }
+      useGroupPosition(clientWidth.value / 2, clientHeight.value / 2, newScale);
     } else {
-      for (let i = 0; i < scaleCount; i++) {
-        useGroupPosition("out", clientWidth.value / 2, clientHeight.value / 2);
-      }
+      useGroupPosition(clientWidth.value / 2, clientHeight.value / 2, newScale);
     }
     scale.value = newScale;
+    const { x, y } = group.position();
+    group.setPosition(limitBrink(x, y));
   }
 
   const pointMap = new Map<number, Konva.Image | Konva.Rect>();
@@ -254,13 +256,9 @@ export function useMap(props: MapProps) {
     },
   });
 
-  function setLimit(bool: boolean) {
-    isLimit.value = bool;
-  }
-
   // 限制边缘
   function limitBrink(limitX: number, limitY: number) {
-    if (!isLimit.value) {
+    if (!props.limit) {
       return { x: limitX, y: limitY };
     }
     if (limitX > 0) {
@@ -273,13 +271,15 @@ export function useMap(props: MapProps) {
 
     // // 计算底图与底图高度差距
     const bottomLimit =
-      clientHeight.value - clientHeight.value * baseScale ** scaleCount.value;
+      clientHeight.value -
+      clientHeight.value * baseScale.value ** scaleCount.value;
     if (limitY < bottomLimit) {
       // 当底图实际宽度小于地图宽度设为0
       limitY = bottomLimit > 0 ? 0 : bottomLimit;
     }
     const rightLimit =
-      clientWidth.value - clientWidth.value * baseScale ** scaleCount.value;
+      clientWidth.value -
+      clientWidth.value * baseScale.value ** scaleCount.value;
     if (limitX < rightLimit) {
       limitX = rightLimit > 0 ? 0 : rightLimit;
     }
@@ -299,8 +299,8 @@ export function useMap(props: MapProps) {
         let y = targetPoint.y
           ? targetPoint.y * renderScale.value
           : sourcePoint.y();
-        x = x * baseScale ** scaleCount.value;
-        y = y * baseScale ** scaleCount.value;
+        x = x * baseScale.value ** scaleCount.value;
+        y = y * baseScale.value ** scaleCount.value;
         if (targetPoint.image) {
           const imageEl = await imageFormat(targetPoint.image);
           targetPoint.image = imageEl;
@@ -317,34 +317,47 @@ export function useMap(props: MapProps) {
 
   // 根据鼠标位置Group偏移量
   function useGroupPosition(
-    type: ZoomType,
     mouseX: number = 0,
-    mouseY: number = 0
+    mouseY: number = 0,
+    newScale: number
   ) {
-    const gX = group.x();
-    const gY = group.y();
-    let offsetX = 0;
-    let offsetY = 0;
+    if (props.space) {
+      const scaleCount = new Big(newScale)
+        .minus(scale.value)
+        .div(step.value)
+        .abs()
+        .toNumber();
+      for (let i = 0; i < scaleCount; i++) {
+        const gX = group.x();
+        const gY = group.y();
+        const mosMove = {
+          x: 0,
+          y: 0,
+        };
+        if (newScale > scale.value) {
+          mosMove.x = -(mouseX + Math.abs(gX)) * step.value;
+          mosMove.y = -(mouseY + Math.abs(gY)) * step.value;
+          group.move(mosMove);
+        } else {
+          mosMove.x = ((mouseX + Math.abs(gX)) * step.value) / baseScale.value;
+          mosMove.y = ((mouseY + Math.abs(gY)) * step.value) / baseScale.value;
+          group.move(mosMove);
+        }
+      }
+    } else {
+      const gX = group.x();
+      const gY = group.y();
+      const scaleDiff = newScale - scale.value;
+      const mosOnCanvas = {
+        x: mouseX + Math.abs(gX),
+        y: mouseY + Math.abs(gY),
+      };
+      const mosMove = {
+        x: (-mosOnCanvas.x / scale.value) * scaleDiff,
+        y: (-mosOnCanvas.y / scale.value) * scaleDiff,
+      };
 
-    switch (type) {
-      case "in":
-        offsetX = (mouseX + Math.abs(gX)) * step.value;
-        offsetY = (mouseY + Math.abs(gY)) * step.value;
-        group.move({ x: -offsetX, y: -offsetY });
-        break;
-
-      case "out":
-        offsetX = ((mouseX + Math.abs(gX)) * step.value) / baseScale;
-        offsetY = ((mouseY + Math.abs(gY)) * step.value) / baseScale;
-        group.move({ x: offsetX, y: offsetY });
-        break;
-
-      case "reset":
-        group.position({ x: 0, y: 0 });
-        break;
-
-      default:
-        break;
+      group.move(mosMove);
     }
   }
 
@@ -357,9 +370,10 @@ export function useMap(props: MapProps) {
       max.value,
       new Big(scale.value).plus(step.value).toNumber()
     );
+    useGroupPosition(mouseX, mouseY, newScale);
     scale.value = newScale;
-
-    useGroupPosition("in", mouseX, mouseY);
+    const { x, y } = group.position();
+    group.setPosition(limitBrink(x, y));
     layer.batchDraw();
   }
   function zoomOut(
@@ -371,17 +385,15 @@ export function useMap(props: MapProps) {
       min.value,
       new Big(scale.value).minus(step.value).toNumber()
     );
-
+    useGroupPosition(mouseX, mouseY, newScale);
     scale.value = newScale;
-    useGroupPosition("out", mouseX, mouseY);
-
     const { x, y } = group.position();
     group.setPosition(limitBrink(x, y));
     layer.batchDraw();
   }
   function resetZoom() {
     scale.value = 1;
-    useGroupPosition("reset");
+    group.position({ x: 0, y: 0 });
     layer.batchDraw();
   }
 
@@ -570,8 +582,6 @@ export function useMap(props: MapProps) {
     zoomIn,
     zoomOut,
     resetZoom,
-    setPoint,
-    setLimit,
     setScale,
   };
 }

@@ -55,6 +55,10 @@ export const mapProps = {
     type: Boolean,
     default: false,
   },
+  space: {
+    type: Boolean,
+    default: false,
+  }
 };
 export type MapProps = ExtractPropTypes<typeof mapProps>;
 

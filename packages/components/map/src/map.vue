@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, watch, useAttrs } from "vue";
-import { useDebounceFn } from "@vueuse/core";
+import { type Fn, useDebounceFn, useEventListener } from "@vueuse/core";
+import { LeOperation } from "@less-write/components";
 import { useMap } from "./composable";
 import { mapProps, mapEmits } from "./map";
-import { LeOperation } from "@less-write/components";
 
 defineOptions({
   name: "LeMap",
@@ -25,8 +25,6 @@ const {
   zoomIn,
   zoomOut,
   resetZoom,
-  setPoint,
-  setLimit,
   setScale,
   scale,
 } = mapInstance;
@@ -35,7 +33,6 @@ const autoRefresh = useDebounceFn(() => {
   if (!renderRef.value) return;
   resetZoom();
   destroy();
-  setLimit(props.limit);
   init(
     {
       ctx: {
@@ -60,33 +57,23 @@ const autoRefresh = useDebounceFn(() => {
 }, 200);
 
 watch(
-  () => props.pointData,
-  (newVal) => {
-    setPoint(newVal);
-  }
-);
-watch(
-  () => props.limit,
-  (value) => {
-    setLimit(value);
-  }
-);
-watch(
-  () => [props.size, props.pathData, props.background],
+  () => [props.size, props.pathData, props.background, props.space],
   () => {
     autoRefresh();
   }
 );
 
+let resizeEvent: Fn;
 onMounted(async () => {
   loading.value = true;
   autoRefresh();
-  window.addEventListener("resize", autoRefresh);
+  useEventListener("resize", autoRefresh);
+  resizeEvent = useEventListener("resize", autoRefresh);
 });
 
 onUnmounted(() => {
   destroy();
-  window.removeEventListener("resize", autoRefresh);
+  resizeEvent()
 });
 
 defineExpose({

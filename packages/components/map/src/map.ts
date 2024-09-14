@@ -63,7 +63,7 @@ export const mapProps = {
 export type MapProps = ExtractPropTypes<typeof mapProps>;
 
 export const mapEmits = {
-  pointClick: (data: any) => {},
+  pointClick: (data: PointConfig) => definePropType<PointConfig>(Object),
 };
 export type MapEmits = typeof mapEmits;
 

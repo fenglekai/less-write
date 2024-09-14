@@ -350,7 +350,7 @@ const value = ref(0);
     <LeMap
       min="1"
       max="10"
-      step="0.05"
+      step="0.2"
       :size="size"
       :path-data="pathData"
       :point-data="[...pointData, ...deviceData]"
@@ -358,6 +358,7 @@ const value = ref(0);
       limit
       space
       style="border: 1px solid #dcdfe6; border-radius: 6px; overflow: hidden"
+      @point-click="(data) => {console.log(data)}"
     ></LeMap>
   </div>
 </template>

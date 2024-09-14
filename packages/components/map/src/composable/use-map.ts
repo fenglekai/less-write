@@ -1,4 +1,4 @@
-import { ref, computed, unref, nextTick, watch, reactive } from "vue";
+import { ref, computed, unref, nextTick, watch, toRaw } from "vue";
 import Konva from "konva";
 import type { RectConfig } from "konva/lib/shapes/Rect";
 import type { ImageConfig } from "konva/lib/shapes/Image";
@@ -482,7 +482,8 @@ export function useMap(props: MapProps) {
 
     point.on("click", () => {
       if (callback) {
-        callback(config.data);
+        const parse = toRaw(config)
+        callback(parse);
       }
     });
     return point;

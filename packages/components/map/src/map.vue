@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, watch, useAttrs } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import { type Fn, useDebounceFn, useEventListener } from "@vueuse/core";
 import { LeOperation } from "@less-write/components";
 import { useMap } from "./composable";
@@ -11,7 +11,6 @@ defineOptions({
 
 const props = defineProps(mapProps);
 const emits = defineEmits(mapEmits);
-const attrs = useAttrs();
 
 const renderRef = ref<HTMLDivElement>();
 const drawerData = ref<any>(null);
@@ -19,15 +18,8 @@ const loading = ref(false);
 const collapse = ref(false);
 
 const mapInstance = useMap(props);
-const {
-  init,
-  destroy,
-  zoomIn,
-  zoomOut,
-  resetZoom,
-  setScale,
-  scale,
-} = mapInstance;
+const { init, destroy, zoomIn, zoomOut, resetZoom, setScale, scale } =
+  mapInstance;
 
 const autoRefresh = useDebounceFn(() => {
   if (!renderRef.value) return;
@@ -45,9 +37,7 @@ const autoRefresh = useDebounceFn(() => {
       pointData: props.pointData,
       callback: (data) => {
         drawerData.value = data;
-        if (attrs["pointClick"]) {
-          emits("pointClick", data);
-        }
+        emits("pointClick", data);
       },
     },
     () => {
@@ -57,8 +47,10 @@ const autoRefresh = useDebounceFn(() => {
 }, 200);
 
 watch(
-  () => [props.size, props.pathData, props.background, props.space],
+  () => [props.size, props.pathData, props.background, props.space, props.step],
   () => {
+    destroy();
+    loading.value = true;
     autoRefresh();
   }
 );
@@ -73,7 +65,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   destroy();
-  resizeEvent()
+  resizeEvent();
 });
 
 defineExpose({

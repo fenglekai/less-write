@@ -133,6 +133,13 @@ export function useMap(props: MapProps) {
     const big = new Big(scale.value).minus(min.value).div(step.value);
     return big.toNumber();
   });
+  //
+  const spaceScale = computed(() => {
+    if (props.space) {
+      return baseScale.value ** scaleCount.value;
+    }
+    return scale.value;
+  });
 
   watch(
     () => props.pointData,
@@ -260,18 +267,13 @@ export function useMap(props: MapProps) {
     }
 
     // // 计算底图与底图高度差距
-    let scaleValue: number;
-    if (props.space) {
-      scaleValue = baseScale.value ** scaleCount.value;
-    } else {
-      scaleValue = scale.value;
-    }
-    const bottomLimit = clientHeight.value - clientHeight.value * scaleValue;
+
+    const bottomLimit = clientHeight.value - clientHeight.value * spaceScale.value;
     if (limitY < bottomLimit) {
       // 当底图实际宽度小于地图宽度设为0
       limitY = bottomLimit > 0 ? 0 : bottomLimit;
     }
-    const rightLimit = clientWidth.value - clientWidth.value * scaleValue;
+    const rightLimit = clientWidth.value - clientWidth.value * spaceScale.value;
     if (limitX < rightLimit) {
       limitX = rightLimit > 0 ? 0 : rightLimit;
     }
@@ -284,15 +286,14 @@ export function useMap(props: MapProps) {
       if (pointMap.has(Number(key))) {
         const sourcePoint = pointMap.get(Number(key));
         if (!sourcePoint) return;
-
         let x = targetPoint.x
           ? targetPoint.x * renderScale.value
           : sourcePoint.x();
         let y = targetPoint.y
           ? targetPoint.y * renderScale.value
           : sourcePoint.y();
-        x = x * baseScale.value ** scaleCount.value;
-        y = y * baseScale.value ** scaleCount.value;
+        x = x * spaceScale.value;
+        y = y * spaceScale.value;
         if (isHTMLImage(targetPoint.image)) {
           const imageEl = targetPoint.image;
           targetPoint.image = imageEl;

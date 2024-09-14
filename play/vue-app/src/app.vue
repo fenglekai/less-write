@@ -337,7 +337,7 @@ const value = ref(0);
     <!-- <LeButton @click="handleZoomIn">放大</LeButton>
     <LeButton @click="handleZoomOut">缩小</LeButton>
     <LeButton @click="handleResetZoom">还原</LeButton>
-     scale: {{ mapRef?.mapInstance.scale }}
+     scale: {{ mapRef?.scale }}
     <LeMap
       ref="mapRef"
       min="1"

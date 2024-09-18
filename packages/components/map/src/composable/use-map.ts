@@ -6,8 +6,8 @@ import type { Shape, ShapeConfig } from "konva/lib/Shape";
 import type { Context } from "konva/lib/Context";
 import { loadImage } from "@less-write/utils";
 import Big from "big.js";
-import { isNumber } from "lodash";
 import type { BezierConfig, MapProps, PointConfig } from "../map";
+import { useTransform } from "./use-transform";
 
 export interface MapGroup {
   ctx: {
@@ -19,6 +19,7 @@ export interface MapGroup {
     height: number;
   };
   background?: string;
+  grid?: boolean;
   pathData?: BezierConfig[];
   pointData?: PointConfig[];
   callback?: (data: any) => void;
@@ -95,19 +96,32 @@ function createBezierPath(bezier: BezierConfig) {
   return bezierLine;
 }
 
-function parseProps(val: any, def: number): number {
-  const parse = Number(val);
-
-  if (isNumber(parse)) {
-    return parse;
-  } else {
-    return def;
-  }
-}
-
 const isHTMLImage = (val: any) => val instanceof HTMLImageElement;
 
 export function useMap(props: MapProps) {
+  const {
+    scale,
+    min,
+    step,
+    baseScale,
+    translate,
+    zoom: transformZoom,
+    resetZoom: transformResetZoom,
+    updateTranslate,
+    updateTranslateLimit,
+  } = useTransform(props);
+
+  const pointMap = new Map<number, Konva.Image | Konva.Rect>();
+  let stage: Konva.Stage;
+  const layer = new Konva.Layer();
+  const group = new Konva.Group({
+    draggable: true,
+    dragBoundFunc(pos) {
+      const { x, y } = pos;
+      return limitBrink(x, y);
+    },
+  });
+
   // 容器宽度
   const clientWidth = ref(0);
   // 容器高度
@@ -115,28 +129,15 @@ export function useMap(props: MapProps) {
   // size与容器之间的缩放比例以宽度计算
   const renderScale = ref(0);
 
-  // 显示倍率
-  const scale = ref(parseProps(props.min, 1));
-
-  // 最大缩放比例
-  const max = computed(() => parseProps(props.max, 10));
-  // 最小缩放比例
-  const min = computed(() => parseProps(props.min, 1));
-  // 每次缩放大小
-  const step = computed(() => parseProps(props.step, 1));
-  // 基础缩放倍率
-  const baseScale = computed(() =>
-    new Big(step.value).plus(min.value).toNumber()
-  );
-  // 放大统计
-  const scaleCount = computed(() => {
-    const big = new Big(scale.value).minus(min.value).div(step.value);
-    return big.toNumber();
-  });
-  //
+  // 计算间距缩放
   const spaceScale = computed(() => {
     if (props.space) {
-      return baseScale.value ** scaleCount.value;
+      const scaleCount = new Big(scale.value)
+        .minus(min.value)
+        .div(step.value)
+        .abs()
+        .toNumber();
+      return baseScale.value ** scaleCount;
     }
     return scale.value;
   });
@@ -231,27 +232,14 @@ export function useMap(props: MapProps) {
     });
   });
 
-  function setScale(newScale: number) {
-    if (newScale > scale.value) {
-      useGroupPosition(clientWidth.value / 2, clientHeight.value / 2, newScale);
-    } else {
-      useGroupPosition(clientWidth.value / 2, clientHeight.value / 2, newScale);
-    }
-    scale.value = newScale;
-    const { x, y } = group.position();
-    group.setPosition(limitBrink(x, y));
+  async function setScale(newScale: number) {
+    transformZoom(newScale, {
+      x: clientWidth.value / 2,
+      y: clientHeight.value / 2,
+    });
+    group.setPosition(limitBrink(translate.value.x, translate.value.y));
+    layer.batchDraw();
   }
-
-  const pointMap = new Map<number, Konva.Image | Konva.Rect>();
-  let stage: Konva.Stage;
-  const layer = new Konva.Layer();
-  const group = new Konva.Group({
-    draggable: true,
-    dragBoundFunc(pos) {
-      const { x, y } = pos;
-      return limitBrink(x, y);
-    },
-  });
 
   // 限制边缘
   function limitBrink(limitX: number, limitY: number) {
@@ -260,24 +248,28 @@ export function useMap(props: MapProps) {
     }
     if (limitX > 0) {
       limitX = 0;
+      updateTranslate(-translate.value.x, 0);
     }
 
     if (limitY > 0) {
       limitY = 0;
+      updateTranslate(0, -translate.value.y);
     }
 
-    // // 计算底图与底图高度差距
-
-    const bottomLimit = clientHeight.value - clientHeight.value * spaceScale.value;
-    if (limitY < bottomLimit) {
-      // 当底图实际宽度小于地图宽度设为0
-      limitY = bottomLimit > 0 ? 0 : bottomLimit;
-    }
+    // 计算底图与底图高度差距
     const rightLimit = clientWidth.value - clientWidth.value * spaceScale.value;
     if (limitX < rightLimit) {
       limitX = rightLimit > 0 ? 0 : rightLimit;
+      updateTranslate(-translate.value.x + limitX, 0);
     }
-
+    const bottomLimit =
+      clientHeight.value - clientHeight.value * spaceScale.value;
+    if (limitY < bottomLimit) {
+      // 当底图实际宽度小于地图宽度设为0
+      limitY = bottomLimit > 0 ? 0 : bottomLimit;
+      updateTranslate(0, -translate.value.y + limitY);
+    }
+    updateTranslateLimit([0, rightLimit, bottomLimit, 0]);
     return { x: limitX, y: limitY };
   }
   // 设置动态点位
@@ -308,65 +300,12 @@ export function useMap(props: MapProps) {
     }
   }
 
-  // 根据鼠标位置Group偏移量
-  function useGroupPosition(
-    mouseX: number = 0,
-    mouseY: number = 0,
-    newScale: number
-  ) {
-    if (props.space) {
-      const scaleCount = new Big(newScale)
-        .minus(scale.value)
-        .div(step.value)
-        .abs()
-        .toNumber();
-      for (let i = 0; i < scaleCount; i++) {
-        const gX = group.x();
-        const gY = group.y();
-        const mosMove = {
-          x: 0,
-          y: 0,
-        };
-        if (newScale > scale.value) {
-          mosMove.x = -(mouseX + Math.abs(gX)) * step.value;
-          mosMove.y = -(mouseY + Math.abs(gY)) * step.value;
-          group.move(mosMove);
-        } else {
-          mosMove.x = ((mouseX + Math.abs(gX)) * step.value) / baseScale.value;
-          mosMove.y = ((mouseY + Math.abs(gY)) * step.value) / baseScale.value;
-          group.move(mosMove);
-        }
-      }
-    } else {
-      const gX = group.x();
-      const gY = group.y();
-      const scaleDiff = newScale - scale.value;
-      const mosOnCanvas = {
-        x: mouseX + Math.abs(gX),
-        y: mouseY + Math.abs(gY),
-      };
-      const mosMove = {
-        x: (-mosOnCanvas.x / scale.value) * scaleDiff,
-        y: (-mosOnCanvas.y / scale.value) * scaleDiff,
-      };
-
-      group.move(mosMove);
-    }
-  }
-
   function zoomIn(
     mouseX: number = clientWidth.value / 2,
     mouseY: number = clientHeight.value / 2
   ) {
-    if (scale.value === max.value) return;
-    const newScale = Math.min(
-      max.value,
-      new Big(scale.value).plus(step.value).toNumber()
-    );
-    useGroupPosition(mouseX, mouseY, newScale);
-    scale.value = newScale;
-    const { x, y } = group.position();
-    group.setPosition(limitBrink(x, y));
+    transformZoom(false, { x: mouseX, y: mouseY });
+    group.setPosition(limitBrink(translate.value.x, translate.value.y));
     layer.batchDraw();
   }
   function zoomOut(
@@ -374,36 +313,47 @@ export function useMap(props: MapProps) {
     mouseY: number = clientHeight.value / 2
   ) {
     if (scale.value === min.value) return;
-    const newScale = Math.max(
-      min.value,
-      new Big(scale.value).minus(step.value).toNumber()
-    );
-    useGroupPosition(mouseX, mouseY, newScale);
-    scale.value = newScale;
-    const { x, y } = group.position();
-    group.setPosition(limitBrink(x, y));
+    transformZoom(true, { x: mouseX, y: mouseY });
+    group.setPosition(limitBrink(translate.value.x, translate.value.y));
     layer.batchDraw();
   }
   function resetZoom() {
-    scale.value = 1;
+    transformResetZoom();
     group.position({ x: 0, y: 0 });
     layer.batchDraw();
   }
 
   function zoom(e: { evt: WheelEvent }) {
     e.evt.preventDefault();
-    // 鼠标位置
-    const mouseX = e.evt.offsetX;
-    const mouseY = e.evt.offsetY;
+    transformZoom(e.evt.deltaY > 0, { x: e.evt.offsetX, y: e.evt.offsetY });
+    group.setPosition(limitBrink(translate.value.x, translate.value.y));
+  }
 
-    // 根据滚轮方向调整缩放比例
-    if (e.evt.deltaY > 0) {
-      // 向下滚动，缩小图形
-      zoomOut(mouseX, mouseY);
-    } else {
-      // 向上滚动，放大图形
-      zoomIn(mouseX, mouseY);
-    }
+  function initGrid() {
+    const LineGroup = new Konva.Group();
+    const gutter = 10;
+
+    const genLine = (length: number, column = false) => {
+      let i = 0;
+      while (i * gutter + gutter <= length) {
+        i++;
+        const point = i * gutter;
+        const verticalLine = new Konva.Line({
+          stroke: "#f0f0f0",
+          strokeWidth: point % 100 !== 0 ? 1 : 2,
+          points: [point, 0, point, length],
+        });
+        LineGroup.add(verticalLine);
+        const horizontalLine = new Konva.Line({
+          stroke: "#f0f0f0",
+          strokeWidth: point % 100 !== 0 ? 1 : 2,
+          points: [0, point, length, point],
+        });
+        LineGroup.add(horizontalLine);
+      }
+    };
+    genLine(clientWidth.value);
+    return LineGroup;
   }
 
   function initPath(config: BezierConfig) {
@@ -486,14 +436,19 @@ export function useMap(props: MapProps) {
   }
 
   async function initBackground(
-    size: { width: number; height: number },
-    bgImg?: string
-  ): Promise<Konva.Image | Konva.Rect> {
-    const { width, height } = size;
+    params: MapGroup
+  ): Promise<Konva.Image | Konva.Rect | Konva.Group> {
+    const { width, height } = params.size;
     const imgScale = clientWidth.value / width;
-    let background: Konva.Image | Konva.Rect;
-    if (bgImg) {
-      const imageObj = await loadImage(bgImg);
+    let background: Konva.Image | Konva.Rect | Konva.Group = new Konva.Rect({
+      name: DRAG_WRAPPER,
+      x: 0,
+      y: 0,
+      width: width * imgScale,
+      height: height * imgScale,
+    });
+    if (params.background) {
+      const imageObj = await loadImage(params.background);
       background = new Konva.Image({
         name: DRAG_WRAPPER,
         x: 0,
@@ -502,23 +457,20 @@ export function useMap(props: MapProps) {
         width: width * imgScale,
         height: height * imgScale,
       });
-    } else {
-      background = new Konva.Rect({
+    } else if (params.grid) {
+      const gridGroup = initGrid();
+      gridGroup.add(background);
+      gridGroup.setAttrs({
         name: DRAG_WRAPPER,
-        x: 0,
-        y: 0,
-        width: width * imgScale,
-        height: height * imgScale,
       });
+      background = gridGroup;
     }
     return background;
   }
 
   async function initGroup(params: MapGroup) {
-    const { background, size, pathData, pointData, callback } = params;
-    group.on("wheel", zoom);
-
-    const wrapper = await initBackground(size, background);
+    const { pathData, pointData, callback } = params;
+    const wrapper = await initBackground(params);
     group.add(wrapper);
 
     // path
@@ -552,7 +504,7 @@ export function useMap(props: MapProps) {
       width: clientWidth.value,
       height: clientHeight.value,
     });
-
+    stage.on("wheel", zoom);
     await initGroup(params);
     layer.add(group);
     stage.add(layer);
@@ -565,7 +517,7 @@ export function useMap(props: MapProps) {
   }
 
   function destroy() {
-    group.off("wheel");
+    stage?.off("wheel");
     group.destroy();
     layer.destroy();
     stage?.destroy();

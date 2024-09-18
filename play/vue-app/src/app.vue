@@ -358,6 +358,7 @@ const value = ref(0);
       operation
       limit
       space
+      grid
       style="border: 1px solid #dcdfe6; border-radius: 6px; overflow: hidden"
       @point-click="(data) => {console.log(data)}"
     ></LeMap>

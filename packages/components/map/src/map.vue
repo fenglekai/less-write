@@ -32,6 +32,7 @@ const autoRefresh = useDebounceFn(() => {
         width: renderRef.value.clientWidth,
       },
       background: props.background,
+      grid: props.grid,
       size: props.size,
       pathData: props.pathData,
       pointData: props.pointData,
@@ -47,7 +48,14 @@ const autoRefresh = useDebounceFn(() => {
 }, 200);
 
 watch(
-  () => [props.size, props.pathData, props.background, props.space, props.step],
+  () => [
+    props.size,
+    props.pathData,
+    props.background,
+    props.grid,
+    props.space,
+    props.step,
+  ],
   () => {
     destroy();
     loading.value = true;

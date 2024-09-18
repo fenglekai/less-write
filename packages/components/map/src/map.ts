@@ -24,6 +24,10 @@ export const mapProps = {
     type: String,
     default: "",
   },
+  grid: {
+    type: Boolean,
+    default: false,
+  },
   size: {
     type: definePropType<{
       width: number;

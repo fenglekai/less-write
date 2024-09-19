@@ -122,8 +122,12 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
 
   const pointMap = new Map<number, Konva.Image | Konva.Rect>();
   let stage: Konva.Stage;
-  const layer = new Konva.Layer();
-  const group = new Konva.Group();
+  const layer = new Konva.Layer({
+    name: "map-layer",
+  });
+  const group = new Konva.Group({
+    name: "map-group",
+  });
 
   // 容器宽度
   const clientWidth = ref(0);
@@ -174,7 +178,6 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
     const pointChildren = group.getChildren(
       (item) => item.attrs.name === POINT_NAME
     );
-    if (!wrapper) return;
 
     const scaleCount = new Big(newScale)
       .minus(oldScale)
@@ -193,10 +196,13 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
       }
     };
 
-    wrapper.scale({
-      x: zoomComputed(wrapper.scaleX()),
-      y: zoomComputed(wrapper.scaleY()),
-    });
+    if (wrapper) {
+      wrapper.scale({
+        x: zoomComputed(wrapper.scaleX()),
+        y: zoomComputed(wrapper.scaleY()),
+      });
+    }
+
     pointChildren.forEach((point) => {
       point.scale({
         x: newScale,
@@ -248,6 +254,8 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
       x: clientWidth.value / 2,
       y: clientHeight.value / 2,
     });
+    console.log(newScale);
+
     group.setPosition(limitBrink(translate.value.x, translate.value.y));
     layer.batchDraw();
   }
@@ -286,6 +294,7 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
 
   // 设置动态点位
   async function setPoint(points: PointConfig[]) {
+    await nextTick();
     for (const [key, targetPoint] of Object.entries(points)) {
       // 匹配对应点位
       if (pointMap.has(Number(key))) {
@@ -304,7 +313,7 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
           targetPoint.image = imageEl;
         }
 
-        sourcePoint.off('click')
+        sourcePoint.off("click");
         sourcePoint.on("click", () => {
           const parse = toRaw({
             ...targetPoint,
@@ -321,12 +330,19 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
         });
       } else {
         // 添加未匹配到的点位
-        const point = initPoint(targetPoint);
-        group.add(point);
-        pointMap.set(Number(key), point);
+        if (targetPoint.x && targetPoint.y) {
+          const point = initPoint({
+            ...targetPoint,
+            x: targetPoint.x * spaceScale.value,
+            y: targetPoint.y * spaceScale.value,
+            scaleX: scale.value,
+            scaleY: scale.value,
+          });
+          group.add(point);
+          pointMap.set(Number(key), point);
+        }
       }
     }
-    await nextTick();
   }
 
   // 放大(外部调用)
@@ -399,7 +415,12 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
 
   // 初始化网格线组
   function initGrid() {
-    const LineGroup = new Konva.Group();
+    const gridLayer = new Konva.Layer({
+      name: "grid-layer",
+    });
+    const lineGroup = new Konva.Group({
+      name: "grid-group",
+    });
     const gutter = 10;
 
     const genLine = (maxLen: { x: number; y: number }, column = false) => {
@@ -416,20 +437,21 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
             strokeWidth: point % 100 !== 0 ? 1 : 2,
             points: [point, 0, point, maxLen.y],
           });
-          LineGroup.add(verticalLine);
+          lineGroup.add(verticalLine);
         } else {
           const horizontalLine = new Konva.Line({
             stroke: "#f0f0f0",
             strokeWidth: point % 100 !== 0 ? 1 : 2,
             points: [0, point, maxLen.x, point],
           });
-          LineGroup.add(horizontalLine);
+          lineGroup.add(horizontalLine);
         }
       }
     };
     genLine({ x: clientWidth.value, y: clientHeight.value });
     genLine({ x: clientWidth.value, y: clientHeight.value }, true);
-    return LineGroup;
+    gridLayer.add(lineGroup);
+    stage.add(gridLayer);
   }
 
   // 初始化路径
@@ -465,7 +487,7 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
   }
 
   // 初始化点位
-  function initPoint(config: PointConfig, callback?: (data: any) => void) {
+  function initPoint(config: PointConfig) {
     let point;
     let currentX = 0;
     let currentY = 0;
@@ -511,43 +533,38 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
 
   // 初始化背景
   async function initBackground(
-    params: MapGroup
+    size: { width: number; height: number },
+    background: string
   ): Promise<Konva.Image | Konva.Rect | Konva.Group> {
-    const { width, height } = params.size;
+    const { width, height } = size;
     const imgScale = clientWidth.value / width;
-    let background: Konva.Image | Konva.Rect | Konva.Group = new Konva.Rect({
+    let backgroundImage: Konva.Image;
+    const imageObj = await loadImage(background);
+    backgroundImage = new Konva.Image({
       name: DRAG_WRAPPER,
       x: 0,
       y: 0,
+      image: imageObj,
       width: width * imgScale,
       height: height * imgScale,
     });
-    if (params.background) {
-      const imageObj = await loadImage(params.background);
-      background = new Konva.Image({
-        name: DRAG_WRAPPER,
-        x: 0,
-        y: 0,
-        image: imageObj,
-        width: width * imgScale,
-        height: height * imgScale,
-      });
-    } else if (params.grid) {
-      const gridGroup = initGrid();
-      gridGroup.add(background);
-      gridGroup.setAttrs({
-        name: DRAG_WRAPPER,
-      });
-      background = gridGroup;
-    }
-    return background;
+    return backgroundImage;
   }
 
   // 初始化整体组
-  async function initGroup(params: MapGroup) {
-    const { pathData } = params;
-    const wrapper = await initBackground(params);
-    group.add(wrapper);
+  async function initMap(params: MapGroup) {
+    const { pointData, pathData, background, size } = params;
+
+    // background
+    if (background) {
+      const wrapper = await initBackground(size, background);
+      group.add(wrapper);
+    }
+
+    // grid
+    if (props.grid) {
+      initGrid();
+    }
 
     // path
     if (pathData) {
@@ -557,6 +574,16 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
         group.add(bezierLine);
       }
     }
+
+    // point
+    if (pointData) {
+      setPoint(pointData);
+    }
+
+    layer.add(group);
+    stage.add(layer);
+    group.draw();
+    layer.draw();
   }
 
   // 初始化地图(外部调用)
@@ -567,19 +594,16 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
       params.size.height * (clientWidth.value / params.size.width);
     renderScale.value = clientWidth.value / params.size.width;
     stage = new Konva.Stage({
+      name: "map-stage",
       container: params.ctx.el,
       width: clientWidth.value,
       height: clientHeight.value,
     });
+    await initMap(params);
     stage.on("wheel", onWheel);
     stage.on("mousedown", onMousedown);
     stage.on("mouseup", removeDraggle);
     stage.on("mouseleave", removeDraggle);
-    await initGroup(params);
-    layer.add(group);
-    stage.add(layer);
-    group.draw();
-    layer.draw();
     stage.draw();
     if (initCallback) {
       initCallback();
@@ -592,6 +616,7 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
     stage?.off("mousedown");
     stage?.off("mouseup");
     stage?.off("mouseleave");
+    pointMap.clear();
     group.destroy();
     layer.destroy();
     stage?.destroy();

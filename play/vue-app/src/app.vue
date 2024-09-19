@@ -350,8 +350,8 @@ const value = ref(0);
     <LeButton @click="handleRunClick">运行轨迹</LeButton>
     <LeMap
       min="1"
-      max="10"
-      step="0.2"
+      max="5"
+      step="0.1"
       :size="size"
       :path-data="pathData"
       :point-data="[...pointData, ...deviceData]"

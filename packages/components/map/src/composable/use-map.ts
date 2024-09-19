@@ -1,4 +1,4 @@
-import { ref, computed, unref, nextTick, watch, toRaw } from "vue";
+import { ref, computed, unref, nextTick, watch, toRaw, reactive } from "vue";
 import Konva from "konva";
 import type { RectConfig } from "konva/lib/shapes/Rect";
 import type { ImageConfig } from "konva/lib/shapes/Image";
@@ -114,13 +114,7 @@ export function useMap(props: MapProps) {
   const pointMap = new Map<number, Konva.Image | Konva.Rect>();
   let stage: Konva.Stage;
   const layer = new Konva.Layer();
-  const group = new Konva.Group({
-    draggable: true,
-    dragBoundFunc(pos) {
-      const { x, y } = pos;
-      return limitBrink(x, y);
-    },
-  });
+  const group = new Konva.Group();
 
   // 容器宽度
   const clientWidth = ref(0);
@@ -128,7 +122,6 @@ export function useMap(props: MapProps) {
   const clientHeight = ref(0);
   // size与容器之间的缩放比例以宽度计算
   const renderScale = ref(0);
-
   // 计算间距缩放
   const spaceScale = computed(() => {
     if (props.space) {
@@ -140,6 +133,12 @@ export function useMap(props: MapProps) {
       return baseScale.value ** scaleCount;
     }
     return scale.value;
+  });
+  // 拖拽动作
+  const dragging = ref(false);
+  const mosStart = reactive({
+    x: 0,
+    y: 0,
   });
 
   watch(
@@ -232,6 +231,7 @@ export function useMap(props: MapProps) {
     });
   });
 
+  // 设置缩放比例(滚动滑块)
   async function setScale(newScale: number) {
     transformZoom(newScale, {
       x: clientWidth.value / 2,
@@ -272,6 +272,7 @@ export function useMap(props: MapProps) {
     updateTranslateLimit([0, rightLimit, bottomLimit, 0]);
     return { x: limitX, y: limitY };
   }
+
   // 设置动态点位
   async function setPoint(points: PointConfig[]) {
     for (const [key, targetPoint] of Object.entries(points)) {
@@ -300,6 +301,7 @@ export function useMap(props: MapProps) {
     }
   }
 
+  // 放大(外部调用)
   function zoomIn(
     mouseX: number = clientWidth.value / 2,
     mouseY: number = clientHeight.value / 2
@@ -308,6 +310,8 @@ export function useMap(props: MapProps) {
     group.setPosition(limitBrink(translate.value.x, translate.value.y));
     layer.batchDraw();
   }
+
+  // 缩小(外部调用)
   function zoomOut(
     mouseX: number = clientWidth.value / 2,
     mouseY: number = clientHeight.value / 2
@@ -317,18 +321,55 @@ export function useMap(props: MapProps) {
     group.setPosition(limitBrink(translate.value.x, translate.value.y));
     layer.batchDraw();
   }
+
+  // 重置缩放(外部调用)
   function resetZoom() {
     transformResetZoom();
     group.position({ x: 0, y: 0 });
     layer.batchDraw();
   }
 
-  function zoom(e: { evt: WheelEvent }) {
+  // 滚轮事件
+  function onWheel(e: { evt: WheelEvent }) {
     e.evt.preventDefault();
-    transformZoom(e.evt.deltaY > 0, { x: e.evt.offsetX, y: e.evt.offsetY });
+    const { deltaY, offsetX, offsetY } = e.evt;
+    transformZoom(deltaY > 0, { x: offsetX, y: offsetY });
     group.setPosition(limitBrink(translate.value.x, translate.value.y));
   }
 
+  // 拖拽鼠标移动事件
+  function onMousemove(e: { evt: MouseEvent }) {
+    const { offsetX, offsetY } = e.evt;
+    e.evt.preventDefault();
+    if (dragging.value) {
+      const moveDelta = {
+        x: offsetX - mosStart.x,
+        y: offsetY - mosStart.y,
+      };
+      mosStart.x = offsetX;
+      mosStart.y = offsetY;
+      updateTranslate(moveDelta.x, moveDelta.y);
+      group.setPosition(limitBrink(translate.value.x, translate.value.y));
+    }
+  }
+
+  // 拖拽鼠标点击
+  function onMousedown(e: { evt: MouseEvent }) {
+    e.evt.preventDefault();
+    const { offsetX, offsetY } = e.evt;
+    dragging.value = true;
+    mosStart.x = offsetX;
+    mosStart.y = offsetY;
+    stage.on("mousemove", onMousemove);
+  }
+  // 移除鼠标拖拽事件
+  function removeDraggle(e: { evt: MouseEvent }) {
+    e.evt.preventDefault();
+    dragging.value = false;
+    stage.off("mousemove");
+  }
+
+  // 初始化网格线组
   function initGrid() {
     const LineGroup = new Konva.Group();
     const gutter = 10;
@@ -356,6 +397,7 @@ export function useMap(props: MapProps) {
     return LineGroup;
   }
 
+  // 初始化路径
   function initPath(config: BezierConfig) {
     const { start, controlStart, controlEnd, end } = config;
     let realConfig = {
@@ -387,6 +429,7 @@ export function useMap(props: MapProps) {
     return bezierPath;
   }
 
+  // 初始化点位
   async function initPoint(
     config: PointConfig,
     callback?: (data: any) => void
@@ -435,6 +478,7 @@ export function useMap(props: MapProps) {
     return point;
   }
 
+  // 初始化背景
   async function initBackground(
     params: MapGroup
   ): Promise<Konva.Image | Konva.Rect | Konva.Group> {
@@ -468,6 +512,7 @@ export function useMap(props: MapProps) {
     return background;
   }
 
+  // 初始化整体组
   async function initGroup(params: MapGroup) {
     const { pathData, pointData, callback } = params;
     const wrapper = await initBackground(params);
@@ -493,6 +538,7 @@ export function useMap(props: MapProps) {
     }
   }
 
+  // 初始化地图(外部调用)
   async function init(params: MapGroup, initCallback?: () => void) {
     await nextTick();
     clientWidth.value = params.ctx.width;
@@ -504,7 +550,10 @@ export function useMap(props: MapProps) {
       width: clientWidth.value,
       height: clientHeight.value,
     });
-    stage.on("wheel", zoom);
+    stage.on("wheel", onWheel);
+    stage.on("mousedown", onMousedown);
+    stage.on("mouseup", removeDraggle);
+    stage.on("mouseleave", removeDraggle);
     await initGroup(params);
     layer.add(group);
     stage.add(layer);
@@ -516,8 +565,12 @@ export function useMap(props: MapProps) {
     }
   }
 
+  // 销毁地图(外部调用)
   function destroy() {
     stage?.off("wheel");
+    stage?.off("mousedown");
+    stage?.off("mouseup");
+    stage?.off("mouseleave");
     group.destroy();
     layer.destroy();
     stage?.destroy();

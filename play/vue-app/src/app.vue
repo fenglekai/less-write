@@ -304,8 +304,9 @@ const pointData = ref<PointConfig[]>([
     fill: "black",
   },
 ]);
+const clickData = ref<PointConfig>();
 
-let runInstance: any ;
+let runInstance: any;
 
 const handleRunClick = async () => {
   runInstance.destroy();
@@ -314,9 +315,21 @@ const handleRunClick = async () => {
   runInstance.init();
 };
 
+const tempData = ref<PointConfig[]>([]);
+const getMapData = () => {
+  setTimeout(() => {
+    tempData.value.push({
+      x: 5000,
+      y: 1000,
+      fill: "black",
+    });
+  }, 2000);
+};
+
 onMounted(async () => {
-  runInstance = await run()
+  runInstance = await run();
   // runInstance.init();
+  getMapData();
 });
 onUnmounted(() => {
   runInstance.destroy();
@@ -348,19 +361,23 @@ const value = ref(0);
       style="border: 1px solid #dcdfe6; border-radius: 6px; overflow: hidden"
     ></LeMap> -->
     <LeButton @click="handleRunClick">运行轨迹</LeButton>
+    {{ clickData }}
     <LeMap
       min="1"
       max="5"
       step="0.1"
       :size="size"
+      :point-data="[...pointData, ...deviceData, ...tempData]"
       :path-data="pathData"
-      :point-data="[...pointData, ...deviceData]"
       operation
-      limit
       space
       grid
       style="border: 1px solid #dcdfe6; border-radius: 6px; overflow: hidden"
-      @point-click="(data) => {console.log(data)}"
+      @point-click="
+        (data) => {
+          clickData = data;
+        }
+      "
     ></LeMap>
   </div>
 </template>

@@ -14,11 +14,11 @@ export const mapProps = {
   },
   max: {
     type: definePropType<number | string>([Number, String]),
-    default: 10,
+    default: 5,
   },
   step: {
     type: definePropType<number | string>([Number, String]),
-    default: 1,
+    default: 0.1,
   },
   background: {
     type: String,

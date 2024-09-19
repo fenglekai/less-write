@@ -1,4 +1,13 @@
-import { ref, computed, unref, nextTick, watch, toRaw, reactive } from "vue";
+import {
+  ref,
+  computed,
+  unref,
+  nextTick,
+  watch,
+  toRaw,
+  reactive,
+  SetupContext,
+} from "vue";
 import Konva from "konva";
 import type { RectConfig } from "konva/lib/shapes/Rect";
 import type { ImageConfig } from "konva/lib/shapes/Image";
@@ -6,7 +15,7 @@ import type { Shape, ShapeConfig } from "konva/lib/Shape";
 import type { Context } from "konva/lib/Context";
 import { loadImage } from "@less-write/utils";
 import Big from "big.js";
-import type { BezierConfig, MapProps, PointConfig } from "../map";
+import type { BezierConfig, MapEmits, MapProps, PointConfig } from "../map";
 import { useTransform } from "./use-transform";
 
 export interface MapGroup {
@@ -22,19 +31,19 @@ export interface MapGroup {
   grid?: boolean;
   pathData?: BezierConfig[];
   pointData?: PointConfig[];
-  callback?: (data: any) => void;
 }
 
 const DRAG_WRAPPER = "drag-wrapper";
 const PATH_NAME = "path";
 const POINT_NAME = "point";
 const DEFAULT_RECT_WIDTH = 10;
+const DEFAULT_COLOR = "#000000";
 
 function createRect(data: RectConfig) {
   const defaultConfig = {
     width: DEFAULT_RECT_WIDTH,
     height: DEFAULT_RECT_WIDTH,
-    fill: "white",
+    fill: DEFAULT_COLOR,
     cornerRadius: 1,
   };
 
@@ -88,7 +97,7 @@ function useBezierScene(
 function createBezierPath(bezier: BezierConfig) {
   const bezierLine = new Konva.Shape({
     name: PATH_NAME,
-    stroke: "white",
+    stroke: DEFAULT_COLOR,
     strokeWidth: 2,
     sceneFunc: (ctx, shape) => useBezierScene(ctx, shape, bezier),
     ...bezier,
@@ -98,7 +107,7 @@ function createBezierPath(bezier: BezierConfig) {
 
 const isHTMLImage = (val: any) => val instanceof HTMLImageElement;
 
-export function useMap(props: MapProps) {
+export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
   const {
     scale,
     min,
@@ -140,6 +149,8 @@ export function useMap(props: MapProps) {
     x: 0,
     y: 0,
   });
+  // 点位内容，click事件触发
+  const pointData = ref<PointConfig>();
 
   watch(
     () => props.pointData,
@@ -276,6 +287,7 @@ export function useMap(props: MapProps) {
   // 设置动态点位
   async function setPoint(points: PointConfig[]) {
     for (const [key, targetPoint] of Object.entries(points)) {
+      // 匹配对应点位
       if (pointMap.has(Number(key))) {
         const sourcePoint = pointMap.get(Number(key));
         if (!sourcePoint) return;
@@ -292,13 +304,29 @@ export function useMap(props: MapProps) {
           targetPoint.image = imageEl;
         }
 
+        sourcePoint.off('click')
+        sourcePoint.on("click", () => {
+          const parse = toRaw({
+            ...targetPoint,
+            x: x,
+            y: y,
+          });
+          pointData.value = parse;
+          emits("pointClick", parse);
+        });
         sourcePoint.setAttrs({
           ...targetPoint,
           x: x,
           y: y,
         });
+      } else {
+        // 添加未匹配到的点位
+        const point = initPoint(targetPoint);
+        group.add(point);
+        pointMap.set(Number(key), point);
       }
     }
+    await nextTick();
   }
 
   // 放大(外部调用)
@@ -374,26 +402,33 @@ export function useMap(props: MapProps) {
     const LineGroup = new Konva.Group();
     const gutter = 10;
 
-    const genLine = (length: number, column = false) => {
+    const genLine = (maxLen: { x: number; y: number }, column = false) => {
       let i = 0;
-      while (i * gutter + gutter <= length) {
+      while (
+        i * gutter + gutter <= maxLen.x &&
+        (i * gutter + gutter <= maxLen.y || column)
+      ) {
         i++;
         const point = i * gutter;
-        const verticalLine = new Konva.Line({
-          stroke: "#f0f0f0",
-          strokeWidth: point % 100 !== 0 ? 1 : 2,
-          points: [point, 0, point, length],
-        });
-        LineGroup.add(verticalLine);
-        const horizontalLine = new Konva.Line({
-          stroke: "#f0f0f0",
-          strokeWidth: point % 100 !== 0 ? 1 : 2,
-          points: [0, point, length, point],
-        });
-        LineGroup.add(horizontalLine);
+        if (column) {
+          const verticalLine = new Konva.Line({
+            stroke: "#f0f0f0",
+            strokeWidth: point % 100 !== 0 ? 1 : 2,
+            points: [point, 0, point, maxLen.y],
+          });
+          LineGroup.add(verticalLine);
+        } else {
+          const horizontalLine = new Konva.Line({
+            stroke: "#f0f0f0",
+            strokeWidth: point % 100 !== 0 ? 1 : 2,
+            points: [0, point, maxLen.x, point],
+          });
+          LineGroup.add(horizontalLine);
+        }
       }
     };
-    genLine(clientWidth.value);
+    genLine({ x: clientWidth.value, y: clientHeight.value });
+    genLine({ x: clientWidth.value, y: clientHeight.value }, true);
     return LineGroup;
   }
 
@@ -430,10 +465,7 @@ export function useMap(props: MapProps) {
   }
 
   // 初始化点位
-  async function initPoint(
-    config: PointConfig,
-    callback?: (data: any) => void
-  ) {
+  function initPoint(config: PointConfig, callback?: (data: any) => void) {
     let point;
     let currentX = 0;
     let currentY = 0;
@@ -470,10 +502,9 @@ export function useMap(props: MapProps) {
     point.offsetY(point.height() / 2);
 
     point.on("click", () => {
-      if (callback) {
-        const parse = toRaw(config);
-        callback(parse);
-      }
+      const parse = toRaw(config);
+      pointData.value = parse;
+      emits("pointClick", parse);
     });
     return point;
   }
@@ -514,7 +545,7 @@ export function useMap(props: MapProps) {
 
   // 初始化整体组
   async function initGroup(params: MapGroup) {
-    const { pathData, pointData, callback } = params;
+    const { pathData } = params;
     const wrapper = await initBackground(params);
     group.add(wrapper);
 
@@ -524,16 +555,6 @@ export function useMap(props: MapProps) {
         const config = pathData[i];
         const bezierLine = initPath(config);
         group.add(bezierLine);
-      }
-    }
-
-    // point
-    if (pointData) {
-      for (let i = 0; i < pointData.length; i++) {
-        const config = pointData[i];
-        const point = await initPoint(config, callback);
-        group.add(point);
-        pointMap.set(i, point);
       }
     }
   }
@@ -579,6 +600,7 @@ export function useMap(props: MapProps) {
   return {
     width: computed(() => unref(clientWidth)),
     scale: computed(() => unref(scale)),
+    pointData: computed(() => unref(pointData)),
     init,
     destroy,
     zoomIn,

@@ -17,7 +17,7 @@ const drawerData = ref<any>(null);
 const loading = ref(false);
 const collapse = ref(false);
 
-const mapInstance = useMap(props);
+const mapInstance = useMap(props, emits);
 const { init, destroy, zoomIn, zoomOut, resetZoom, setScale, scale } =
   mapInstance;
 
@@ -36,10 +36,6 @@ const autoRefresh = useDebounceFn(() => {
       size: props.size,
       pathData: props.pathData,
       pointData: props.pointData,
-      callback: (data) => {
-        drawerData.value = data;
-        emits("pointClick", data);
-      },
     },
     () => {
       loading.value = false;

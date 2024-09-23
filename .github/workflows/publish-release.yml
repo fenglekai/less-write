@@ -51,7 +51,9 @@ jobs:
             ${{ runner.os }}-pnpm-
 
       - name: Generate Changelog
-        run: sh ./scripts/gen-changelog.sh
+        run: |
+          pnpm add -g less-write-changelog
+          less-write-changelog
 
       - name: Commit and push changelog
         if: ${{ github.event_name != 'workflow_dispatch' }}
@@ -68,7 +70,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ github.token }}
-          body_path: release.md
+          body_path: RELEASE.md
 
       - name: Release to NPM
         if: ${{ github.event_name != 'workflow_dispatch' }}

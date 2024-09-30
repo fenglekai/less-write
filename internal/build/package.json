@@ -1,10 +1,17 @@
 {
+  "private": true,
   "name": "@less-write/build",
   "description": "Build Toolchain for Less Write",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "private": true,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
     "start": "gulp --preload @esbuild-kit/cjs-loader -f gulpfile.ts",
     "dev": "pnpm run stub",

@@ -22,7 +22,7 @@ const formatPathDemos = computed(() => {
   const demos = {};
 
   Object.keys(props.demos).forEach((key) => {
-    demos[key.replace("../../examples/", "").replace(".vue", "")] =
+    demos[key.replace("../examples/", "").replace(".vue", "")] =
       props.demos[key].default;
   });
 
@@ -30,12 +30,20 @@ const formatPathDemos = computed(() => {
 });
 
 const locale = computed(() => ({
-  'hide-source': '隐藏代码',
-  'view-source': '显示代码',
-}))
+  "hide-source": "隐藏代码",
+  "view-source": "显示代码",
+}));
 const decodedDescription = computed(() =>
   decodeURIComponent(props.description!)
 );
+
+const onSourceVisibleKeydown = (e: KeyboardEvent) => {
+  if (["Enter", "Space"].includes(e.code)) {
+    e.preventDefault();
+    toggleSourceVisible(false);
+    sourceCodeRef.value?.focus();
+  }
+};
 </script>
 
 <template>
@@ -46,7 +54,7 @@ const decodedDescription = computed(() =>
     <div class="example">
       <VPExample :file="path" :demo="formatPathDemos[path]" />
 
-      <ElDivider class="m-0" />
+      <!-- <ElDivider class="m-0" /> -->
 
       <div class="op-btns">
         <button
@@ -61,11 +69,11 @@ const decodedDescription = computed(() =>
         </button>
       </div>
 
-      <ElCollapseTransition>
-        <VPSourceCode v-show="sourceVisible" :source="source" />
-      </ElCollapseTransition>
+      <!-- <ElCollapseTransition> -->
+      <VPSourceCode v-show="sourceVisible" :source="source" />
+      <!-- </ElCollapseTransition> -->
 
-      <Transition name="el-fade-in-linear">
+      <Transition>
         <div
           v-show="sourceVisible"
           class="example-float-control"

@@ -10,7 +10,7 @@
     "strict": true,
     "noImplicitAny": false,
     "skipLibCheck": true,
-    "lib": ["WebWorker"],
+    "lib": ["WebWorker", "DOM"],
     "paths": {
       "less-write-ui": ["../packages/less-write-ui"],
       "~/*": ["./.vitepress/vitepress/*"]

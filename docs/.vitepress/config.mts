@@ -1,7 +1,23 @@
+import path from "path";
 import { defineConfig } from "vitepress";
+import { projRoot } from "@less-write/build";
 import baseConfig from "./theme/less-write-vitepress-theme/config";
 import sidebar from "./utils/sidebar";
-import { mdPlugin } from "./utils/plugins";
+
+const alias: any[] = [];
+
+if (process.env.DOC_ENV !== "production") {
+  alias.push(
+    {
+      find: /^less-write-ui(\/(es|lib))?$/,
+      replacement: path.resolve(projRoot, "packages/less-write-ui/index.ts"),
+    },
+    {
+      find: /^less-write-ui\/(es|lib)\/(.*)$/,
+      replacement: `${path.resolve(projRoot, "packages")}/$2`,
+    }
+  );
+}
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -9,8 +25,10 @@ export default defineConfig({
   title: "Less Write",
   description: "A Vue.js 3 UI Library",
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
-  markdown: {
-    config: (md) => mdPlugin(md),
+  vite: {
+    resolve: {
+      alias,
+    },
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -45,7 +63,7 @@ export default defineConfig({
     },
     outline: {
       label: "页面导航",
-      level: [2,3]
+      level: [2, 3],
     },
     docFooter: {
       prev: "上一页",

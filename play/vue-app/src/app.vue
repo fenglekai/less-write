@@ -343,7 +343,7 @@ const value = ref(0);
     <div class="slider-wrapper">
       <div>{{ value }}</div>
       <LeSlider v-model="value" min="1" max="10" step="0.2"></LeSlider>
-      <LeSlider v-model="value" vertical min="1" max="10" step="0.2"></LeSlider>
+      <LeSlider v-model="value" height="200px" vertical min="1" max="10" step="0.2"></LeSlider>
     </div>
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg -->
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png -->
@@ -384,7 +384,6 @@ const value = ref(0);
 <style lang="less" scoped>
 .slider-wrapper {
   width: 50%;
-  height: 200px;
   margin: 20px;
   display: flex;
   & > *:not(:first-child) {

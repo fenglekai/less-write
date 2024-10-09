@@ -1,5 +1,5 @@
 import { computed, reactive, ref, unref } from "vue";
-import { isNumber } from "lodash";
+import { isNumber } from "lodash-es";
 import Big from "big.js";
 import { MapProps, mapProps } from "../map";
 

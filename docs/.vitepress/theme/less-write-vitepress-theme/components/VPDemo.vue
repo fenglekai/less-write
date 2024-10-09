@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, getCurrentInstance, ref } from "vue";
+import { computed, ref } from "vue";
+import type { RendererElement } from "@vue/runtime-core";
 import { useToggle } from "@vueuse/core";
 import VPIconCode from "./icons/VPIconCode.vue";
 import VPCaretTop from "./icons/VPIconCaretTop.vue";
@@ -44,6 +45,79 @@ const onSourceVisibleKeydown = (e: KeyboardEvent) => {
     sourceCodeRef.value?.focus();
   }
 };
+
+
+const reset = (el: RendererElement) => {
+  el.style.maxHeight = ''
+  el.style.overflow = el.dataset.oldOverflow
+  el.style.paddingTop = el.dataset.oldPaddingTop
+  el.style.paddingBottom = el.dataset.oldPaddingBottom
+}
+const on = {
+  beforeEnter(el: RendererElement) {
+    if (!el.dataset) el.dataset = {}
+
+    el.dataset.oldPaddingTop = el.style.paddingTop
+    el.dataset.oldPaddingBottom = el.style.paddingBottom
+    if (el.style.height) el.dataset.elExistsHeight = el.style.height
+
+    el.style.maxHeight = 0
+    el.style.paddingTop = 0
+    el.style.paddingBottom = 0
+  },
+
+  enter(el: RendererElement) {
+    requestAnimationFrame(() => {
+      el.dataset.oldOverflow = el.style.overflow
+      if (el.dataset.elExistsHeight) {
+        el.style.maxHeight = el.dataset.elExistsHeight
+      } else if (el.scrollHeight !== 0) {
+        el.style.maxHeight = `${el.scrollHeight}px`
+      } else {
+        el.style.maxHeight = 0
+      }
+
+      el.style.paddingTop = el.dataset.oldPaddingTop
+      el.style.paddingBottom = el.dataset.oldPaddingBottom
+      el.style.overflow = 'hidden'
+    })
+  },
+
+  afterEnter(el: RendererElement) {
+    el.style.maxHeight = ''
+    el.style.overflow = el.dataset.oldOverflow
+  },
+
+  enterCancelled(el: RendererElement) {
+    reset(el)
+  },
+
+  beforeLeave(el: RendererElement) {
+    if (!el.dataset) el.dataset = {}
+    el.dataset.oldPaddingTop = el.style.paddingTop
+    el.dataset.oldPaddingBottom = el.style.paddingBottom
+    el.dataset.oldOverflow = el.style.overflow
+
+    el.style.maxHeight = `${el.scrollHeight}px`
+    el.style.overflow = 'hidden'
+  },
+
+  leave(el: RendererElement) {
+    if (el.scrollHeight !== 0) {
+      el.style.maxHeight = 0
+      el.style.paddingTop = 0
+      el.style.paddingBottom = 0
+    }
+  },
+
+  afterLeave(el: RendererElement) {
+    reset(el)
+  },
+
+  leaveCancelled(el: RendererElement) {
+    reset(el)
+  },
+}
 </script>
 
 <template>
@@ -65,13 +139,13 @@ const onSourceVisibleKeydown = (e: KeyboardEvent) => {
           class="reset-btn el-icon op-btn"
           @click="toggleSourceVisible()"
         >
-          <VPIconCode />
+          <VPIconCode width="16" />
         </button>
       </div>
 
-      <!-- <ElCollapseTransition> -->
-      <VPSourceCode v-show="sourceVisible" :source="source" />
-      <!-- </ElCollapseTransition> -->
+      <Transition name="collapse-transition" v-on="on">
+        <VPSourceCode v-show="sourceVisible" :source="source" />
+      </Transition>
 
       <Transition>
         <div
@@ -82,7 +156,7 @@ const onSourceVisibleKeydown = (e: KeyboardEvent) => {
           @click="toggleSourceVisible(false)"
           @keydown="onSourceVisibleKeydown"
         >
-          <VPCaretTop />
+          <VPCaretTop width="16" />
           <span>{{ locale["hide-source"] }}</span>
         </div>
       </Transition>
@@ -92,8 +166,8 @@ const onSourceVisibleKeydown = (e: KeyboardEvent) => {
 
 <style scoped lang="less">
 .example {
-  border: 1px solid var(--border-color);
-  border-radius: var(--el-border-radius-base);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--le-border-radius-base);
 
   .op-btns {
     padding: 0.5rem;
@@ -101,6 +175,7 @@ const onSourceVisibleKeydown = (e: KeyboardEvent) => {
     align-items: center;
     justify-content: flex-end;
     height: 2.5rem;
+    border-top: 1px solid var(--vp-c-divider);
 
     .icon {
       &:hover {
@@ -129,14 +204,14 @@ const onSourceVisibleKeydown = (e: KeyboardEvent) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--vp-c-divider);
     height: 44px;
     box-sizing: border-box;
     background-color: var(--bg-color, #fff);
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     margin-top: -1px;
-    color: var(--el-text-color-secondary);
+    color: var(--le-text-color-secondary);
     cursor: pointer;
     position: sticky;
     left: 0;
@@ -149,8 +224,32 @@ const onSourceVisibleKeydown = (e: KeyboardEvent) => {
     }
 
     &:hover {
-      color: var(--el-color-primary);
+      color: var(--le-color-primary);
     }
   }
+}
+
+@transition-duration: 0.3s;
+.v-enter-active,
+.v-leave-active {
+  transition: opacity @transition-duration ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+
+.collapse-transition {
+  transition: @transition-duration height ease-in-out,
+    @transition-duration padding-top ease-in-out,
+    @transition-duration padding-bottom ease-in-out;
+}
+
+.collapse-transition-leave-active,
+.collapse-transition-enter-active {
+  transition: @transition-duration max-height ease-in-out,
+    @transition-duration padding-top ease-in-out,
+    @transition-duration padding-bottom ease-in-out;
 }
 </style>

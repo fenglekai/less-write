@@ -25,12 +25,13 @@
       height: 12px;
       position: absolute;
       z-index: 1;
-      top: -7px;
+      top: -100%;
       transform: translateX(-50%);
       background-color: @colors[primary];
       border-radius: 50%;
       border: 5px solid @color-white;
       cursor: pointer;
+      box-sizing: content-box;
 
       &:hover {
         @args: color, primary, light, 3;
@@ -66,12 +67,11 @@
         height: 100%;
         background-color: @outside-color;
         border-radius: 12px;
-
       }
 
       .thumb {
         top: auto;
-        left: 5px;
+        left: 50%;
         bottom: 0px;
         transform: translate(-50%, 50%);
       }

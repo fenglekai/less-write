@@ -24,7 +24,7 @@ const { thumb, track, fill, handleThumbDown } = useSlider(props, emits);
 
 <template>
   <div :class="sliderKls">
-    <div class="slider-content">
+    <div class="slider-content" :style="height ? {height} : null">
       <div ref="thumb" class="thumb" @mousedown="handleThumbDown"></div>
       <div ref="fill" class="fill"></div>
       <div ref="track" class="runnable-track"></div>

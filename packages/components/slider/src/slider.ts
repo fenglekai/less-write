@@ -24,6 +24,10 @@ export const sliderProps = {
     type: Boolean,
     default: false,
   },
+  height: {
+    type: String,
+    default: '8px',
+  }
 };
 export type SliderProps = ExtractPropTypes<typeof sliderProps>;
 

@@ -254,7 +254,6 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
       x: clientWidth.value / 2,
       y: clientHeight.value / 2,
     });
-    console.log(newScale);
 
     group.setPosition(limitBrink(translate.value.x, translate.value.y));
     layer.batchDraw();

@@ -96,12 +96,13 @@
 .operation-default {
   .base-border-background();
   .base-shadow();
+  box-sizing: border-box;
+  width: 46px;
   padding: 6px;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
   will-change: width;
-  width: 32px;
   transition: @transition-timer;
   overflow: hidden;
 

@@ -66,11 +66,12 @@ function handleScaleChange(scale: number) {
         >
           <le-slider
             v-model="scale"
+            vertical
+            height=""
             :min="minScale"
             :max="maxScale"
             :step="scaleStep"
             @change="handleScaleChange"
-            vertical
           ></le-slider>
         </div>
       </div>

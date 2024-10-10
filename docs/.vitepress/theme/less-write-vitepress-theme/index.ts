@@ -3,9 +3,8 @@ import { watch } from "vue";
 import Layout from "./Layout.vue";
 import RainbowAnimationSwitcher from './components/RainbowAnimationSwitcher.vue'
 import VPDemo from './components/VPDemo.vue'
-import './styles/rainbow.css'
-import './styles/vars.css'
-import './styles/overrides.css'
+import VPApiTyping from './components/VPApiTyping.vue'
+import './styles/base.css'
 
 let homePageStyle: HTMLStyleElement | undefined
 
@@ -14,6 +13,7 @@ export default {
   enhanceApp({ app, router }) {
     app.component('RainbowAnimationSwitcher', RainbowAnimationSwitcher)
     app.component('Demo', VPDemo)
+    app.component('ApiTyping', VPApiTyping)
     if (typeof window === 'undefined')
       return
 

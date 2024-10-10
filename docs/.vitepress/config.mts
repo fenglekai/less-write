@@ -1,6 +1,11 @@
 import path from "path";
 import { defineConfig } from "vitepress";
-import { projRoot } from "@less-write/build";
+import {
+  docPackage,
+  getPackageDependencies,
+  lePackage,
+  projRoot,
+} from "@less-write/build";
 import baseConfig from "./theme/less-write-vitepress-theme/config";
 import sidebar from "./utils/sidebar";
 
@@ -19,6 +24,13 @@ if (process.env.DOC_ENV !== "production") {
   );
 }
 
+const { dependencies: leDeps } = getPackageDependencies(lePackage);
+const { dependencies: docsDeps } = getPackageDependencies(docPackage);
+
+const optimizeDeps = [...new Set([...leDeps, ...docsDeps])].filter(
+  (dep) => !dep.startsWith("@types/") && !["less-write-ui"].includes(dep)
+);
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   extends: baseConfig,
@@ -28,6 +40,9 @@ export default defineConfig({
   vite: {
     resolve: {
       alias,
+    },
+    optimizeDeps: {
+      include: optimizeDeps,
     },
   },
   themeConfig: {

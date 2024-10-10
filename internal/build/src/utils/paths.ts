@@ -16,3 +16,4 @@ export const buildOutput = resolve(projRoot, "dist");
 export const leOutput = resolve(buildOutput, "less-write-ui");
 
 export const lePackage = resolve(leRoot, "package.json");
+export const docPackage = resolve(docRoot, "package.json");

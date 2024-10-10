@@ -35,8 +35,8 @@ export const mapProps = {
     }>(Object),
     require: true,
     default: {
-      width: 0,
-      height: 0,
+      width: 1920,
+      height: 1080,
     },
   },
   pathData: {

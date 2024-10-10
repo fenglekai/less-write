@@ -15,7 +15,7 @@ hero:
       link: /guide
     - theme: alt
       text: 组件
-      link: /api-examples
+      link: /component
 
 features:
   - icon: 🛠️

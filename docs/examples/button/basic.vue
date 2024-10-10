@@ -1,9 +1,5 @@
 <template>
-  <div class="mb-4">
-    <le-button>Default</le-button>
-    Default
-  </div>
+  <LeButton>Default</LeButton>
 </template>
 
-<script lang="ts" setup>
-</script>
+<script lang="ts" setup></script>

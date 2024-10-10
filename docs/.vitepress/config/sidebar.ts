@@ -1,7 +1,9 @@
+import { DefaultTheme } from "vitepress";
+
 const guideSidebar = [
   {
     text: "安装",
-    link: "/guide/index",
+    link: "/guide/",
   },
   {
     text: "快速开始",
@@ -27,9 +29,9 @@ const mapComponentSidebar = [
   },
 ];
 
-const sidebar = {
-  "/guide": [{ text: "入门指南", items: guideSidebar }],
-  "/component": [
+const sidebar: DefaultTheme.Sidebar = {
+  "/guide/": [{ text: "入门指南", items: guideSidebar }],
+  "/component/": [
     {
       text: "组件",
       items: [

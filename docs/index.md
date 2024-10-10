@@ -12,16 +12,16 @@ hero:
   actions:
     - theme: brand
       text: 快速开始
-      link: /guide
+      link: /guide/
     - theme: alt
       text: 组件
-      link: /component
+      link: /component/
 
 features:
   - icon: 🛠️
     title: 简单的导入
     details: 通过npm安装即可使用
-    link: /guide
+    link: /guide/
     linkText: 入门
   - icon: 📃
     title: 易用

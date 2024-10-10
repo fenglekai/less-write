@@ -34,11 +34,14 @@ const optimizeDeps = [...new Set([...leDeps, ...docsDeps])].filter(
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  lang: 'zh-CN',
   extends: baseConfig,
   title: "Less Write",
   description: "A Vue.js 3 UI Library",
   cleanUrls: true,
-  head: [["link", { rel: "icon", href: "/favicon.ico" }]],
+  lastUpdated: true,
+  base: "/less-write/",
+  head: [["link", { rel: "icon", href: "/less-write/favicon.ico" }]],
   vite: {
     resolve: {
       alias,
@@ -47,12 +50,13 @@ export default defineConfig({
       include: optimizeDeps,
     },
   },
+  sitemap: {
+    hostname: 'https://blog.devkai.site/less-write/'
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav,
-
     sidebar,
-
     socialLinks: [
       { icon: "github", link: "https://github.com/fenglekai/less-write" },
     ],
@@ -72,5 +76,12 @@ export default defineConfig({
       message: "基于 MIT 许可发布",
       copyright: "© 2024 冯乐铠",
     },
+    lastUpdated: {
+      text: "最后更新于",
+    },
+    editLink: {
+      text: '在 GitHub 上编辑此页面',
+      pattern: 'https://github.com/fenglekai/less-write/edit/main/docs/:path'
+    }
   },
 });

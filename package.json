@@ -46,6 +46,7 @@
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.12.12",
     "@vitejs/plugin-vue": "^5.0.4",
+    "canvas": "^2.11.2",
     "consola": "^3.2.3",
     "conventional-changelog-cli": "^5.0.0",
     "cpy": "^11.0.1",

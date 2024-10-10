@@ -48,6 +48,9 @@ async function buildFullEntry(minify: boolean) {
       },
       treeShaking: true,
       legalComments: "eof",
+      optimizeDeps: {
+        include: ["canvas"],
+      }
     }),
     replace({
       preventAssignment: true,
@@ -81,7 +84,6 @@ async function buildFullEntry(minify: boolean) {
       name: PKG_CAMELCASE_NAME,
       globals: {
         vue: "Vue",
-        konva: "Konva",
       },
       sourcemap: minify,
       banner,

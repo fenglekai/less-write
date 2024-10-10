@@ -8,7 +8,7 @@
     "clean": "rimraf .vitepress/.temp .vitepress/cache .vitepress/dist"
   },
   "dependencies": {
-    "less-write-ui": "workspace:*",
+    "less-write-ui": "npm:less-write-ui@latest",
     "vue": "^3.4.27"
   },
   "devDependencies": {

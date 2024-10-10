@@ -1,4 +1,34 @@
-# [](https://github.com/fenglekai/less-write/compare/v1.0.6...v) (2024-09-23)
+## [1.0.7](https://github.com/fenglekai/less-write/compare/v1.0.6...v1.0.7) (2024-10-10)
+
+### ♻ Code Refactoring | 代码重构
+
+* 💡 变更依赖项lodash -> lodash-es ([fenglekai](https://github.com/fenglekai/less-write/commit/1c619d53769262d5de97e7f1cda6836a92a3d5ed))
+
+### ✅ Tests | 测试
+
+* **play:** 💍 变更slider组件高度定义 ([fenglekai](https://github.com/fenglekai/less-write/commit/85128cdb46d33d43461964c30e74750f9ee62ba1))
+
+### ✨ Features | 新功能
+
+* **docs:** 🎸 初始加载样式;demo组件添加过渡动画 ([fenglekai](https://github.com/fenglekai/less-write/commit/bb6dc0c7d9fca6e93668ea579dad5b2f2279bce9))
+* **docs:** 🎸 新增Demo示例组件;尝试加载less-write-ui库 ([fenglekai](https://github.com/fenglekai/less-write/commit/d642b043c40b0f4b38a4c770e1b595df2b886db1))
+* **docs:** 🎸 新增示例文档站点 ([fenglekai](https://github.com/fenglekai/less-write/commit/24f81315f131d642109802fcf0f316ca49406cd4))
+* **less-write-ui:** 🎸 添加slider组件的导出声明 ([fenglekai](https://github.com/fenglekai/less-write/commit/99c39c79eff977a99af3ec94767b65a67b95ef51))
+* **slider:** 🎸 新增高度选项;修正滑块的位置 ([fenglekai](https://github.com/fenglekai/less-write/commit/e6d0fb807435d3744cdd5c0879310d3fadbecb46))
+* **styles:** 🎸 新增:root基础颜色 ([fenglekai](https://github.com/fenglekai/less-write/commit/af2a783080620bd8c2e90c4a95516a43f1313939))
+
+### 💄 Styles | 风格
+
+* **map:** 💄 部分样式更新;去除多余log输出 ([fenglekai](https://github.com/fenglekai/less-write/commit/741c58ecb349ac5281ae0b3e02e6eff114b8e374))
+
+### 📝 Documentation | 文档
+
+* **CHANGELOG:** update changelog [skip ci] ([github-actions[bot]](https://github.com/fenglekai/less-write/commit/2c0d20c022ca278aae787ca5ad0cc0c8a2f5f49f))
+
+### 🔨 Choreographic Tasks | 构建/工具的变动
+
+* **build:** 🤖 使用esbuild完整构建时添加内联依赖canvas ([fenglekai](https://github.com/fenglekai/less-write/commit/719b46ae88750cade11911e901971d55ef0129e4))
+* **build:** 🤖 新增输出exports;docs路径 ([fenglekai](https://github.com/fenglekai/less-write/commit/22c572d34e9f65a72184a198058213320aa78691))
 
 ## [1.0.6](https://github.com/fenglekai/less-write/compare/v1.0.5...v1.0.6) (2024-09-23)
 
@@ -41,13 +71,13 @@
 
 ### 📝 Documentation | 文档
 
-* **CHANGELOG:** update changelog [skip ci] ([fenglekai](https://github.com/fenglekai/less-write/commit/820d3b4d137defcf99ca16e81d1f34ac9002057f))
+* **CHANGELOG:** update changelog [skip ci] ([github-actions[bot]](https://github.com/fenglekai/less-write/commit/820d3b4d137defcf99ca16e81d1f34ac9002057f))
 
 ### 🔧 Continuous Integration | CI 配置
 
 * 🎡 更新生成日志模式 ([fenglekai](https://github.com/fenglekai/less-write/commit/30357687f35f3b47a636281659f23d803cc50c74))
 
-### 🔨 Chore | 构建过程或辅助工具的变动
+### 🔨 Choreographic Tasks | 构建/工具的变动
 
 * **build:** 🤖 生成声明文件排除less plugins文件 ([fenglekai](https://github.com/fenglekai/less-write/commit/f0c83be7b650af23ea2c75dfafa660e729d27bf3))
 * **slider:** 🤖 删除多余引用 ([fenglekai](https://github.com/fenglekai/less-write/commit/cafaf99e0f933bd7e5aacf6a6acf049bdfdd1761))
@@ -77,7 +107,7 @@
 
 ### 📝 Documentation | 文档
 
-* **CHANGELOG:** update changelog [skip ci] ([fenglekai](https://github.com/fenglekai/less-write/commit/853ccb600f00c14e59626ebfc35b2c811d9fccd6))
+* **CHANGELOG:** update changelog [skip ci] ([github-actions[bot]](https://github.com/fenglekai/less-write/commit/853ccb600f00c14e59626ebfc35b2c811d9fccd6))
 
 ## [1.0.4](https://github.com/fenglekai/less-write/compare/v1.0.3...v1.0.4) (2024-08-23)
 
@@ -110,7 +140,7 @@
 
 ### 📝 Documentation | 文档
 
-* **CHANGELOG:** update changelog [skip ci] ([fenglekai](https://github.com/fenglekai/less-write/commit/9c7d96e4d2bd95f20ae2f8214f4a01ea1f33cccf))
+* **CHANGELOG:** update changelog [skip ci] ([github-actions[bot]](https://github.com/fenglekai/less-write/commit/9c7d96e4d2bd95f20ae2f8214f4a01ea1f33cccf))
 
 ### 🔧 Continuous Integration | CI 配置
 
@@ -118,7 +148,7 @@
 * 🎡 update generate release changelog style ([fenglekai](https://github.com/fenglekai/less-write/commit/2a620744f03c49b17a6a96df03f57f8ed3c09c5d))
 * 🎡 更新changelog生成方式,更好的release日志 ([fenglekai](https://github.com/fenglekai/less-write/commit/bd13c92c8767b1b84730b58d8d9581230c41a20b))
 
-### 🔨 Chore | 构建过程或辅助工具的变动
+### 🔨 Choreographic Tasks | 构建/工具的变动
 
 * 🤖 添加cli部分依赖声明,根目录cli脚本删除 ([fenglekai](https://github.com/fenglekai/less-write/commit/65331e8af7efdd11d63ff903d73ef3bcda63683e))
 * 🤖 添加vue-tsc类型检测 ([fenglekai](https://github.com/fenglekai/less-write/commit/3b7aa13c6d8738ea77465820d0ab09e256530d6d))
@@ -131,7 +161,7 @@
 
 ### 📝 Documentation | 文档
 
-* **CHANGELOG:** update changelog [skip ci] ([fenglekai](https://github.com/fenglekai/less-write/commit/fdec29d153119182379b7728b4adf76d8e1ccebf))
+* **CHANGELOG:** update changelog [skip ci] ([github-actions[bot]](https://github.com/fenglekai/less-write/commit/fdec29d153119182379b7728b4adf76d8e1ccebf))
 
 ## [1.0.2](https://github.com/fenglekai/less-write/compare/v1.0.0...v1.0.2) (2024-08-15)
 
@@ -156,7 +186,7 @@
 ### 📝 Documentation | 文档
 
 * ✏️ update README ([fenglekai](https://github.com/fenglekai/less-write/commit/aeaf65b43bb96f417b3ad9d75bbabe0e591dbb3f))
-* **CHANGELOG:** update changelog [skip ci] ([fenglekai](https://github.com/fenglekai/less-write/commit/9fdd5fa61714ba61241a587110cf42a13cffbaa3))
+* **CHANGELOG:** update changelog [skip ci] ([github-actions[bot]](https://github.com/fenglekai/less-write/commit/9fdd5fa61714ba61241a587110cf42a13cffbaa3))
 
 ### 🔧 Continuous Integration | CI 配置
 
@@ -165,14 +195,14 @@
 * 🎡 优化changelog生成方式,减少步骤 ([fenglekai](https://github.com/fenglekai/less-write/commit/ea452a25c36225fc8b0e9985aba069e7d80edb3e))
 * 🎡 修复语法问题 ([fenglekai](https://github.com/fenglekai/less-write/commit/f60499589f82c93240bfb79fcd5bc9d743b23900))
 
-### 🔨 Chore | 构建过程或辅助工具的变动
+### 🔨 Choreographic Tasks | 构建/工具的变动
 
 * 🤖 add packages/constants path ([fenglekai](https://github.com/fenglekai/less-write/commit/30e04f4c938eaa21c3624e5e14a71171498dcc2b))
 * 🤖 move INSTALLED_KEY to @less-write/constants ([fenglekai](https://github.com/fenglekai/less-write/commit/8e687e5a0d90de478a7938df54543edd994f6ccf))
 * 🤖 path name 'element-plus' -> 'less-write-ui' ([fenglekai](https://github.com/fenglekai/less-write/commit/94fc02ceee68eb6089db4d703a9492c85092977c))
 * 🤖 更新lock文件与tsconfig,env.d.ts,gulpfile工作流名称 ([fenglekai](https://github.com/fenglekai/less-write/commit/828e55ba333a26c18d95160b2091d1e4c263e354))
 
-# [1.0.0](https://github.com/fenglekai/less-write/compare/3a3a403af021e1bef8eebe7482ecb66d993f919f...v1.0.0) (2024-08-02)
+# [1.0.0](https://github.com/fenglekai/less-write/compare/d2332201b113487f397e6d2fe8cd705b1c864a31...v1.0.0) (2024-08-02)
 
 ### ✅ Tests | 测试
 
@@ -188,6 +218,11 @@
 * 🎸 添加CI/CD构建脚本 ([fenglekai](https://github.com/fenglekai/less-write/commit/8367bb91f53d21d0c6e1b9aaaa7e645bce11e7cf))
 * 🎸 添加types-definitions生成类型文件,修复类型检查错误代码 ([fenglekai](https://github.com/fenglekai/less-write/commit/6e475ac66b0036462246228c14d440c6031cce18))
 * 🎸 项目风范替换element-plus ([fenglekai](https://github.com/fenglekai/less-write/commit/3a3a403af021e1bef8eebe7482ecb66d993f919f))
+
+### 🌈 Commits | 其他提交
+
+* init package ([fenglekai](https://github.com/fenglekai/less-write/commit/0a2b0721888835b8cb3584979df0c4afe78b4610))
+* Initial commit ([Kale Feng](https://github.com/fenglekai/less-write/commit/d2332201b113487f397e6d2fe8cd705b1c864a31))
 
 ### 🐛 Bug Fixes | Bug 修复
 
@@ -227,7 +262,7 @@
 * 🎡 设置触发分支 ([fenglekai](https://github.com/fenglekai/less-write/commit/67d14be06ed99e5d49ccdef2b981bac250da76ec))
 * 🎡 配置用户名邮箱 ([fenglekai](https://github.com/fenglekai/less-write/commit/c2ae71203e7508a65e6204350abbffc07cbec2fc))
 
-### 🔨 Chore | 构建过程或辅助工具的变动
+### 🔨 Choreographic Tasks | 构建/工具的变动
 
 * 🤖 create build modules task and build full bundle task ([fenglekai](https://github.com/fenglekai/less-write/commit/472866648cacfc473278794a82b63efc3a13fd29))
 * 🤖 expamples => play ([fenglekai](https://github.com/fenglekai/less-write/commit/eeec879d605b2107b2b81720ec7b1ee7ac354204))

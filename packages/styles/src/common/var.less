@@ -4,6 +4,7 @@
 // #0185ee
 @color-white: #ffffff;
 @color-black: #000000;
+
 @colors: {
   primary: #056abf;
   success: #67c23a;
@@ -24,10 +25,10 @@
 // 90% ecf5ff
 .set-color-mix-level(@mode: light) {
   @prefix: ~"@{modifier-separator}@{namespace}";
-
   each(@colors, .(@v, @k) {
-      @color: ~"@{prefix}-color-@{k}-@{mode}";
+      @{prefix}-color-@{k}: @v;
 
+      @color: ~"@{prefix}-color-@{k}-@{mode}";
       each(range(9), {
           @percent: 10% * @value;
           @{color}-@{index}: tint(@v, @percent);

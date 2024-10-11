@@ -34,6 +34,7 @@
     "@less-write/hooks": "workspace:*",
     "@less-write/styles": "workspace:*",
     "@less-write/utils": "workspace:*",
+    "@less-write/constants": "workspace:*",
     "big.js": "^6.2.2",
     "less-write-cli": "workspace:*",
     "lodash-es": "^4.17.21"

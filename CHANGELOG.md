@@ -1,3 +1,40 @@
+## [1.0.8](https://github.com/fenglekai/less-write/compare/v1.0.7...v1.0.8) (2024-10-12)
+
+### ♻ Code Refactoring | 代码重构
+
+* 💡 变更resolver函数位置,在less-write-ui导出 ([fenglekai](https://github.com/fenglekai/less-write/commit/7214437c5c3b3c31459b7536833e99ab43669757))
+* **docs:** 💡 更新less-write-ui导入方式 ([fenglekai](https://github.com/fenglekai/less-write/commit/2280c80fb4cf129111b3168341dabaaccb61dc01))
+* **docs:** 💡 更新导航与侧边栏配置 ([fenglekai](https://github.com/fenglekai/less-write/commit/ffbe1d4fa034a9a3ebc0d60a997a8c70c2c6b3e1))
+
+### ✨ Features | 新功能
+
+* **docs:** 🎸 新增plugins配置:demo/table-wrapper/tooltip;新增覆盖样式 ([fenglekai](https://github.com/fenglekai/less-write/commit/99c39705eb25d15984873dabed43601614ab9654))
+* **docs:** 🎸 新增组件基础示例 ([fenglekai](https://github.com/fenglekai/less-write/commit/fa3c1479aa0e655155593e04bb355eb3abd488d5))
+* **docs:** 🎸 更新map组件API功能 ([fenglekai](https://github.com/fenglekai/less-write/commit/87decbdc952c9f52c5e50706ae0b67af1ba6a17a))
+* **docs:** 🎸 配置文档基础路径与其他信息;新增文档CI/CD工作文件 ([fenglekai](https://github.com/fenglekai/less-write/commit/c39720a7773411d8dac4e1e08dd92b1e91759457))
+* **map:** 🎸 变更默认size ([fenglekai](https://github.com/fenglekai/less-write/commit/51e15ae54dffb0aae7414a4947999d0679ebe900))
+* **styles:** 🎸 组件导入基础样式;变更css路径 ([fenglekai](https://github.com/fenglekai/less-write/commit/4175fe56e378c8d4bfffae3530ff33f11f769b56))
+
+### 💄 Styles | 风格
+
+* 💄 ts声明更新 ([fenglekai](https://github.com/fenglekai/less-write/commit/f6ecc1c744ee3c4791116ed7d38529bb1e80227a))
+
+### 📝 Documentation | 文档
+
+* **CHANGELOG:** update changelog [skip ci] ([github-actions[bot]](https://github.com/fenglekai/less-write/commit/a5c7def73d4a729221b22a547e2e0ad2eb715840))
+
+### 🔧 Continuous Integration | CI 配置
+
+* 🎡 修复page部署流程构建文件位置错误问题 ([fenglekai](https://github.com/fenglekai/less-write/commit/95205f8c9ca0ff880c510daa0e69c63e1f94b5e2))
+
+### 🔨 Choreographic Tasks | 构建/工具的变动
+
+* 🤖 删除@less-write/conventional-changelog-custom ([fenglekai](https://github.com/fenglekai/less-write/commit/22a77fe37d19729b55f26ca66f182d81785acc82))
+* 🤖 添加@less-write/constants到package.json ([fenglekai](https://github.com/fenglekai/less-write/commit/33b5c3ed75c527f1ab4c7543705560efe06fa7dc))
+* **build:** 🤖 新增docPackage路径 ([fenglekai](https://github.com/fenglekai/less-write/commit/0dd05e83583ecf5835cbd8c22b1ece4e37e011d8))
+* **docs:** 🤖 新增clean脚本命令 ([fenglekai](https://github.com/fenglekai/less-write/commit/a68704e43d4caf8a648ebb1bb6fe0b540d0b658f))
+* **docs:** 🤖 新增优化依赖基础配置 ([fenglekai](https://github.com/fenglekai/less-write/commit/a56eb0a003f0bdd625f58c684593fa48ca2943f0))
+
 ## [1.0.7](https://github.com/fenglekai/less-write/compare/v1.0.6...v1.0.7) (2024-10-10)
 
 ### ♻ Code Refactoring | 代码重构

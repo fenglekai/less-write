@@ -55,7 +55,9 @@ watch(
   () => {
     destroy();
     loading.value = true;
-    autoRefresh(renderRef.value?.clientWidth);
+    if (renderRef.value) {
+      autoRefresh(renderRef.value.clientWidth);
+    }
   }
 );
 

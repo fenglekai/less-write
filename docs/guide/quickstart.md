@@ -25,7 +25,23 @@ app.mount('#app')
 
 #### 自动导入
 
-TODO
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite';
+import Components from 'unplugin-vue-components/vite';
+import { LessWriteResolver } from 'less-write-ui/es/resolver';
+
+export default defineConfig({
+  // ...
+  plugins: [
+    // ...
+    Components({
+      resolvers: [LessWriteResolver()],
+    }),
+  ],
+});
+
+```
 
 ### 手动导入
 

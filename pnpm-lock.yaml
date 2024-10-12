@@ -109,8 +109,8 @@ importers:
   docs:
     dependencies:
       less-write-ui:
-        specifier: npm:less-write-ui@latest
-        version: 1.0.7(vue@3.5.11(typescript@5.6.3))
+        specifier: ^1.0.9
+        version: 1.0.9(vue@3.5.11(typescript@5.6.3))
       vue:
         specifier: ^3.4.27
         version: 3.5.11(typescript@5.6.3)
@@ -3304,8 +3304,8 @@ packages:
     resolution: {integrity: sha512-DpMa59o5uGUWWjruMp71e6knmwKU3jRBBn1kjuLWN9EeIOxNeSAwvHf03WIl8g/ZMR2oSQC9ej3yeLBwdDc/pg==}
     engines: {node: '>=10.13.0'}
 
-  less-write-ui@1.0.7:
-    resolution: {integrity: sha512-ixFrhFKOFbqNsH/Nbic0iDfLPLh2WbovHV8ogtF60N/NOvZHb2oI9htv78QoUj3eZRGdtjPIqkbVwB0vH9vg5w==}
+  less-write-ui@1.0.9:
+    resolution: {integrity: sha512-QEAd3KPFDxX+GYksu6L63YGJwMjdfNveE0JuaXt1Aj5UFQ4lfsRp6bOMLshdsgMX0r2rKtfxwgqI4O34HuUwiw==}
     peerDependencies:
       vue: ^3.4.27
 
@@ -8096,15 +8096,18 @@ snapshots:
 
   lead@4.0.0: {}
 
-  less-write-ui@1.0.7(vue@3.5.11(typescript@5.6.3)):
+  less-write-ui@1.0.9(vue@3.5.11(typescript@5.6.3)):
     dependencies:
       '@vueuse/core': 10.11.1(vue@3.5.11(typescript@5.6.3))
       big.js: 6.2.2
+      canvas: 2.11.2
       konva: 9.3.15
       lodash-es: 4.17.21
       vue: 3.5.11(typescript@5.6.3)
     transitivePeerDependencies:
       - '@vue/composition-api'
+      - encoding
+      - supports-color
 
   less@4.2.0:
     dependencies:

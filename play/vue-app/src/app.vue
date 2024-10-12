@@ -343,7 +343,14 @@ const value = ref(0);
     <div class="slider-wrapper">
       <div>{{ value }}</div>
       <LeSlider v-model="value" min="1" max="10" step="0.2"></LeSlider>
-      <LeSlider v-model="value" height="200px" vertical min="1" max="10" step="0.2"></LeSlider>
+      <LeSlider
+        v-model="value"
+        height="200px"
+        vertical
+        min="1"
+        max="10"
+        step="0.2"
+      ></LeSlider>
     </div>
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg -->
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png -->
@@ -372,7 +379,7 @@ const value = ref(0);
       operation
       space
       grid
-      style="border: 1px solid #dcdfe6; border-radius: 6px; overflow: hidden"
+      style="border: 1px solid #dcdfe6; border-radius: 6px;"
       @point-click="
         (data) => {
           clickData = data;
@@ -381,6 +388,11 @@ const value = ref(0);
     ></LeMap>
   </div>
 </template>
+<style>
+#app {
+  padding: 36px;
+}
+</style>
 <style lang="less" scoped>
 .slider-wrapper {
   width: 50%;

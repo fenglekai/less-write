@@ -589,7 +589,7 @@ export function useMap(props: MapProps, emits: SetupContext<MapEmits>["emit"]) {
   async function init(params: MapGroup, initCallback?: () => void) {
     await nextTick();
     clientWidth.value = params.ctx.width;
-    clientHeight.value = clientHeight.value =
+    clientHeight.value =
       params.size.height * (clientWidth.value / params.size.width);
     renderScale.value = clientWidth.value / params.size.width;
     stage = new Konva.Stage({

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, watch } from "vue";
-import { type Fn, useDebounceFn, useEventListener } from "@vueuse/core";
+import { useResizeObserver } from "@vueuse/core";
 import { LeOperation } from "@less-write/components";
 import { useMap } from "./composable";
 import { mapProps, mapEmits } from "./map";
@@ -21,7 +21,7 @@ const mapInstance = useMap(props, emits);
 const { init, destroy, zoomIn, zoomOut, resetZoom, setScale, scale } =
   mapInstance;
 
-const autoRefresh = useDebounceFn(() => {
+const autoRefresh = (width: number) => {
   if (!renderRef.value) return;
   resetZoom();
   destroy();
@@ -29,7 +29,7 @@ const autoRefresh = useDebounceFn(() => {
     {
       ctx: {
         el: renderRef.value,
-        width: renderRef.value.clientWidth,
+        width: width,
       },
       background: props.background,
       grid: props.grid,
@@ -41,7 +41,7 @@ const autoRefresh = useDebounceFn(() => {
       loading.value = false;
     }
   );
-}, 200);
+};
 
 watch(
   () => [
@@ -55,21 +55,21 @@ watch(
   () => {
     destroy();
     loading.value = true;
-    autoRefresh();
+    autoRefresh(renderRef.value?.clientWidth);
   }
 );
 
-let resizeEvent: Fn;
 onMounted(async () => {
   loading.value = true;
-  autoRefresh();
-  useEventListener("resize", autoRefresh);
-  resizeEvent = useEventListener("resize", autoRefresh);
+  useResizeObserver(renderRef, (entries) => {
+    const entry = entries[0];
+    const { width } = entry.contentRect;
+    autoRefresh(width);
+  });
 });
 
 onUnmounted(() => {
   destroy();
-  resizeEvent();
 });
 
 defineExpose({

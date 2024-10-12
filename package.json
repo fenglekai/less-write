@@ -30,7 +30,6 @@
   "dependencies": {
     "@less-write/build": "workspace:*",
     "@less-write/components": "workspace:*",
-    "@less-write/conventional-changelog-custom": "workspace:*",
     "@less-write/hooks": "workspace:*",
     "@less-write/styles": "workspace:*",
     "@less-write/utils": "workspace:*",

@@ -343,7 +343,9 @@ onMounted(async () => {
   getMapData();
 });
 onUnmounted(() => {
-  runInstance.destroy();
-  runInstance = null;
+  if (runInstance) {
+    runInstance.destroy();
+    runInstance = null;
+  }
 });
 </script>

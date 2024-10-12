@@ -1,3 +1,13 @@
+## [1.0.9](https://github.com/fenglekai/less-write/compare/v1.0.8...v1.0.9) (2024-10-12)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **less-write-ui:** 🐛 修复缺少canvas依赖问题 ([fenglekai](https://github.com/fenglekai/less-write/commit/f8a6196083ad4aa725da215e35e6782a4fa86085))
+
+### 📝 Documentation | 文档
+
+* **CHANGELOG:** update changelog [skip ci] ([github-actions[bot]](https://github.com/fenglekai/less-write/commit/ab0796e6d01eebfa86f2ea1ed09c600194d1541f))
+
 ## [1.0.8](https://github.com/fenglekai/less-write/compare/v1.0.7...v1.0.8) (2024-10-12)
 
 ### ♻ Code Refactoring | 代码重构

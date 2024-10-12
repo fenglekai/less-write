@@ -75,6 +75,7 @@
   "dependencies": {
     "@vueuse/core": "^10.9.0",
     "big.js": "^6.2.2",
+    "canvas": "^2.11.2",
     "konva": "^9.3.9",
     "lodash-es": "^4.17.21"
   }

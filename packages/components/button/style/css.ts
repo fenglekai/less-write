@@ -1,1 +1,1 @@
-import "@less-write/styles/src/button.css"
+import "@less-write/styles/button.css"

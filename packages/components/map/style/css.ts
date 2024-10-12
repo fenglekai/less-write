@@ -1,1 +1,1 @@
-import "@less-write/styles/src/map.css";
+import "@less-write/styles/map.css";

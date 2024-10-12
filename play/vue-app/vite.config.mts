@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import Components from "unplugin-vue-components/vite";
-import { LessWriteResolver } from "./resolver";
+import { LessWriteResolver } from "../../packages/less-write-ui/resolver";
 
 const projRoot = resolve(__dirname, "..", "..");
 const pkgRoot = resolve(projRoot, "packages");
@@ -15,13 +15,17 @@ export default defineConfig({
         find: /^less-write-ui(\/(es|lib))?$/,
         replacement: resolve(leRoot, "index.ts"),
       },
+      {
+        find: /^less-write-ui\/(es|lib)\/(.*)$/,
+        replacement: `${pkgRoot}/$2`,
+      },
     ],
   },
   plugins: [
     vue(),
     Components({
       include: `${__dirname}/**`,
-      resolvers: [LessWriteResolver()],
+      resolvers: [LessWriteResolver({ importStyle: "less" })],
       dts: false,
     }),
   ],

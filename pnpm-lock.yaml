@@ -14,9 +14,9 @@ importers:
       '@less-write/components':
         specifier: workspace:*
         version: link:packages/components
-      '@less-write/conventional-changelog-custom':
+      '@less-write/constants':
         specifier: workspace:*
-        version: link:packages/conventional-changelog-custom
+        version: link:packages/constants
       '@less-write/hooks':
         specifier: workspace:*
         version: link:packages/hooks
@@ -208,13 +208,6 @@ importers:
         version: 3.5.11(typescript@5.6.3)
 
   packages/constants: {}
-
-  packages/conventional-changelog-custom:
-    dependencies:
-      compare-func:
-        specifier: ^2.0.0
-        version: 2.0.0
-    publishDirectory: package
 
   packages/hooks:
     dependencies:

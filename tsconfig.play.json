@@ -12,7 +12,6 @@
     // playground
     "play/vue-app/main.ts",
     "play/vue-app/src/**/*",
-    "play/vue-app/resolver.ts",
     "play/vue-app/vue-shim.d.ts"
   ]
 }

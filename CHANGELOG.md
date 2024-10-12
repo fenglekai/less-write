@@ -1,3 +1,19 @@
+## [1.0.10](https://github.com/fenglekai/less-write/compare/v1.0.9...v1.0.10) (2024-10-12)
+
+### ✨ Features | 新功能
+
+* **docs:** 🎸 自动导入文档更新 ([fenglekai](https://github.com/fenglekai/less-write/commit/2ed98c822c3e5e6dd766a40ce8fa680045663a9b))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* 🐛 修复package引用导致构建错误;错误的传参 ([fenglekai](https://github.com/fenglekai/less-write/commit/5457f11783c880d8cd1e59789248f0f491d25b77))
+* **docs:** 🐛 修复动态点位函数调用错误问题 ([fenglekai](https://github.com/fenglekai/less-write/commit/11962c9cf3ea9b1fac858820ce21c5d28133555c))
+* **map:** 🐛 修复map绘制宽度在一些情况下超出父容器宽度问题 ([fenglekai](https://github.com/fenglekai/less-write/commit/3acb4050f9b528825ebf9725cfac5bcb6b4ce99e))
+
+### 📝 Documentation | 文档
+
+* **CHANGELOG:** update changelog [skip ci] ([github-actions[bot]](https://github.com/fenglekai/less-write/commit/d741f9d0a886a9125c28d6e49430b47f339dee1c))
+
 ## [1.0.9](https://github.com/fenglekai/less-write/compare/v1.0.8...v1.0.9) (2024-10-12)
 
 ### 🐛 Bug Fixes | Bug 修复

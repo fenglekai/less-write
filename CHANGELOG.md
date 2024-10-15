@@ -1,3 +1,13 @@
+## [1.0.11](https://github.com/fenglekai/less-write/compare/v1.0.10...v1.0.11) (2024-10-15)
+
+### ✨ Features | 新功能
+
+* **map:** 🎸 组件暴露reload方法手动更新canvas ([fenglekai](https://github.com/fenglekai/less-write/commit/84b50f0e25764d14dd50698daf29a9d9dd7ebb15))
+
+### 📝 Documentation | 文档
+
+* **CHANGELOG:** update changelog [skip ci] ([github-actions[bot]](https://github.com/fenglekai/less-write/commit/b0a0b2357f4e8406580d07ce1ec6eaed61377d25))
+
 ## [1.0.10](https://github.com/fenglekai/less-write/compare/v1.0.9...v1.0.10) (2024-10-12)
 
 ### ✨ Features | 新功能

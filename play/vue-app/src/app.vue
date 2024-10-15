@@ -367,10 +367,15 @@ const handleAside = () => {
     <LeButton @click="handleZoomOut">缩小</LeButton>
     <LeButton @click="handleResetZoom">还原</LeButton>
     scale: {{ mapRef?.scale }}
-    <LeButton @click="handleAside"
-      >拓展</LeButton
+    <LeButton @click="handleAside">拓展</LeButton>
+    <LeButton @click="() => mapRef?.reload(200)">改变Canvas宽度到200</LeButton>
+    <div
+      :style="{
+        display: 'flex',
+        paddingLeft: asideWidth + 'px',
+        transition: 'padding 0.3s',
+      }"
     >
-    <div :style="{ display: 'flex', paddingLeft: asideWidth + 'px', transition: 'padding 0.3s' }">
       <div
         style="
           width: 0;

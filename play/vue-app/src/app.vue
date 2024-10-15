@@ -337,6 +337,15 @@ onUnmounted(() => {
 });
 
 const value = ref(0);
+
+const asideWidth = ref(250);
+const handleAside = () => {
+  if (asideWidth.value != 250) {
+    asideWidth.value = 250;
+  } else {
+    asideWidth.value = 100;
+  }
+};
 </script>
 <template>
   <div class="container">
@@ -354,19 +363,33 @@ const value = ref(0);
     </div>
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/logo.jpeg -->
     <!-- https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png -->
-    <!-- <LeButton @click="handleZoomIn">放大</LeButton>
+    <LeButton @click="handleZoomIn">放大</LeButton>
     <LeButton @click="handleZoomOut">缩小</LeButton>
     <LeButton @click="handleResetZoom">还原</LeButton>
-     scale: {{ mapRef?.scale }}
-    <LeMap
-      ref="mapRef"
-      min="1"
-      max="10"
-      step="1"
-      :size="size"
-      background="https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png"
-      style="border: 1px solid #dcdfe6; border-radius: 6px; overflow: hidden"
-    ></LeMap> -->
+    scale: {{ mapRef?.scale }}
+    <LeButton @click="handleAside"
+      >拓展</LeButton
+    >
+    <div :style="{ display: 'flex', paddingLeft: asideWidth + 'px', transition: 'padding 0.3s' }">
+      <div
+        style="
+          width: 0;
+          padding: 20px;
+          border: 1px solid #dcdfe6;
+          border-radius: 6px;
+          flex: 1 1 auto;
+        "
+      >
+        <LeMap
+          ref="mapRef"
+          min="1"
+          max="10"
+          step="1"
+          :size="size"
+          background="https://raw.githubusercontent.com/fenglekai/image-bed/master/bloom.png"
+        ></LeMap>
+      </div>
+    </div>
     <LeButton @click="handleRunClick">运行轨迹</LeButton>
     {{ clickData }}
     <LeMap
@@ -379,7 +402,7 @@ const value = ref(0);
       operation
       space
       grid
-      style="border: 1px solid #dcdfe6; border-radius: 6px;"
+      style="border: 1px solid #dcdfe6; border-radius: 6px"
       @point-click="
         (data) => {
           clickData = data;

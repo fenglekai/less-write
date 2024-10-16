@@ -1,3 +1,13 @@
+## [1.0.12](https://github.com/fenglekai/less-write/compare/v1.0.11...v1.0.12) (2024-10-15)
+
+### 📝 Documentation | 文档
+
+* **CHANGELOG:** update changelog [skip ci] ([github-actions[bot]](https://github.com/fenglekai/less-write/commit/b355937f6e8a8ea41f5ce389c44d904120b5d7c7))
+
+### 🔨 Choreographic Tasks | 构建/工具的变动
+
+* 🤖 lock文件更新导致声明文件报错,已恢复使用vue3.4.27版本 ([fenglekai](https://github.com/fenglekai/less-write/commit/51afe787c6210b26cadc6199a650f14326de947e))
+
 ## [1.0.11](https://github.com/fenglekai/less-write/compare/v1.0.10...v1.0.11) (2024-10-15)
 
 ### ✨ Features | 新功能

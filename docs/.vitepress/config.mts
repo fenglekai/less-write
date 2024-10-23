@@ -34,8 +34,8 @@ const optimizeDeps = [...new Set([...leDeps, ...docsDeps])].filter(
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  lang: 'zh-CN',
-  extends: baseConfig({'docRoot': path.resolve(projRoot, "docs")}),
+  lang: "zh-CN",
+  extends: baseConfig({ docRoot: path.resolve(projRoot, "docs") }),
   title: "Less Write",
   description: "A Vue.js 3 UI Library",
   cleanUrls: true,
@@ -49,9 +49,10 @@ export default defineConfig({
     optimizeDeps: {
       include: optimizeDeps,
     },
+    ssr: { noExternal: ["less-write-vitepress-theme"] },
   },
   sitemap: {
-    hostname: 'https://blog.devkai.site/less-write/'
+    hostname: "https://blog.devkai.site/less-write/",
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -80,8 +81,8 @@ export default defineConfig({
       text: "最后更新于",
     },
     editLink: {
-      text: '在 GitHub 上编辑此页面',
-      pattern: 'https://github.com/fenglekai/less-write/edit/main/docs/:path'
-    }
+      text: "在 GitHub 上编辑此页面",
+      pattern: "https://github.com/fenglekai/less-write/edit/main/docs/:path",
+    },
   },
 });

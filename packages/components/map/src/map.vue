@@ -45,12 +45,13 @@ const reload = useDebounceFn((width: number) => {
   );
 }, 200);
 
-const { stop } = useResizeObserver(wrapperRef.value, (entries) => {
+const { stop } = useResizeObserver(wrapperRef, (entries) => {
   const [entry] = entries;
   const { width } = entry.contentRect;
   if (currentWrapperWidth.value !== width) {
     reload(width);
   }
+
   currentWrapperWidth.value = width;
 });
 

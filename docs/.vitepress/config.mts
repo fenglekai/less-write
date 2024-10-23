@@ -6,7 +6,7 @@ import {
   lePackage,
   projRoot,
 } from "@less-write/build";
-import baseConfig from "./theme/less-write-vitepress-theme/config";
+import baseConfig from "less-write-vitepress-theme";
 import nav from "./config/nav";
 import sidebar from "./config/sidebar";
 
@@ -19,7 +19,7 @@ if (process.env.DOC_ENV !== "production") {
       replacement: path.resolve(projRoot, "packages/less-write-ui/index.ts"),
     },
     {
-      find: /^less-write-ui\/(es|lib)\/(.*)$/,
+      find: /^@less-write\/(es|lib)\/(.*)$/,
       replacement: `${path.resolve(projRoot, "packages")}/$2`,
     }
   );
@@ -35,7 +35,7 @@ const optimizeDeps = [...new Set([...leDeps, ...docsDeps])].filter(
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lang: 'zh-CN',
-  extends: baseConfig,
+  extends: baseConfig({'docRoot': path.resolve(projRoot, "docs")}),
   title: "Less Write",
   description: "A Vue.js 3 UI Library",
   cleanUrls: true,

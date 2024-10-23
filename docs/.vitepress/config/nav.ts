@@ -11,6 +11,14 @@ const nav: DefaultTheme.NavItem[] = [
         link: "https://github.com/fenglekai/less-write/releases",
       },
       {
+        text: "Less Write Vitepress Theme",
+        link: "https://fenglekai.github.io/less-write-vitepress-theme/",
+      },
+      {
+        text: "Less Write Changelog",
+        link: "https://github.com/fenglekai/less-write-changelog/",
+      },
+      {
         component: "RainbowAnimationSwitcher",
         props: {
           text: "Rainbow Animation",

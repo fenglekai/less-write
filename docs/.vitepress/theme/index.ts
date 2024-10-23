@@ -2,7 +2,7 @@
 import type { Theme } from "vitepress";
 import LessWriteUI from 'less-write-ui';
 import '../../../packages/styles/src/index.less';
-import CustomTheme from "./less-write-vitepress-theme";
+import CustomTheme from "less-write-vitepress-theme/es/theme";
 
 export default {
   extends: CustomTheme,

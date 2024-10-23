@@ -92,7 +92,7 @@ importers:
         version: 0.27.4(@babel/parser@7.25.8)(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
       unplugin-vue-macros:
         specifier: ^2.9.5
-        version: 2.12.4(@vueuse/core@11.1.0(vue@3.4.27(typescript@5.6.3)))(esbuild@0.24.0)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@20.16.11)(less@4.2.0))(vue-tsc@2.1.6(typescript@5.6.3))(vue@3.4.27(typescript@5.6.3))
+        version: 2.12.4(@vueuse/core@11.1.0(vue@3.4.27(typescript@5.6.3)))(esbuild@0.21.5)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@20.16.11)(less@4.2.0))(vue-tsc@2.1.6(typescript@5.6.3))(vue@3.4.27(typescript@5.6.3))
       vite:
         specifier: ^5.2.11
         version: 5.4.9(@types/node@20.16.11)(less@4.2.0)
@@ -111,25 +111,13 @@ importers:
       less-write-ui:
         specifier: workspace:*
         version: link:../packages/less-write-ui
-      vue:
-        specifier: ^3.4.27
-        version: 3.4.27(typescript@5.6.3)
+      less-write-vitepress-theme:
+        specifier: ^1.0.2
+        version: 1.0.2(vitepress@1.4.1(@algolia/client-search@4.24.0)(@types/node@20.16.11)(less@4.2.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.3))(vue@3.5.12(typescript@5.6.3))
     devDependencies:
       '@less-write/build':
         specifier: workspace:*
         version: link:../internal/build
-      '@types/markdown-it':
-        specifier: ^14.1.2
-        version: 14.1.2
-      '@types/markdown-it-container':
-        specifier: ^2.0.10
-        version: 2.0.10
-      fast-glob:
-        specifier: ^3.3.2
-        version: 3.3.2
-      markdown-it-container:
-        specifier: ^4.0.0
-        version: 4.0.0
       vitepress:
         specifier: ^1.3.4
         version: 1.4.1(@algolia/client-search@4.24.0)(@types/node@20.16.11)(less@4.2.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.3)
@@ -1694,9 +1682,6 @@ packages:
 
   '@types/lodash@4.17.10':
     resolution: {integrity: sha512-YpS0zzoduEhuOWjAotS6A5AVCva7X4lVlYLF0FYHAY9sdraBfnatttHItlWeZdGhuEkf+OzMNg2ZYAx8t+52uQ==}
-
-  '@types/markdown-it-container@2.0.10':
-    resolution: {integrity: sha512-zv+YxrlSYRq51e9kzm3orv4OvF4U79Ll1OyplNXr00o4ZC/8PukJk/jEWH7CnsMtrSWZlyv0czhz42jm9J4uLw==}
 
   '@types/markdown-it@14.1.2':
     resolution: {integrity: sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog==}
@@ -3334,6 +3319,12 @@ packages:
     resolution: {integrity: sha512-DpMa59o5uGUWWjruMp71e6knmwKU3jRBBn1kjuLWN9EeIOxNeSAwvHf03WIl8g/ZMR2oSQC9ej3yeLBwdDc/pg==}
     engines: {node: '>=10.13.0'}
 
+  less-write-vitepress-theme@1.0.2:
+    resolution: {integrity: sha512-Riz1ea3qdebnY/0Y7v9zFfXIMlziINMsoqoY73qFvD35rdnhlCspfpwwlotDuSCwDKxZZgo8LwWoTgA1iYeGDQ==}
+    peerDependencies:
+      vitepress: ^1.4.1
+      vue: ^3.5.12
+
   less@4.2.0:
     resolution: {integrity: sha512-P3b3HJDBtSzsXUl0im2L7gTO5Ubg8mEN6G8qoTS77iXxXX4Hvu4Qj540PZDvQ8V6DmX6iXo98k7Md0Cm1PrLaA==}
     engines: {node: '>=6'}
@@ -3349,6 +3340,9 @@ packages:
 
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
+
+  linkify-it@5.0.0:
+    resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
 
   load-json-file@6.2.0:
     resolution: {integrity: sha512-gUD/epcRms75Cw8RT1pUdHugZYM5ce64ucs2GEISABwkRsOQr0q2wm/MV2TKThycIe5e0ytRweW2RZxclogCdQ==}
@@ -3434,6 +3428,10 @@ packages:
   markdown-it-container@4.0.0:
     resolution: {integrity: sha512-HaNccxUH0l7BNGYbFbjmGpf5aLHAMTinqRZQAEQbMr2cdD3z91Q6kIo1oUn1CQndkT03jat6ckrdRYuwwqLlQw==}
 
+  markdown-it@14.1.0:
+    resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
+    hasBin: true
+
   mdast-util-to-hast@13.2.0:
     resolution: {integrity: sha512-QGYKEuUsYT9ykKBCMOEDLsU5JRObWQusAolFMeko/tYPufNkRffBAQjIE+99jbA87xv6FgmjLtwjh9wBWajwAA==}
 
@@ -3442,6 +3440,9 @@ packages:
 
   mdn-data@2.0.30:
     resolution: {integrity: sha512-GaqWWShW4kv/G9IEucWScBx9G1/vsFZZJUO+tD26M8J8z3Kw5RDQjaoZe03YAClgeS/SWPOcb4nkFBTEi5DUEA==}
+
+  mdurl@2.0.0:
+    resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
 
   mem@8.1.1:
     resolution: {integrity: sha512-qFCFUDs7U3b8mBDPyz5EToEKoAkgCzqquIgi9nkkR9bixxOVOre+09lbuH7+9Kn2NFpm56M3GUWVbU2hQgdACA==}
@@ -4037,6 +4038,10 @@ packages:
   prr@1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}
 
+  punycode.js@2.3.1:
+    resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
+    engines: {node: '>=6'}
+
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
@@ -4506,6 +4511,9 @@ packages:
     resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  uc.micro@2.1.0:
+    resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
 
   ufo@1.5.4:
     resolution: {integrity: sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==}
@@ -6161,10 +6169,6 @@ snapshots:
       '@types/lodash': 4.17.10
 
   '@types/lodash@4.17.10': {}
-
-  '@types/markdown-it-container@2.0.10':
-    dependencies:
-      '@types/markdown-it': 14.1.2
 
   '@types/markdown-it@14.1.2':
     dependencies:
@@ -8219,6 +8223,18 @@ snapshots:
 
   lead@4.0.0: {}
 
+  less-write-vitepress-theme@1.0.2(vitepress@1.4.1(@algolia/client-search@4.24.0)(@types/node@20.16.11)(less@4.2.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.3))(vue@3.5.12(typescript@5.6.3)):
+    dependencies:
+      '@vueuse/core': 11.1.0(vue@3.5.12(typescript@5.6.3))
+      consola: 3.2.3
+      fast-glob: 3.3.2
+      markdown-it: 14.1.0
+      markdown-it-container: 4.0.0
+      vitepress: 1.4.1(@algolia/client-search@4.24.0)(@types/node@20.16.11)(less@4.2.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.3)
+      vue: 3.5.12(typescript@5.6.3)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+
   less@4.2.0:
     dependencies:
       copy-anything: 2.0.6
@@ -8246,6 +8262,10 @@ snapshots:
   lilconfig@3.1.2: {}
 
   lines-and-columns@1.2.4: {}
+
+  linkify-it@5.0.0:
+    dependencies:
+      uc.micro: 2.1.0
 
   load-json-file@6.2.0:
     dependencies:
@@ -8325,6 +8345,15 @@ snapshots:
 
   markdown-it-container@4.0.0: {}
 
+  markdown-it@14.1.0:
+    dependencies:
+      argparse: 2.0.1
+      entities: 4.5.0
+      linkify-it: 5.0.0
+      mdurl: 2.0.0
+      punycode.js: 2.3.1
+      uc.micro: 2.1.0
+
   mdast-util-to-hast@13.2.0:
     dependencies:
       '@types/hast': 3.0.4
@@ -8340,6 +8369,8 @@ snapshots:
   mdn-data@2.0.28: {}
 
   mdn-data@2.0.30: {}
+
+  mdurl@2.0.0: {}
 
   mem@8.1.1:
     dependencies:
@@ -8874,6 +8905,8 @@ snapshots:
   prr@1.0.1:
     optional: true
 
+  punycode.js@2.3.1: {}
+
   punycode@2.3.1: {}
 
   queue-microtask@1.2.3: {}
@@ -9338,6 +9371,8 @@ snapshots:
 
   typescript@5.6.3: {}
 
+  uc.micro@2.1.0: {}
+
   ufo@1.5.4: {}
 
   uglify-js@3.19.3:
@@ -9441,17 +9476,6 @@ snapshots:
     transitivePeerDependencies:
       - webpack-sources
 
-  unplugin-combine@1.0.3(esbuild@0.24.0)(rollup@4.24.0)(vite@5.4.9(@types/node@20.16.11)(less@4.2.0)):
-    dependencies:
-      '@antfu/utils': 0.7.10
-      unplugin: 1.14.1
-    optionalDependencies:
-      esbuild: 0.24.0
-      rollup: 4.24.0
-      vite: 5.4.9(@types/node@20.16.11)(less@4.2.0)
-    transitivePeerDependencies:
-      - webpack-sources
-
   unplugin-vue-components@0.27.4(@babel/parser@7.25.8)(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3)):
     dependencies:
       '@antfu/utils': 0.7.10
@@ -9514,53 +9538,6 @@ snapshots:
       '@vue-macros/volar': 0.30.4(rollup@4.24.0)(typescript@5.6.3)(vue-tsc@2.1.6(typescript@5.6.3))(vue@3.4.27(typescript@5.6.3))
       unplugin: 1.14.1
       unplugin-combine: 1.0.3(esbuild@0.21.5)(rollup@4.24.0)(vite@5.4.9(@types/node@20.16.11)(less@4.2.0))
-      unplugin-vue-define-options: 1.5.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      vue: 3.4.27(typescript@5.6.3)
-    transitivePeerDependencies:
-      - '@rspack/core'
-      - '@vueuse/core'
-      - esbuild
-      - rolldown
-      - rollup
-      - supports-color
-      - typescript
-      - vite
-      - vue-tsc
-      - webpack
-      - webpack-sources
-
-  unplugin-vue-macros@2.12.4(@vueuse/core@11.1.0(vue@3.4.27(typescript@5.6.3)))(esbuild@0.24.0)(rollup@4.24.0)(typescript@5.6.3)(vite@5.4.9(@types/node@20.16.11)(less@4.2.0))(vue-tsc@2.1.6(typescript@5.6.3))(vue@3.4.27(typescript@5.6.3)):
-    dependencies:
-      '@vue-macros/better-define': 1.9.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/boolean-prop': 0.5.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/chain-call': 0.4.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/common': 1.14.0(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/config': 0.4.2(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/define-emit': 0.4.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/define-models': 1.3.1(@vueuse/core@11.1.0(vue@3.4.27(typescript@5.6.3)))(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/define-prop': 0.5.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/define-props': 4.0.1(@vue-macros/reactivity-transform@1.1.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3)))(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/define-props-refs': 1.3.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/define-render': 1.6.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/define-slots': 1.2.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/devtools': 0.4.0(typescript@5.6.3)(vite@5.4.9(@types/node@20.16.11)(less@4.2.0))
-      '@vue-macros/export-expose': 0.3.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/export-props': 0.6.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/export-render': 0.3.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/hoist-static': 1.6.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/jsx-directive': 0.9.1(rollup@4.24.0)(typescript@5.6.3)
-      '@vue-macros/named-template': 0.5.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/reactivity-transform': 1.1.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/script-lang': 0.2.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/setup-block': 0.4.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/setup-component': 0.18.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/setup-sfc': 0.18.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/short-bind': 1.1.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/short-emits': 1.6.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/short-vmodel': 1.5.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
-      '@vue-macros/volar': 0.30.4(rollup@4.24.0)(typescript@5.6.3)(vue-tsc@2.1.6(typescript@5.6.3))(vue@3.4.27(typescript@5.6.3))
-      unplugin: 1.14.1
-      unplugin-combine: 1.0.3(esbuild@0.24.0)(rollup@4.24.0)(vite@5.4.9(@types/node@20.16.11)(less@4.2.0))
       unplugin-vue-define-options: 1.5.1(rollup@4.24.0)(vue@3.4.27(typescript@5.6.3))
       vue: 3.4.27(typescript@5.6.3)
     transitivePeerDependencies:

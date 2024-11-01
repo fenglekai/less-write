@@ -18,12 +18,6 @@ const nav: DefaultTheme.NavItem[] = [
         text: "Less Write Changelog",
         link: "https://github.com/fenglekai/less-write-changelog/",
       },
-      {
-        component: "RainbowAnimationSwitcher",
-        props: {
-          text: "Rainbow Animation",
-        },
-      },
     ],
   },
 ]

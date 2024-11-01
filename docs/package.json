@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "less-write-ui": "workspace:*",
-    "less-write-vitepress-theme": "^1.0.2"
+    "less-write-vitepress-theme": "^1.0.3"
   },
   "devDependencies": {
     "@less-write/build": "workspace:*",

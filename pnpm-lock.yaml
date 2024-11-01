@@ -112,8 +112,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/less-write-ui
       less-write-vitepress-theme:
-        specifier: ^1.0.2
-        version: 1.0.2(vitepress@1.4.1(@algolia/client-search@4.24.0)(@types/node@20.16.11)(less@4.2.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.3))(vue@3.5.12(typescript@5.6.3))
+        specifier: ^1.0.3
+        version: 1.0.3(vitepress@1.4.1(@algolia/client-search@4.24.0)(@types/node@20.16.11)(less@4.2.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.3))(vue@3.5.12(typescript@5.6.3))
     devDependencies:
       '@less-write/build':
         specifier: workspace:*
@@ -3319,8 +3319,8 @@ packages:
     resolution: {integrity: sha512-DpMa59o5uGUWWjruMp71e6knmwKU3jRBBn1kjuLWN9EeIOxNeSAwvHf03WIl8g/ZMR2oSQC9ej3yeLBwdDc/pg==}
     engines: {node: '>=10.13.0'}
 
-  less-write-vitepress-theme@1.0.2:
-    resolution: {integrity: sha512-Riz1ea3qdebnY/0Y7v9zFfXIMlziINMsoqoY73qFvD35rdnhlCspfpwwlotDuSCwDKxZZgo8LwWoTgA1iYeGDQ==}
+  less-write-vitepress-theme@1.0.3:
+    resolution: {integrity: sha512-MCwgn6JqhtkWjuyPLTDKoklCWJ8KDuScKe3D3hz3O0Zvcia8K0uvhOJMZDB85ZulzwhF3nAp+oP7AGrJZclCag==}
     peerDependencies:
       vitepress: ^1.4.1
       vue: ^3.5.12
@@ -8223,7 +8223,7 @@ snapshots:
 
   lead@4.0.0: {}
 
-  less-write-vitepress-theme@1.0.2(vitepress@1.4.1(@algolia/client-search@4.24.0)(@types/node@20.16.11)(less@4.2.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.3))(vue@3.5.12(typescript@5.6.3)):
+  less-write-vitepress-theme@1.0.3(vitepress@1.4.1(@algolia/client-search@4.24.0)(@types/node@20.16.11)(less@4.2.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.3))(vue@3.5.12(typescript@5.6.3)):
     dependencies:
       '@vueuse/core': 11.1.0(vue@3.5.12(typescript@5.6.3))
       consola: 3.2.3
